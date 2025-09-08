@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Random Walks I | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 2 Random Walks I | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Random Walks I | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Random Walks I | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="a-caucus-race-and-a-long-tale.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html"><i class="fa fa-check"></i><b>3</b> A caucus-race and a long tale</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="random-walks-i" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Random Walks I<a href="random-walks-i.html#random-walks-i" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Picture a particle suspended in a glass of water, jittering unpredictably as it collides with countless water molecules. Or imagine a foraging animal wandering through a forest, making seemingly random decisions at each step as it searches for food. These scenarios—from the microscopic Brownian motion of particles to the macroscopic movement of organisms—share a fundamental characteristic: they can be modeled as random walks.</p>
+<p>Random walks represent one of the most elegant examples of how simple rules can generate complex, unpredictable patterns. Despite their apparent simplicity, these models have found applications across diverse fields, from physics and biology to finance and computer science. In this tutorial, we’ll explore how to implement and analyze a random walk using Mesa, Python’s premier agent-based modeling framework.</p>
+<div id="what-makes-random-walks-special" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> What Makes Random Walks Special?<a href="random-walks-i.html#what-makes-random-walks-special" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>At their core, random walks embody a fundamental principle of complex systems: emergence. An agent following just one rule—move randomly to a neighboring location—can produce trajectories that appear chaotic and unpredictable. Yet these “random” patterns often reveal underlying statistical properties that help us understand real-world phenomena.</p>
+<p>The beauty of studying random walks through agent-based modeling lies in the ability to observe individual behavior while collecting data on system-level outcomes. By implementing our simulation in Mesa, we can not only watch an agent wander across a grid but also analyze the resulting data to understand broader patterns of movement and exploration.</p>
+</div>
+<div id="building-our-random-walk-simulation" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Building Our Random Walk Simulation<a href="random-walks-i.html#building-our-random-walk-simulation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our simulation centers around a single agent exploring a 2D grid world. Let’s examine each component of this implementation to understand how Mesa enables us to create compelling models with minimal code.</p>
+<div id="setting-up-the-environment" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Setting Up the Environment<a href="random-walks-i.html#setting-up-the-environment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="random-walks-i.html#cb1-1" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb1-2"><a href="random-walks-i.html#cb1-2" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb1-3"><a href="random-walks-i.html#cb1-3" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb1-4"><a href="random-walks-i.html#cb1-4" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="random-walks-i.html#cb1-5" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="random-walks-i.html#cb1-6" tabindex="-1"></a><span class="im">import</span> random</span></code></pre></div>
+<p>These imports provide the essential building blocks for our simulation. Mesa’s <code>Agent</code> and <code>Model</code> classes form the foundation of our agent-based system, while <code>MultiGrid</code> creates our 2D space and <code>RandomActivation</code> manages the timing of agent actions.</p>
+</div>
+<div id="creating-the-random-walker-agent" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Creating the Random Walker Agent<a href="random-walks-i.html#creating-the-random-walker-agent" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="random-walks-i.html#cb2-1" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb2-2"><a href="random-walks-i.html#cb2-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb2-3"><a href="random-walks-i.html#cb2-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb2-4"><a href="random-walks-i.html#cb2-4" tabindex="-1"></a>        <span class="va">self</span>.unique_id <span class="op">=</span> unique_id</span>
+<span id="cb2-5"><a href="random-walks-i.html#cb2-5" tabindex="-1"></a>    </span>
+<span id="cb2-6"><a href="random-walks-i.html#cb2-6" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb2-7"><a href="random-walks-i.html#cb2-7" tabindex="-1"></a>        <span class="co"># Get possible moves</span></span>
+<span id="cb2-8"><a href="random-walks-i.html#cb2-8" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb2-9"><a href="random-walks-i.html#cb2-9" tabindex="-1"></a>            <span class="va">self</span>.pos,</span>
+<span id="cb2-10"><a href="random-walks-i.html#cb2-10" tabindex="-1"></a>            moore<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-11"><a href="random-walks-i.html#cb2-11" tabindex="-1"></a>            include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb2-12"><a href="random-walks-i.html#cb2-12" tabindex="-1"></a>        )</span>
+<span id="cb2-13"><a href="random-walks-i.html#cb2-13" tabindex="-1"></a>        new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb2-14"><a href="random-walks-i.html#cb2-14" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_position)</span></code></pre></div>
+<p>The <code>RandomWalkerAgent</code> class encapsulates our agent’s behavior. Each agent has a unique identifier and a reference to the model containing it. The <code>step</code> method defines the agent’s core behavior: at each time step, it examines its Moore neighborhood (the eight surrounding cells), randomly selects one, and moves there.</p>
+<p>This implementation demonstrates Mesa’s elegant design philosophy. The <code>get_neighborhood</code> method handles the complexities of spatial relationships, while <code>move_agent</code> manages the actual relocation. The agent simply makes decisions and delegates the mechanics to Mesa’s infrastructure.</p>
+</div>
+<div id="designing-the-model-architecture" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Designing the Model Architecture<a href="random-walks-i.html#designing-the-model-architecture" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="random-walks-i.html#cb3-1" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb3-2"><a href="random-walks-i.html#cb3-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width, height, n_steps<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb3-3"><a href="random-walks-i.html#cb3-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb3-4"><a href="random-walks-i.html#cb3-4" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-5"><a href="random-walks-i.html#cb3-5" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb3-6"><a href="random-walks-i.html#cb3-6" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb3-7"><a href="random-walks-i.html#cb3-7" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> []</span>
+<span id="cb3-8"><a href="random-walks-i.html#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="random-walks-i.html#cb3-9" tabindex="-1"></a>        <span class="co"># Create and place one agent</span></span>
+<span id="cb3-10"><a href="random-walks-i.html#cb3-10" tabindex="-1"></a>        agent <span class="op">=</span> RandomWalkerAgent(<span class="dv">0</span>, <span class="va">self</span>)</span>
+<span id="cb3-11"><a href="random-walks-i.html#cb3-11" tabindex="-1"></a>        <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb3-12"><a href="random-walks-i.html#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="random-walks-i.html#cb3-13" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.random.randrange(width)</span>
+<span id="cb3-14"><a href="random-walks-i.html#cb3-14" tabindex="-1"></a>        y <span class="op">=</span> <span class="va">self</span>.random.randrange(height)</span>
+<span id="cb3-15"><a href="random-walks-i.html#cb3-15" tabindex="-1"></a>        <span class="va">self</span>.grid.place_agent(agent, (x, y))</span></code></pre></div>
+<p>The <code>RandomWalkerModel</code> class orchestrates the entire simulation. It creates a toroidal grid—one where edges wrap around like in Pac-Man—ensuring our agent never encounters boundaries that might bias its movement. The model initializes with a single agent placed at a random starting position, setting the stage for exploration.</p>
+<p>The choice of a toroidal topology is particularly important. By eliminating edge effects, we create a more controlled experimental environment where the agent’s movement patterns reflect purely random behavior rather than interactions with boundaries.</p>
+</div>
+<div id="implementing-the-simulation-loop" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Implementing the Simulation Loop<a href="random-walks-i.html#implementing-the-simulation-loop" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="random-walks-i.html#cb4-1" tabindex="-1"></a><span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb4-2"><a href="random-walks-i.html#cb4-2" tabindex="-1"></a>    agent <span class="op">=</span> <span class="va">self</span>.schedule.agents[<span class="dv">0</span>]</span>
+<span id="cb4-3"><a href="random-walks-i.html#cb4-3" tabindex="-1"></a>    <span class="va">self</span>.datacollector.append({</span>
+<span id="cb4-4"><a href="random-walks-i.html#cb4-4" tabindex="-1"></a>        <span class="st">&#39;step&#39;</span>: <span class="va">self</span>.schedule.time,</span>
+<span id="cb4-5"><a href="random-walks-i.html#cb4-5" tabindex="-1"></a>        <span class="st">&#39;x&#39;</span>: agent.pos[<span class="dv">0</span>],</span>
+<span id="cb4-6"><a href="random-walks-i.html#cb4-6" tabindex="-1"></a>        <span class="st">&#39;y&#39;</span>: agent.pos[<span class="dv">1</span>]</span>
+<span id="cb4-7"><a href="random-walks-i.html#cb4-7" tabindex="-1"></a>    })</span>
+<span id="cb4-8"><a href="random-walks-i.html#cb4-8" tabindex="-1"></a>    <span class="co"># Manually shuffle agents before stepping</span></span>
+<span id="cb4-9"><a href="random-walks-i.html#cb4-9" tabindex="-1"></a>    agent_list <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.schedule.agents)</span>
+<span id="cb4-10"><a href="random-walks-i.html#cb4-10" tabindex="-1"></a>    random.shuffle(agent_list)</span>
+<span id="cb4-11"><a href="random-walks-i.html#cb4-11" tabindex="-1"></a>    <span class="cf">for</span> agent <span class="kw">in</span> agent_list:</span>
+<span id="cb4-12"><a href="random-walks-i.html#cb4-12" tabindex="-1"></a>        agent.step()</span>
+<span id="cb4-13"><a href="random-walks-i.html#cb4-13" tabindex="-1"></a>    <span class="va">self</span>.schedule.steps <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-14"><a href="random-walks-i.html#cb4-14" tabindex="-1"></a>    <span class="va">self</span>.schedule.time <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-15"><a href="random-walks-i.html#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="random-walks-i.html#cb4-16" tabindex="-1"></a><span class="kw">def</span> run_model(<span class="va">self</span>):</span>
+<span id="cb4-17"><a href="random-walks-i.html#cb4-17" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_steps):</span>
+<span id="cb4-18"><a href="random-walks-i.html#cb4-18" tabindex="-1"></a>        <span class="va">self</span>.step()</span>
+<span id="cb4-19"><a href="random-walks-i.html#cb4-19" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(<span class="va">self</span>.datacollector)</span></code></pre></div>
+<p>The simulation’s heartbeat lies in these methods. At each step, the model records the agent’s current position before allowing it to move. This data collection strategy ensures we capture the complete trajectory, including the starting position.</p>
+<p>The manual shuffling of agents might seem unnecessary for a single-agent system, but it demonstrates forward-thinking design. This structure readily accommodates multiple agents, making it easy to explore more complex scenarios like agent interactions or collective behavior.</p>
+</div>
+<div id="running-and-analyzing-the-simulation" class="section level3 hasAnchor" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> Running and Analyzing the Simulation<a href="random-walks-i.html#running-and-analyzing-the-simulation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="random-walks-i.html#cb5-1" tabindex="-1"></a><span class="co"># Run model</span></span>
+<span id="cb5-2"><a href="random-walks-i.html#cb5-2" tabindex="-1"></a>model <span class="op">=</span> RandomWalkerModel(width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb5-3"><a href="random-walks-i.html#cb5-3" tabindex="-1"></a>results_df <span class="op">=</span> model.run_model()</span>
+<span id="cb5-4"><a href="random-walks-i.html#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="random-walks-i.html#cb5-5" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb5-6"><a href="random-walks-i.html#cb5-6" tabindex="-1"></a>results_df</span></code></pre></div>
+<p>With just a few lines, we create a 10×10 grid world and let our agent take 20 random steps. The resulting DataFrame provides a complete record of the journey, with each row capturing the agent’s position at a specific time step.</p>
+</div>
+</div>
+<div id="the-complete-implementation" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> The Complete Implementation<a href="random-walks-i.html#the-complete-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Here’s our full random walk simulation, ready to run and explore:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="random-walks-i.html#cb6-1" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb6-2"><a href="random-walks-i.html#cb6-2" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb6-3"><a href="random-walks-i.html#cb6-3" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb6-4"><a href="random-walks-i.html#cb6-4" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-5"><a href="random-walks-i.html#cb6-5" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-6"><a href="random-walks-i.html#cb6-6" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb6-7"><a href="random-walks-i.html#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="random-walks-i.html#cb6-8" tabindex="-1"></a><span class="co"># Agent definition</span></span>
+<span id="cb6-9"><a href="random-walks-i.html#cb6-9" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb6-10"><a href="random-walks-i.html#cb6-10" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb6-11"><a href="random-walks-i.html#cb6-11" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb6-12"><a href="random-walks-i.html#cb6-12" tabindex="-1"></a>        <span class="va">self</span>.unique_id <span class="op">=</span> unique_id</span>
+<span id="cb6-13"><a href="random-walks-i.html#cb6-13" tabindex="-1"></a>    </span>
+<span id="cb6-14"><a href="random-walks-i.html#cb6-14" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb6-15"><a href="random-walks-i.html#cb6-15" tabindex="-1"></a>        <span class="co"># Get possible moves</span></span>
+<span id="cb6-16"><a href="random-walks-i.html#cb6-16" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb6-17"><a href="random-walks-i.html#cb6-17" tabindex="-1"></a>            <span class="va">self</span>.pos,</span>
+<span id="cb6-18"><a href="random-walks-i.html#cb6-18" tabindex="-1"></a>            moore<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-19"><a href="random-walks-i.html#cb6-19" tabindex="-1"></a>            include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb6-20"><a href="random-walks-i.html#cb6-20" tabindex="-1"></a>        )</span>
+<span id="cb6-21"><a href="random-walks-i.html#cb6-21" tabindex="-1"></a>        new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb6-22"><a href="random-walks-i.html#cb6-22" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_position)</span>
+<span id="cb6-23"><a href="random-walks-i.html#cb6-23" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="random-walks-i.html#cb6-24" tabindex="-1"></a><span class="co"># Model definition</span></span>
+<span id="cb6-25"><a href="random-walks-i.html#cb6-25" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb6-26"><a href="random-walks-i.html#cb6-26" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width, height, n_steps<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb6-27"><a href="random-walks-i.html#cb6-27" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb6-28"><a href="random-walks-i.html#cb6-28" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-29"><a href="random-walks-i.html#cb6-29" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb6-30"><a href="random-walks-i.html#cb6-30" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb6-31"><a href="random-walks-i.html#cb6-31" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> []</span>
+<span id="cb6-32"><a href="random-walks-i.html#cb6-32" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="random-walks-i.html#cb6-33" tabindex="-1"></a>        <span class="co"># Create and place one agent</span></span>
+<span id="cb6-34"><a href="random-walks-i.html#cb6-34" tabindex="-1"></a>        agent <span class="op">=</span> RandomWalkerAgent(<span class="dv">0</span>, <span class="va">self</span>)</span>
+<span id="cb6-35"><a href="random-walks-i.html#cb6-35" tabindex="-1"></a>        <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb6-36"><a href="random-walks-i.html#cb6-36" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="random-walks-i.html#cb6-37" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.random.randrange(width)</span>
+<span id="cb6-38"><a href="random-walks-i.html#cb6-38" tabindex="-1"></a>        y <span class="op">=</span> <span class="va">self</span>.random.randrange(height)</span>
+<span id="cb6-39"><a href="random-walks-i.html#cb6-39" tabindex="-1"></a>        <span class="va">self</span>.grid.place_agent(agent, (x, y))</span>
+<span id="cb6-40"><a href="random-walks-i.html#cb6-40" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="random-walks-i.html#cb6-41" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb6-42"><a href="random-walks-i.html#cb6-42" tabindex="-1"></a>        agent <span class="op">=</span> <span class="va">self</span>.schedule.agents[<span class="dv">0</span>]</span>
+<span id="cb6-43"><a href="random-walks-i.html#cb6-43" tabindex="-1"></a>        <span class="va">self</span>.datacollector.append({</span>
+<span id="cb6-44"><a href="random-walks-i.html#cb6-44" tabindex="-1"></a>            <span class="st">&#39;step&#39;</span>: <span class="va">self</span>.schedule.time,</span>
+<span id="cb6-45"><a href="random-walks-i.html#cb6-45" tabindex="-1"></a>            <span class="st">&#39;x&#39;</span>: agent.pos[<span class="dv">0</span>],</span>
+<span id="cb6-46"><a href="random-walks-i.html#cb6-46" tabindex="-1"></a>            <span class="st">&#39;y&#39;</span>: agent.pos[<span class="dv">1</span>]</span>
+<span id="cb6-47"><a href="random-walks-i.html#cb6-47" tabindex="-1"></a>        })</span>
+<span id="cb6-48"><a href="random-walks-i.html#cb6-48" tabindex="-1"></a>        <span class="co"># Manually shuffle agents before stepping</span></span>
+<span id="cb6-49"><a href="random-walks-i.html#cb6-49" tabindex="-1"></a>        agent_list <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.schedule.agents)</span>
+<span id="cb6-50"><a href="random-walks-i.html#cb6-50" tabindex="-1"></a>        random.shuffle(agent_list)</span>
+<span id="cb6-51"><a href="random-walks-i.html#cb6-51" tabindex="-1"></a>        <span class="cf">for</span> agent <span class="kw">in</span> agent_list:</span>
+<span id="cb6-52"><a href="random-walks-i.html#cb6-52" tabindex="-1"></a>            agent.step()</span>
+<span id="cb6-53"><a href="random-walks-i.html#cb6-53" tabindex="-1"></a>        <span class="va">self</span>.schedule.steps <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb6-54"><a href="random-walks-i.html#cb6-54" tabindex="-1"></a>        <span class="va">self</span>.schedule.time <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb6-55"><a href="random-walks-i.html#cb6-55" tabindex="-1"></a></span>
+<span id="cb6-56"><a href="random-walks-i.html#cb6-56" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>):</span>
+<span id="cb6-57"><a href="random-walks-i.html#cb6-57" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_steps):</span>
+<span id="cb6-58"><a href="random-walks-i.html#cb6-58" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb6-59"><a href="random-walks-i.html#cb6-59" tabindex="-1"></a>        <span class="cf">return</span> pd.DataFrame(<span class="va">self</span>.datacollector)</span>
+<span id="cb6-60"><a href="random-walks-i.html#cb6-60" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="random-walks-i.html#cb6-61" tabindex="-1"></a><span class="co"># Run model</span></span>
+<span id="cb6-62"><a href="random-walks-i.html#cb6-62" tabindex="-1"></a>model <span class="op">=</span> RandomWalkerModel(width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb6-63"><a href="random-walks-i.html#cb6-63" tabindex="-1"></a>results_df <span class="op">=</span> model.run_model()</span>
+<span id="cb6-64"><a href="random-walks-i.html#cb6-64" tabindex="-1"></a></span>
+<span id="cb6-65"><a href="random-walks-i.html#cb6-65" tabindex="-1"></a><span class="co"># Show results</span></span>
+<span id="cb6-66"><a href="random-walks-i.html#cb6-66" tabindex="-1"></a>results_df</span></code></pre></div>
+</div>
+<div id="discussion-and-implications" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Discussion and Implications<a href="random-walks-i.html#discussion-and-implications" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This random walk simulation, while simple, opens doors to understanding far more complex systems. The agent’s seemingly chaotic path across the grid mirrors phenomena we observe throughout nature and society. Consider how this basic framework might apply to real-world scenarios.</p>
+<div id="from-particles-to-populations" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> From Particles to Populations<a href="random-walks-i.html#from-particles-to-populations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In physics, random walks help explain Brownian motion and diffusion processes. The mathematical properties of random walks—such as the relationship between time and the expected distance from the starting point—provide insights into how particles spread through materials. Our Mesa implementation makes these abstract concepts tangible by allowing us to visualize and analyze actual paths.</p>
+<p>In biology, similar principles govern animal foraging behavior, population dispersal, and even the spread of diseases. While real animals don’t move completely randomly, their search patterns often incorporate random elements that can be modeled using variations of random walks. By extending our simulation to include multiple agents, we could explore how populations spread across landscapes or how infectious diseases propagate through social networks.</p>
+</div>
+<div id="the-power-of-emergence" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> The Power of Emergence<a href="random-walks-i.html#the-power-of-emergence" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Perhaps the most fascinating aspect of our simulation is how it demonstrates emergence—the appearance of complex patterns from simple rules. Our agent follows just one rule: move randomly to a neighboring cell. Yet the resulting trajectory can appear to have structure, clustering, or periodicity purely by chance. This randomness generates what statisticians call “false patterns”—apparent order that actually results from random processes.</p>
+<p>This phenomenon has profound implications for data analysis and scientific inference. When we observe patterns in real-world data, we must always consider whether those patterns represent genuine underlying mechanisms or simply the inevitable result of random variation. Our random walk simulation provides a baseline for comparison: if real data shows patterns significantly different from random walks, we can be more confident that non-random processes are at work.</p>
+</div>
+<div id="extending-the-framework" class="section level3 hasAnchor" number="2.4.3">
+<h3><span class="header-section-number">2.4.3</span> Extending the Framework<a href="random-walks-i.html#extending-the-framework" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The modular design of our Mesa implementation makes it easy to explore variations and extensions. Consider these possibilities:</p>
+<p><strong>Multiple Agents</strong>: Adding more agents could reveal how crowding affects movement or whether agents develop territories simply through random exploration.</p>
+<p><strong>Environmental Heterogeneity</strong>: Introducing obstacles or attractive regions could show how landscape features influence movement patterns.</p>
+<p><strong>Memory and Learning</strong>: Giving agents the ability to remember previous locations or learn from experience would transform random walks into more sophisticated behavioral models.</p>
+<p><strong>Network Structures</strong>: Moving from grid-based to network-based models could help us understand how information or diseases spread through social networks.</p>
+</div>
+<div id="computational-insights" class="section level3 hasAnchor" number="2.4.4">
+<h3><span class="header-section-number">2.4.4</span> Computational Insights<a href="random-walks-i.html#computational-insights" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>From a computational perspective, our simulation demonstrates the power of object-oriented programming in scientific modeling. The clear separation between agent behavior and model structure makes the code easy to understand, modify, and extend. Mesa’s design philosophy—emphasizing modularity and reusability—shines through in how effortlessly we can modify parameters or add new features.</p>
+<p>The data collection strategy we implemented also showcases best practices in computational research. By storing results in a pandas DataFrame, we make subsequent analysis straightforward, whether that involves statistical analysis, visualization, or export to other tools.</p>
+</div>
+</div>
+<div id="visualizing-the-journey" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Visualizing the Journey<a href="random-walks-i.html#visualizing-the-journey" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>While our current implementation focuses on data collection, the next logical step involves visualization. The DataFrame we generate contains all the information needed to plot the agent’s path, create animations of its movement, or analyze statistical properties of the walk.</p>
+<p>A simple line plot connecting consecutive positions would reveal the agent’s meandering path across the grid. More sophisticated visualizations might use color gradients to show temporal progression or heat maps to identify frequently visited areas. Animated visualizations can be particularly compelling, showing the walk unfolding in real-time and making the randomness tangible.</p>
+</div>
+<div id="conclusion-random-walks-as-research-tools" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Conclusion: Random Walks as Research Tools<a href="random-walks-i.html#conclusion-random-walks-as-research-tools" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our Mesa-based random walk simulation represents more than just an academic exercise—it’s a window into the fundamental processes that shape our world. By starting with the simplest possible agent-based model, we’ve created a foundation that can grow to address complex research questions across multiple disciplines.</p>
+<p>The journey from a single random walker to sophisticated multi-agent simulations mirrors the path of scientific discovery itself. Each step builds on previous knowledge, sometimes revisiting familiar territory, sometimes venturing into unexplored regions. Like our random-walking agent, researchers often can’t predict exactly where their investigations will lead, but the journey of exploration reveals patterns and principles that would otherwise remain hidden.</p>
+<p>Whether you’re studying particle physics or predicting stock prices, modeling epidemic spread or understanding animal behavior, the random walk provides both a starting point and a baseline for comparison. In the world of agent-based modeling, it serves as a “Hello, World!” program—simple enough to understand quickly, yet rich enough to inspire further exploration.</p>
+<p>The elegance of random walks lies in their simplicity. One rule, endless possibilities. One agent, infinite paths to explore. In a world of increasing complexity, perhaps that’s exactly the kind of clarity we need to guide our understanding forward, one random step at a time.</p>
+<div id="full-code" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Full Code<a href="random-walks-i.html#full-code" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="random-walks-i.html#cb7-1" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="random-walks-i.html#cb7-2" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb7-3"><a href="random-walks-i.html#cb7-3" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb7-4"><a href="random-walks-i.html#cb7-4" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb7-5"><a href="random-walks-i.html#cb7-5" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-6"><a href="random-walks-i.html#cb7-6" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-7"><a href="random-walks-i.html#cb7-7" tabindex="-1"></a><span class="im">import</span> random <span class="co"># Import the random module</span></span>
+<span id="cb7-8"><a href="random-walks-i.html#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="random-walks-i.html#cb7-9" tabindex="-1"></a><span class="co"># Agent definition</span></span>
+<span id="cb7-10"><a href="random-walks-i.html#cb7-10" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb7-11"><a href="random-walks-i.html#cb7-11" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb7-12"><a href="random-walks-i.html#cb7-12" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb7-13"><a href="random-walks-i.html#cb7-13" tabindex="-1"></a>        <span class="va">self</span>.unique_id <span class="op">=</span> unique_id</span>
+<span id="cb7-14"><a href="random-walks-i.html#cb7-14" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb7-15"><a href="random-walks-i.html#cb7-15" tabindex="-1"></a>        <span class="co"># Get possible moves</span></span>
+<span id="cb7-16"><a href="random-walks-i.html#cb7-16" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb7-17"><a href="random-walks-i.html#cb7-17" tabindex="-1"></a>            <span class="va">self</span>.pos,</span>
+<span id="cb7-18"><a href="random-walks-i.html#cb7-18" tabindex="-1"></a>            moore<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb7-19"><a href="random-walks-i.html#cb7-19" tabindex="-1"></a>            include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb7-20"><a href="random-walks-i.html#cb7-20" tabindex="-1"></a>        )</span>
+<span id="cb7-21"><a href="random-walks-i.html#cb7-21" tabindex="-1"></a>        new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb7-22"><a href="random-walks-i.html#cb7-22" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_position)</span>
+<span id="cb7-23"><a href="random-walks-i.html#cb7-23" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="random-walks-i.html#cb7-24" tabindex="-1"></a><span class="co"># Model definition</span></span>
+<span id="cb7-25"><a href="random-walks-i.html#cb7-25" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb7-26"><a href="random-walks-i.html#cb7-26" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width, height, n_steps<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb7-27"><a href="random-walks-i.html#cb7-27" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb7-28"><a href="random-walks-i.html#cb7-28" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-29"><a href="random-walks-i.html#cb7-29" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb7-30"><a href="random-walks-i.html#cb7-30" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb7-31"><a href="random-walks-i.html#cb7-31" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> []</span>
+<span id="cb7-32"><a href="random-walks-i.html#cb7-32" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="random-walks-i.html#cb7-33" tabindex="-1"></a>        <span class="co"># Create and place one agent</span></span>
+<span id="cb7-34"><a href="random-walks-i.html#cb7-34" tabindex="-1"></a>        agent <span class="op">=</span> RandomWalkerAgent(<span class="dv">0</span>, <span class="va">self</span>)</span>
+<span id="cb7-35"><a href="random-walks-i.html#cb7-35" tabindex="-1"></a>        <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb7-36"><a href="random-walks-i.html#cb7-36" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="random-walks-i.html#cb7-37" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.random.randrange(width)</span>
+<span id="cb7-38"><a href="random-walks-i.html#cb7-38" tabindex="-1"></a>        y <span class="op">=</span> <span class="va">self</span>.random.randrange(height)</span>
+<span id="cb7-39"><a href="random-walks-i.html#cb7-39" tabindex="-1"></a>        <span class="va">self</span>.grid.place_agent(agent, (x, y))</span>
+<span id="cb7-40"><a href="random-walks-i.html#cb7-40" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="random-walks-i.html#cb7-41" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb7-42"><a href="random-walks-i.html#cb7-42" tabindex="-1"></a>        agent <span class="op">=</span> <span class="va">self</span>.schedule.agents[<span class="dv">0</span>]</span>
+<span id="cb7-43"><a href="random-walks-i.html#cb7-43" tabindex="-1"></a>        <span class="va">self</span>.datacollector.append({</span>
+<span id="cb7-44"><a href="random-walks-i.html#cb7-44" tabindex="-1"></a>            <span class="st">&#39;step&#39;</span>: <span class="va">self</span>.schedule.time,</span>
+<span id="cb7-45"><a href="random-walks-i.html#cb7-45" tabindex="-1"></a>            <span class="st">&#39;x&#39;</span>: agent.pos[<span class="dv">0</span>],</span>
+<span id="cb7-46"><a href="random-walks-i.html#cb7-46" tabindex="-1"></a>            <span class="st">&#39;y&#39;</span>: agent.pos[<span class="dv">1</span>]</span>
+<span id="cb7-47"><a href="random-walks-i.html#cb7-47" tabindex="-1"></a>        })</span>
+<span id="cb7-48"><a href="random-walks-i.html#cb7-48" tabindex="-1"></a>        <span class="co"># Manually shuffle agents before stepping</span></span>
+<span id="cb7-49"><a href="random-walks-i.html#cb7-49" tabindex="-1"></a>        agent_list <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.schedule.agents)</span>
+<span id="cb7-50"><a href="random-walks-i.html#cb7-50" tabindex="-1"></a>        random.shuffle(agent_list)</span>
+<span id="cb7-51"><a href="random-walks-i.html#cb7-51" tabindex="-1"></a>        <span class="cf">for</span> agent <span class="kw">in</span> agent_list:</span>
+<span id="cb7-52"><a href="random-walks-i.html#cb7-52" tabindex="-1"></a>          agent.step()</span>
+<span id="cb7-53"><a href="random-walks-i.html#cb7-53" tabindex="-1"></a>        <span class="va">self</span>.schedule.steps <span class="op">+=</span> <span class="dv">1</span> <span class="co"># Manually increment steps</span></span>
+<span id="cb7-54"><a href="random-walks-i.html#cb7-54" tabindex="-1"></a>        <span class="va">self</span>.schedule.time <span class="op">+=</span> <span class="dv">1</span> <span class="co"># Manually increment time</span></span>
+<span id="cb7-55"><a href="random-walks-i.html#cb7-55" tabindex="-1"></a></span>
+<span id="cb7-56"><a href="random-walks-i.html#cb7-56" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>):</span>
+<span id="cb7-57"><a href="random-walks-i.html#cb7-57" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_steps):</span>
+<span id="cb7-58"><a href="random-walks-i.html#cb7-58" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb7-59"><a href="random-walks-i.html#cb7-59" tabindex="-1"></a>        <span class="cf">return</span> pd.DataFrame(<span class="va">self</span>.datacollector)</span>
+<span id="cb7-60"><a href="random-walks-i.html#cb7-60" tabindex="-1"></a></span>
+<span id="cb7-61"><a href="random-walks-i.html#cb7-61" tabindex="-1"></a><span class="co"># Run model</span></span>
+<span id="cb7-62"><a href="random-walks-i.html#cb7-62" tabindex="-1"></a>model <span class="op">=</span> RandomWalkerModel(width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb7-63"><a href="random-walks-i.html#cb7-63" tabindex="-1"></a>results_df <span class="op">=</span> model.run_model()</span>
+<span id="cb7-64"><a href="random-walks-i.html#cb7-64" tabindex="-1"></a></span>
+<span id="cb7-65"><a href="random-walks-i.html#cb7-65" tabindex="-1"></a><span class="co"># Show table</span></span>
+<span id="cb7-66"><a href="random-walks-i.html#cb7-66" tabindex="-1"></a>results_df</span></code></pre></div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="a-caucus-race-and-a-long-tale.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/01-Random_Walks_I.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/01-Random_Walks_I.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-09-04" />
+<meta name="date" content="2025-09-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 
-<link rel="next" href="the-pool-of-tears.html"/>
+<link rel="next" href="random-walks-i.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -54,6 +54,70 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <style type="text/css">
   
@@ -76,8 +140,42 @@
 <li><a href="./">Agent Based Modelling</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a></li>
-<li class="chapter" data-level="2" data-path="the-pool-of-tears.html"><a href="the-pool-of-tears.html"><i class="fa fa-check"></i><b>2</b> The pool of tears</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html"><i class="fa fa-check"></i><b>3</b> A caucus-race and a long tale</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -101,11 +199,68 @@
 <div id="header">
 <h1 class="title">Agent Based Modelling</h1>
 <p class="author"><em>Kamran Afzali</em></p>
-<p class="date"><em>2025-09-04</em></p>
+<p class="date"><em>2025-09-08</em></p>
 </div>
 <div id="agent-based-modelling" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Agent Based Modelling<a href="index.html#agent-based-modelling" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Computational modelling of the Systems Dynamics of autonomous agents is made possible through recent innovations in agent-based modelling and simulation (ABMS). In this approach each agent has attributes, interactions with other agents, within the context of the affordance of their environment. Autonomous agents act and interact in response to situations each agent encounters during the simulation. Simulating attributes of individual agents and their environment, enables study if the emergent properties of the system as well as the full effects of the diversity that exists among agents. In other words, self-organizing patterns, structures, and behaviours that were not explicitly encoded into the models will rise through the system interactions can be studied through modelling systems from the ‘ground up’—agent-by-agent and agent-by-environment interactions. The emphasis on modelling the attributes and diversity of agents, affordance of the environment, and the emergence of self-organizng patterns are unique qualities of agent-based modelling as compared to other simulation techniques. Agent-based modelling offers a way to model social systems that are composed of agents who interact with and influence each other, learn from their experiences, and adapt their behaviours so they are better suited to their environment. Given these qualities agent-based simulation is most commonly used to model individual decision-making and social and organizational behavior. Agent-based simulation has been used in a large range of domains including physical, biological, social, and behavioral sciences. Simulations covers a continuum that goes from elegant, yet minimalist academic models based on a set of idealized assumptions, designed to capture only the most salient features of a system to large-scale decision support systems for all-encompassing applications based on real data, and have passed appropriate validation tests to establish credibility. In both cases agent-based modelling is a powerful approach to guide researchers’ intuition for the analysis of unprecedented scenarios (e.g., counterfactuals), as the following insights of Doran, Gilbert, and Hales.</p>
+<blockquote>
+<p>We can therefor hope to develop an abstract theory of multiple agent systems and then to transfer its insights to human social systems, without a priori commitment to existing particular social theory. (Doran 1998).</p>
+</blockquote>
+<blockquote>
+<p>Our stress… is on a new experimental methodology consisting of observing theoretical models performing on some testbed. Such a new methodology could be defined as ‘exploratory simulation’ … (Gilbert 1995).</p>
+</blockquote>
+<blockquote>
+<p>Artificial societies do not aim to model real societies in any direct sense. They can be seen as an aid to intuition in which the researcher formalizes abstract and logical relationships between entities. (Hales 1998).</p>
+</blockquote>
+<p>Also, there is a growing number of academic courses and conferences devoted to agent-based modelling, as well as the growing number of peer-reviewed publications across a wide range of application areas as well as interest on the part of funding agencies in supporting programmes that require agent-based models.</p>
+<p>It is noteworthy that rather than a specific toolset/software, ABM can be conceptualized as a mindset/viewpoint emphasizing description of a system from the perspective of its constituent units. This is a micro-level or microscopic modeling, which is an alternative the macro-level or macroscopic modeling. Along these lines it is important to have a clear notion of when and how to use ABM before attempting an implementation. Indeed, there is fundamental understanding of why to simulate a system, it is fairly easy to program an agent-based model. But although ABM is technically simple, it is also conceptually deep. This unusual combination can sometimes leads to improper use of ABM.</p>
+<div id="agent-based-modelling-and-complexity" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Agent-based modelling and complexity<a href="index.html#agent-based-modelling-and-complexity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Agent based approach can be a basis for research addressing characteristics of Systems Dynamics such as emergent phenomenon, the self-organization, and adaptation. Systems Dynamics are comprised of autonomous yet interacting components with capability for agents to adapt at the individual or population levels. More specifically one of the motivations for agent-based simulation is the capacity to model emergence. Emergence can exhibit emergent behavior resulting from agent-agent or agent-environment interactions. By definition, emergent phenomena cannot be reduced to micro-level unites as “the whole is more than the sum of its parts” because of the interactions between the parts. An emergent phenomenon has properties that are dissociated/transcend the properties of individual units that makes them difficult to understand, predict and sometimes counterintuitive. In other words, <em>Even simple agent- based models in which agents are completely described by simple, deterministic rules and use only local information can self-organize and sustain themselves in ways that have not been explicitly programmed into the models.</em></p>
+</div>
+<div id="structure-of-an-agent-based-model" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Structure of an agent-based model<a href="index.html#structure-of-an-agent-based-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A typical agent-based model has two elements:</p>
+<ul>
+<li><p>Agents, with their attributes and behaviors.</p></li>
+<li><p>Environment. Agents live in and interact according to the affordance their environment.</p></li>
+</ul>
+<p>These elements define the quality of quantity of interaction between agents as well as topology of connectedness that outlines how and with whom agents interact.</p>
+<div id="agents" class="section level3 hasAnchor" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> Agents<a href="index.html#agents" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Based on why and how ABS models are built and for practical modeling purposes, agents are built to have certain properties and attributes as their essential characteristics:</p>
+<ul>
+<li><p>Autonomy: An agent is autonomous and self-directed. An agent can function independently in its environment and in its interactions with other agents over a limited range of situations that are of interest in the model, generally from a limited range of situations that are of interest and that arise in the model. When we refer to an agent’s behavior, we refer to a general process that links the information the agent senses from its environment and interactions to its decisions and actions. In other words, an agent’s behaviour can be specified by anything from simple rules to abstract models, such as neural networks or genetic programs that relate agent inputs to outputs through adaptive mechanisms.</p></li>
+<li><p>Modularity: Agents are modular or self-contained. Agents have attributes that allow the agents to be distinguished from and recognized by other agents. The modularity requirement implies that an agent has a boundary. One can easily determine whether something is part of an agent, is not part of an agent, or is a shared attribute.
+An agent is an identifiable, discrete entity with a set of characteristics or attributes, behaviors, and decision-making capability.</p></li>
+<li><p>Sociality: An agent is social having dynamic interactions with other agents that influence its behaviour. Common agent interaction protocols include communication/ agent recognition, movement and contention for space and collision avoidance, the capability to respond to the environment.</p></li>
+<li><p>Conditionality: An agent has a state that varies over time. Just as a system has a state consisting of the collection of its state variables, an agent also has a state that represents the essential variables associated with its current situation. An agent’s state consists of a set or subset of its attributes. The state of an agent-based model is the collective states of all the agents along with the state of the environment. An agent’s behaviours are conditioned on its state. As such, the richer the set of an agent’s possible states, the richer the set of behaviours that an agent can have. In an agent-based simulation, the state at any time is all the information needed to move the system from that point forward.</p></li>
+<li><p>Adaptivity: Agents have rules or more abstract mechanisms that modify their behaviours this can be achieved through the ability to learn and adapt its behaviours based on its accumulated experiences, which requires some form of memory. In the same vein populations of agents may be adaptive through the process of selection, as individuals better suited to the environment proportionately increase in numbers.</p></li>
+<li><p>Goal-directedness: An agent may be goal-directed, having goals to achieve (not necessarily objectives to maximize) with respect to its behaviours. This allows an agent to compare the outcome of its behaviours relative to its goals and adjust its responses and behaviours in future interactions.</p></li>
+<li><p>Heterogeneity: Agents may also be endowed with different amounts of resources or accumulate different levels of resources as well as their behaviours, how much information is considered in the agent’s decisions, the agent’s internal models of the external world, the agent’s view of the possible reactions of other agents in response to its actions, and the extent of memory of past events the agent retains and uses in making its decisions.</p></li>
+</ul>
+</div>
+<div id="environment" class="section level3 hasAnchor" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Environment<a href="index.html#environment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The environment provides information on the spatial location of an agent relative to other agents and hence if it is possible for a given agent to interact with other agents. An agent’s location, is a dynamic attribute that is required to track agents as they change their location across a landscape, interact with other agents, acquire resources, and encounter new situations. Other information can be included to build complex environmental schemas to model the agents’ surroundings. For instance, the environment may provide a rich set of geographic information about the affordance of the surrounding circumstances of an agent and hence their interaction with the environment. Along these lines, the environment in an agent-based disease model would include the focal points (e.g. city centers) and capacities of the cities and links of the road network. These capacities would create dispersion effects (reduced/increased infection speeds) and set limit the number of agents moving through a given city network at any given time.</p>
+</div>
+</div>
+<div id="when-to-do-abm" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> When to do ABM<a href="index.html#when-to-do-abm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As a conclusion we put forward some insights on distinct advantages of ABM compared to conventional simulation approaches. Several reasons have been highlighted as advantages of agent-based modeling compared to traditional approaches to modeling dynamic systems, including the capacity to captures emergent phenomena, providing a naturalistic description of a system and the inherent flexibility of ABM. More specifically, ABS relevant when a problem has a natural representation as being comprised of agents, with behaviors that can be well-defined, where agents adapt/change their behaviors and engage in dynamic strategic interactions such as dynamic relationships with other agents. It is possible to do an ABS using specially designed ABS toolkits and software or using all-purpose general, programming or languages software. In the same vein, ABS can be performed on a regular desktop computer, or using large-scale computing clusters, or it can be done at any scale in-between. Projects often begin from a small scale, using all-purpose general programming language or desktop ABS tools. The initial prototype ABS then grows in stages into a larger-scale agent-based model, often using dedicated ABS toolkits. Over the years, numerous agent-based modelling and simulation tools have been developed each with a somewhat unique motive for its presence such generality, usability, modifiability, scalability and performance. In our next post we will go through an example of ABS using MESA framework in python.</p>
+</div>
+<div id="references" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> References<a href="index.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p><a href="http://simulation.su/uploads/files/default/2014-macal-north.pdf">Introductory tutorial: agent-based modeling and simulation</a></p></li>
+<li><p><a href="https://link.springer.com/article/10.1057/jos.2010.3">Tutorial on agent-based modelling and simulation</a></p></li>
+<li><p><a href="https://www.pnas.org/content/pnas/99/suppl_3/7280.full.pdf">Agent-based modeling: Methods and techniques for simulating human systems</a></p></li>
+<li><p><a href="https://www.carsonhlbao.com/post/filling-in-the-missing-data-of-theory-driven-agent-based-simulation-in-social-sciences/">The Missing Data of Theory and Metaphor-driven Agent-based Evolutionary Social Simulation</a></p></li>
+<li><p><a href="https://www.sciencedirect.com/science/article/pii/S1574013716301198?casa_token=_zSawSxRC1AAAAAA:UxWt1a36Wrh8q3liF5KyIj7FqjtZUoDnM9eCBeS3iTyfUpWF01inDSHGUzAZ70uYBsZ1dDTuVx8a">Agent Based Modelling and Simulation tools: A review of the state-of-art software</a></p></li>
+</ul>
 
+</div>
 </div>
             </section>
 
@@ -113,7 +268,7 @@
         </div>
       </div>
 
-<a href="the-pool-of-tears.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="random-walks-i.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
