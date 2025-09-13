@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 3 Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="random-walks-i.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scaling-up-multi-agent-random-walks-and-emergent-collective-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In our previous exploration of random walks with Mesa, we watched a single agent wander across a grid, tracing unpredictable paths that revealed the beauty of stochastic processes. But what happens when we scale up? What emerges when multiple agents simultaneously explore the same space, each following identical random rules but creating a collective dance of movement?</p>
+<p>This follow-up tutorial takes our random walk simulation to the next level, introducing multiple agents and demonstrating advanced Mesa techniques that make our code more efficient, scalable, and professionally structured. Along the way, we’ll discover how individual randomness can create surprising collective patterns—and how proper software architecture makes complex simulations both powerful and maintainable.</p>
+<div id="from-solo-to-symphony-the-multi-agent-paradigm" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> From Solo to Symphony: The Multi-Agent Paradigm<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The transition from single-agent to multi-agent systems represents more than just a quantitative change—it’s a qualitative leap that opens entirely new research questions. When multiple agents share the same environment, we can study competition for space, analyze coverage patterns, investigate clustering behaviors, and explore how individual actions aggregate into system-level properties.</p>
+<p>Consider real-world parallels: a flock of birds searching for food, pedestrians navigating a crowded plaza, or molecules diffusing through a solution. In each case, individual entities follow relatively simple rules, but their collective behavior exhibits patterns that aren’t immediately obvious from studying isolated units.</p>
+</div>
+<div id="architectural-improvements-professional-mesa-development" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Architectural Improvements: Professional Mesa Development<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before diving into the multi-agent dynamics, let’s examine the technical improvements in our evolved implementation. These changes reflect best practices in scientific computing and demonstrate how thoughtful architecture enables more sophisticated research.</p>
+<div id="enhanced-agent-design" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Enhanced Agent Design<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-1" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb8-2"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb8-3"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb8-4"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-4" tabindex="-1"></a>    </span>
+<span id="cb8-5"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-5" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb8-6"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-6" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb8-7"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-7" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-8"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb8-8" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, random.choice(possible_steps))</span></code></pre></div>
+<p>Our agent class has become more streamlined and efficient. By removing the redundant <code>self.unique_id</code> assignment (Mesa’s parent class handles this automatically) and using <code>random.choice</code> directly, we’ve eliminated unnecessary complexity while maintaining full functionality. These might seem like minor changes, but they reflect a deeper understanding of Mesa’s architecture and Python’s idioms.</p>
+</div>
+<div id="professional-data-collection" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Professional Data Collection<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The most significant improvement lies in our data collection strategy:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-1" tabindex="-1"></a><span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb9-2"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-2" tabindex="-1"></a>    agent_reporters<span class="op">=</span>{</span>
+<span id="cb9-3"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-3" tabindex="-1"></a>        <span class="ss">f&quot;pos_x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">0</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb9-4"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-4" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb9-5"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-5" tabindex="-1"></a>    } <span class="op">|</span> {</span>
+<span id="cb9-6"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-6" tabindex="-1"></a>        <span class="ss">f&quot;pos_y_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">1</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb9-7"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-7" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb9-8"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-8" tabindex="-1"></a>    }</span>
+<span id="cb9-9"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb9-9" tabindex="-1"></a>)</span></code></pre></div>
+<p>This sophisticated approach leverages Mesa’s built-in <code>DataCollector</code> class instead of manually maintaining lists. The dictionary comprehension creates individual reporters for each agent’s x and y coordinates, using lambda functions with closure variables to ensure each reporter tracks the correct agent. The union operator (<code>|</code>) elegantly combines the x and y coordinate dictionaries into a single reporter configuration.</p>
+</div>
+<div id="scalable-model-architecture" class="section level3 hasAnchor" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Scalable Model Architecture<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-1" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb10-2"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>, num_agents<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb10-3"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb10-4"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-4" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-5"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-5" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb10-6"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-6" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb10-7"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-7" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb10-8"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-8" tabindex="-1"></a>        </span>
+<span id="cb10-9"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-9" tabindex="-1"></a>        <span class="co"># Initialize agents efficiently</span></span>
+<span id="cb10-10"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-10" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents):</span>
+<span id="cb10-11"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-11" tabindex="-1"></a>            agent <span class="op">=</span> RandomWalkerAgent(i, <span class="va">self</span>)</span>
+<span id="cb10-12"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-12" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb10-13"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-13" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, (</span>
+<span id="cb10-14"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-14" tabindex="-1"></a>                random.randrange(width),</span>
+<span id="cb10-15"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-15" tabindex="-1"></a>                random.randrange(height)</span>
+<span id="cb10-16"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb10-16" tabindex="-1"></a>            ))</span></code></pre></div>
+<p>The model initialization now demonstrates several best practices. Default parameters make the class more user-friendly while maintaining flexibility. The agent creation loop is clean and readable, with each agent receiving a unique ID and random starting position. This pattern scales gracefully from a handful of agents to hundreds or thousands.</p>
+</div>
+</div>
+<div id="the-complete-enhanced-implementation" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> The Complete Enhanced Implementation<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Here’s our full multi-agent random walk simulation with all improvements:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-1" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb11-2"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-2" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb11-3"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-3" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb11-4"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-4" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb11-5"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-5" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb11-6"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-6" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-7"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-8" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb11-9"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-9" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb11-10"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-10" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb11-11"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-11" tabindex="-1"></a>    </span>
+<span id="cb11-12"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-12" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb11-13"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-13" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb11-14"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-14" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-15"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-15" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, random.choice(possible_steps))</span>
+<span id="cb11-16"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-17" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb11-18"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-18" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>, num_agents<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb11-19"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-19" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb11-20"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-20" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-21"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-21" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb11-22"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-22" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb11-23"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-23" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb11-24"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-24" tabindex="-1"></a>        </span>
+<span id="cb11-25"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-25" tabindex="-1"></a>        <span class="co"># Initialize DataCollector with proper model reporters</span></span>
+<span id="cb11-26"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-26" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb11-27"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-27" tabindex="-1"></a>            agent_reporters<span class="op">=</span>{</span>
+<span id="cb11-28"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-28" tabindex="-1"></a>                <span class="ss">f&quot;pos_x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">0</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb11-29"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-29" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb11-30"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-30" tabindex="-1"></a>            } <span class="op">|</span> {</span>
+<span id="cb11-31"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-31" tabindex="-1"></a>                <span class="ss">f&quot;pos_y_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">1</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb11-32"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-32" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb11-33"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-33" tabindex="-1"></a>            }</span>
+<span id="cb11-34"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-34" tabindex="-1"></a>        )</span>
+<span id="cb11-35"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-35" tabindex="-1"></a>        </span>
+<span id="cb11-36"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-36" tabindex="-1"></a>        <span class="co"># Initialize agents</span></span>
+<span id="cb11-37"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-37" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents):</span>
+<span id="cb11-38"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-38" tabindex="-1"></a>            agent <span class="op">=</span> RandomWalkerAgent(i, <span class="va">self</span>)</span>
+<span id="cb11-39"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-39" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb11-40"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-40" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, (</span>
+<span id="cb11-41"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-41" tabindex="-1"></a>                random.randrange(width),</span>
+<span id="cb11-42"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-42" tabindex="-1"></a>                random.randrange(height)</span>
+<span id="cb11-43"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-43" tabindex="-1"></a>            ))</span>
+<span id="cb11-44"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-44" tabindex="-1"></a>    </span>
+<span id="cb11-45"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-45" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb11-46"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-46" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb11-47"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-47" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb11-48"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-48" tabindex="-1"></a>    </span>
+<span id="cb11-49"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-49" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>):</span>
+<span id="cb11-50"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-50" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_steps):</span>
+<span id="cb11-51"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-51" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb11-52"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-52" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.datacollector.get_agent_vars_dataframe()</span>
+<span id="cb11-53"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-53" tabindex="-1"></a></span>
+<span id="cb11-54"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-54" tabindex="-1"></a><span class="co"># Run the simulation</span></span>
+<span id="cb11-55"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-55" tabindex="-1"></a>model <span class="op">=</span> RandomWalkerModel()</span>
+<span id="cb11-56"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-56" tabindex="-1"></a>results_df <span class="op">=</span> model.run_model()</span>
+<span id="cb11-57"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb11-57" tabindex="-1"></a><span class="bu">print</span>(results_df.head(<span class="dv">10</span>))</span></code></pre></div>
+</div>
+<div id="emergent-patterns-in-multi-agent-systems" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> Emergent Patterns in Multi-Agent Systems<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>With multiple agents wandering the same grid, we can observe phenomena invisible in single-agent systems. The resulting dataset captures not just individual trajectories but the complex interplay between multiple random processes operating in shared space.</p>
+<div id="collective-coverage-patterns" class="section level3 hasAnchor" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> Collective Coverage Patterns<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When multiple agents explore the same environment, questions of efficiency and coverage naturally arise. Do five random walkers cover ground five times faster than one? The answer, surprisingly, is not necessarily. Random processes exhibit diminishing returns—areas visited by one agent might be revisited by others, creating overlap that reduces overall efficiency.</p>
+<p>This inefficiency isn’t a flaw; it’s a fundamental property of uncoordinated exploration that appears throughout nature. Ant colonies, for instance, initially rely on random search before pheromone trails create more efficient foraging patterns. Our simulation provides a baseline for understanding how coordination mechanisms might improve upon pure randomness.</p>
+</div>
+<div id="spatial-distribution-dynamics" class="section level3 hasAnchor" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> Spatial Distribution Dynamics<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Over time, multiple random walkers create complex spatial patterns. While each individual trajectory appears chaotic, the collective density of visits across the grid often reveals statistical regularities. Some areas might be visited frequently by chance, while others remain relatively unexplored, creating a heterogeneous landscape of activity.</p>
+<p>These patterns have practical implications for understanding everything from urban pedestrian flows to the distribution of grazing animals across landscapes. When resources or opportunities are distributed randomly, organisms following random search strategies create predictable statistical patterns of space use.</p>
+</div>
+<div id="temporal-synchronization-and-divergence" class="section level3 hasAnchor" number="3.4.3">
+<h3><span class="header-section-number">3.4.3</span> Temporal Synchronization and Divergence<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Although our agents don’t interact directly, their movements through shared space create implicit temporal correlations. Agents starting near each other might remain clustered for several steps before diverging, while those starting far apart might converge by chance. These chance encounters and separations mirror phenomena in systems where entities move independently but share environmental constraints.</p>
+</div>
+</div>
+<div id="data-analysis-opportunities" class="section level2 hasAnchor" number="3.5">
+<h2><span class="header-section-number">3.5</span> Data Analysis Opportunities<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The rich dataset generated by our multi-agent simulation opens numerous analytical possibilities. Each row captures the positions of all agents at a specific time step, enabling investigations into:</p>
+<p><strong>Individual vs. Collective Metrics</strong>: We can calculate displacement distances, turning angles, and exploration efficiency for individual agents, then compare these to collective measures like total area covered or agent-to-agent distances.</p>
+<p><strong>Temporal Correlation Analysis</strong>: By examining how agent positions change over time, we can identify periods of convergence or divergence, clustering or dispersal, and calculate correlation coefficients between agent movements.</p>
+<p><strong>Spatial Statistics</strong>: Heat maps showing visit frequencies can reveal whether certain grid areas become “preferred” purely by chance, while nearest-neighbor analyses can quantify clustering tendencies.</p>
+<p><strong>Comparative Studies</strong>: By running multiple simulations with different numbers of agents, grid sizes, or step counts, we can investigate how scaling affects collective behavior and develop empirical relationships between system parameters and outcomes.</p>
+</div>
+<div id="performance-considerations-and-scalability" class="section level2 hasAnchor" number="3.6">
+<h2><span class="header-section-number">3.6</span> Performance Considerations and Scalability<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our enhanced implementation demonstrates several performance optimizations that become crucial as simulations scale up. The <code>DataCollector</code> class handles data storage more efficiently than manual list management, while the streamlined agent step method reduces computational overhead per time step.</p>
+<p>For larger simulations, additional optimizations might include vectorized operations for spatial calculations, parallel processing for independent agent actions, or adaptive data collection strategies that balance detail with storage requirements. The modular architecture we’ve established makes such enhancements straightforward to implement.</p>
+</div>
+<div id="research-applications-and-extensions" class="section level2 hasAnchor" number="3.7">
+<h2><span class="header-section-number">3.7</span> Research Applications and Extensions<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This multi-agent framework serves as a foundation for numerous research applications. Consider these potential extensions:</p>
+<p><strong>Environmental Heterogeneity</strong>: Introducing obstacles, attractors, or repulsors could reveal how landscape features shape collective movement patterns and space use efficiency.</p>
+<p><strong>Agent Interactions</strong>: Adding simple interaction rules—such as avoidance behaviors or attraction to nearby agents—could transform random walks into models of flocking, herding, or social behavior.</p>
+<p><strong>Memory and Learning</strong>: Giving agents the ability to remember visited locations or learn from experience would create more sophisticated search strategies that could be compared to the random baseline.</p>
+<p><strong>Network Dynamics</strong>: Extending the model to network structures rather than regular grids could illuminate how topology affects exploration and information spread in social or technological systems.</p>
+</div>
+<div id="visualization-and-communication" class="section level2 hasAnchor" number="3.8">
+<h2><span class="header-section-number">3.8</span> Visualization and Communication<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The multi-agent nature of our simulation creates exciting visualization opportunities. Animated plots showing all agents simultaneously can reveal coordination patterns invisible in static analysis. Trail plots displaying cumulative paths show how exploration strategies fill space over time. Heat maps and contour plots illustrate the collective impact of individual random decisions.</p>
+<p>These visualizations serve not just as analytical tools but as communication devices that make abstract concepts tangible. The ability to watch multiple random walkers explore their world simultaneously makes the concept of emergence visceral and immediate.</p>
+</div>
+<div id="conclusion-from-randomness-to-understanding" class="section level2 hasAnchor" number="3.9">
+<h2><span class="header-section-number">3.9</span> Conclusion: From Randomness to Understanding<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our journey from single-agent to multi-agent random walks illustrates a fundamental principle in computational modeling: complexity often emerges not from complicated rules but from simple behaviors operating at scale. Five agents following identical random strategies create patterns and phenomena that no individual agent exhibits alone.</p>
+<p>This progression—from individual behavior to collective patterns—mirrors the scientific process itself. We start with simple questions about basic processes, develop tools to investigate them, then scale up to address more complex phenomena. Each step builds on previous knowledge while revealing new questions that demand investigation.</p>
+<p>The architectural improvements in our implementation demonstrate another crucial principle: good software design enables good science. By leveraging Mesa’s built-in capabilities, following Python best practices, and structuring our code for extensibility, we create tools that not only solve current problems but adapt to future research needs.</p>
+<p>Whether you’re studying pedestrian dynamics in urban environments, analyzing animal movement patterns, investigating particle diffusion processes, or exploring entirely different phenomena, the multi-agent random walk provides both a starting point and a benchmark. It represents the null hypothesis of uncoordinated behavior—the baseline against which more complex coordination mechanisms can be measured.</p>
+<p>In a world increasingly interested in collective intelligence, swarm behavior, and distributed systems, understanding how individual randomness aggregates into collective patterns has never been more relevant. Our enhanced Mesa simulation provides the foundation for exploring these questions with the rigor and clarity that good science demands.</p>
+<p>The path from simple random walks to complex multi-agent systems is itself a kind of exploration—sometimes predictable, often surprising, always illuminating. Like our random-walking agents, we never know exactly where our investigations will lead, but the journey of discovery continues to reveal new patterns in the beautiful complexity of collective behavior.</p>
+</div>
+<div id="full-code-1" class="section level2 hasAnchor" number="3.10">
+<h2><span class="header-section-number">3.10</span> Full code<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-1" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb12-2"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-2" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb12-3"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-3" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb12-4"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-4" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb12-5"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-5" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb12-6"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-6" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-7"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-7" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-8" tabindex="-1"></a><span class="kw">class</span> RandomWalkerAgent(Agent):</span>
+<span id="cb12-9"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-9" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb12-10"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-10" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb12-11"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-12" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb12-13"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-13" tabindex="-1"></a>        <span class="co"># Use cached random choice for better performance</span></span>
+<span id="cb12-14"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-14" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb12-15"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-15" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-16"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-16" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, random.choice(possible_steps))</span>
+<span id="cb12-17"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-17" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-18" tabindex="-1"></a><span class="kw">class</span> RandomWalkerModel(Model):</span>
+<span id="cb12-19"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-19" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">10</span>, height<span class="op">=</span><span class="dv">10</span>, n_steps<span class="op">=</span><span class="dv">20</span>, num_agents<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb12-20"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-20" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb12-21"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-21" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-22"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-22" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb12-23"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-23" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb12-24"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-24" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb12-25"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-25" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-26" tabindex="-1"></a>        <span class="co"># Initialize DataCollector with proper model reporters</span></span>
+<span id="cb12-27"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-27" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb12-28"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-28" tabindex="-1"></a>            agent_reporters<span class="op">=</span>{</span>
+<span id="cb12-29"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-29" tabindex="-1"></a>                <span class="ss">f&quot;pos_x_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">0</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb12-30"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-30" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb12-31"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-31" tabindex="-1"></a>            } <span class="op">|</span> {</span>
+<span id="cb12-32"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-32" tabindex="-1"></a>                <span class="ss">f&quot;pos_y_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span>: <span class="kw">lambda</span> a, i<span class="op">=</span>i: a.pos[<span class="dv">1</span>] <span class="cf">if</span> a.unique_id <span class="op">==</span> i <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb12-33"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-33" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents)</span>
+<span id="cb12-34"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-34" tabindex="-1"></a>            }</span>
+<span id="cb12-35"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-35" tabindex="-1"></a>        )</span>
+<span id="cb12-36"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-36" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-37" tabindex="-1"></a>        <span class="co"># Initialize agents in a single comprehension</span></span>
+<span id="cb12-38"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-38" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_agents):</span>
+<span id="cb12-39"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-39" tabindex="-1"></a>            agent <span class="op">=</span> RandomWalkerAgent(i, <span class="va">self</span>)</span>
+<span id="cb12-40"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-40" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb12-41"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-41" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, (</span>
+<span id="cb12-42"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-42" tabindex="-1"></a>                random.randrange(width),</span>
+<span id="cb12-43"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-43" tabindex="-1"></a>                random.randrange(height)</span>
+<span id="cb12-44"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-44" tabindex="-1"></a>            ))</span>
+<span id="cb12-45"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-45" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-46" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb12-47"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-47" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb12-48"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-48" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb12-49"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-49" tabindex="-1"></a></span>
+<span id="cb12-50"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-50" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>):</span>
+<span id="cb12-51"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-51" tabindex="-1"></a>        <span class="co"># Pre-allocate results collection</span></span>
+<span id="cb12-52"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-52" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_steps):</span>
+<span id="cb12-53"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-53" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb12-54"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-54" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.datacollector.get_agent_vars_dataframe()</span>
+<span id="cb12-55"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-55" tabindex="-1"></a></span>
+<span id="cb12-56"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-56" tabindex="-1"></a></span>
+<span id="cb12-57"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-57" tabindex="-1"></a>model <span class="op">=</span> RandomWalkerModel()</span>
+<span id="cb12-58"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-58" tabindex="-1"></a>results_df <span class="op">=</span> model.run_model()</span>
+<span id="cb12-59"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#cb12-59" tabindex="-1"></a><span class="bu">print</span>(results_df.head(<span class="dv">10</span>))</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="random-walks-i.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/02-Random_Walks_II.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/02-Random_Walks_II.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
