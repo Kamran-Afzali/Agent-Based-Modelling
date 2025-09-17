@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Beyond Random: When Agents Learn to Navigate Their World | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 4 Beyond Random: When Agents Learn to Navigate Their World | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Beyond Random: When Agents Learn to Navigate Their World | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Beyond Random: When Agents Learn to Navigate Their World | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-17" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html"><i class="fa fa-check"></i><b>4</b> Beyond Random: When Agents Learn to Navigate Their World</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm"><i class="fa fa-check"></i><b>4.1</b> From Random to Rational: The Learning Paradigm</a></li>
+<li class="chapter" data-level="4.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards"><i class="fa fa-check"></i><b>4.2</b> Environmental Complexity: Resources and Hazards</a></li>
+<li class="chapter" data-level="4.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior"><i class="fa fa-check"></i><b>4.3</b> The Architecture of Adaptive Behavior</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma"><i class="fa fa-check"></i><b>4.3.1</b> The Exploration-Exploitation Dilemma</a></li>
+<li class="chapter" data-level="4.3.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making"><i class="fa fa-check"></i><b>4.3.2</b> Adaptive Decision Making</a></li>
+<li class="chapter" data-level="4.3.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience"><i class="fa fa-check"></i><b>4.3.3</b> Learning Through Experience</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity"><i class="fa fa-check"></i><b>4.4</b> Environmental Architecture and Complexity</a></li>
+<li class="chapter" data-level="4.5" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis"><i class="fa fa-check"></i><b>4.5</b> Comprehensive Data Collection and Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation"><i class="fa fa-check"></i><b>4.6</b> The Complete Learning Walker Implementation</a></li>
+<li class="chapter" data-level="4.7" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals"><i class="fa fa-check"></i><b>4.7</b> Emergent Intelligence: What the Data Reveals</a></li>
+<li class="chapter" data-level="4.8" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections"><i class="fa fa-check"></i><b>4.8</b> Research Implications and Real-World Connections</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions"><i class="fa fa-check"></i><b>4.8.1</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance"><i class="fa fa-check"></i><b>4.9</b> Computational Insights and Performance</a></li>
+<li class="chapter" data-level="4.10" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property"><i class="fa fa-check"></i><b>4.10</b> Conclusion: Intelligence as Emergent Property</a></li>
+<li class="chapter" data-level="4.11" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2"><i class="fa fa-check"></i><b>4.11</b> Full code</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="beyond-random-when-agents-learn-to-navigate-their-world" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Beyond Random: When Agents Learn to Navigate Their World<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#beyond-random-when-agents-learn-to-navigate-their-world" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>What if our wandering agents could learn from experience? What if, instead of moving purely at random, they could develop preferences, avoid dangers, and gradually become more efficient at finding resources? In our latest evolution of Mesa-based simulations, we transform simple random walkers into adaptive, learning agents that demonstrate one of the most fundamental aspects of intelligence: the ability to modify behavior based on experience.</p>
+<p>This third installment in our random walk series introduces [[Reinforcement Learning]] concepts into agent-based modeling, creating agents that start naive but develop sophisticated navigation strategies through trial and error. Along the way, we’ll explore how individual learning aggregates into collective intelligence and examine the delicate balance between exploration and exploitation that drives adaptive behavior.</p>
+<div id="from-random-to-rational-the-learning-paradigm" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> From Random to Rational: The Learning Paradigm<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The transition from random to learning behavior represents a profound shift in our modeling approach. While pure random walks provide valuable baselines for understanding stochastic processes, real-world entities—from foraging animals to search algorithms—rarely operate with complete randomness. Instead, they adapt their strategies based on accumulated experience, gradually becoming more effective at achieving their goals.</p>
+<p>Our learning walker agents embody this adaptive intelligence. They begin each simulation with minimal knowledge about their environment, making largely random moves while slowly building internal models of which locations yield rewards and which pose dangers. Over time, these initially naive agents develop preferences that guide their movements toward beneficial outcomes and away from harmful ones.</p>
+</div>
+<div id="environmental-complexity-resources-and-hazards" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Environmental Complexity: Resources and Hazards<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To enable meaningful learning, we’ve enriched our simulation environment with heterogeneous cell types that provide different experiences:</p>
+<p><strong>Resource Cells</strong>: Scattered across the grid at low density (3% by default), these locations represent positive experiences—food sources, shelter, or other beneficial opportunities that agents should learn to seek out.</p>
+<p><strong>Toxic Cells</strong>: Even more sparsely distributed (2% by default), these locations represent negative experiences—dangers, obstacles, or harmful conditions that wise agents learn to avoid.</p>
+<p><strong>Neutral Cells</strong>: The majority of the grid consists of neutral territory where agents can move without immediate consequences, but also without particular benefits.</p>
+<p>This environmental structure creates a landscape of opportunity and risk that gives learning its purpose. Without meaningful differences between locations, there would be nothing valuable to learn.</p>
+</div>
+<div id="the-architecture-of-adaptive-behavior" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> The Architecture of Adaptive Behavior<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our <code>LearningWalkerAgent</code> class implements a sophisticated yet understandable learning mechanism that balances multiple competing objectives:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-1" tabindex="-1"></a><span class="kw">class</span> LearningWalkerAgent(Agent):</span>
+<span id="cb13-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb13-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb13-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-4" tabindex="-1"></a>        <span class="co"># Learning parameters</span></span>
+<span id="cb13-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-5" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="fl">0.1</span>  <span class="co"># Initial attraction to resource cells</span></span>
+<span id="cb13-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-6" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="fl">0.1</span>      <span class="co"># Initial avoidance of toxic cells</span></span>
+<span id="cb13-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-7" tabindex="-1"></a>        <span class="va">self</span>.learning_rate <span class="op">=</span> <span class="fl">0.05</span>       <span class="co"># How fast the agent learns</span></span>
+<span id="cb13-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-8" tabindex="-1"></a>        <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="fl">0.3</span>     <span class="co"># Probability of random move vs learned behavior</span></span>
+<span id="cb13-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb13-9" tabindex="-1"></a>        <span class="va">self</span>.memory_decay <span class="op">=</span> <span class="fl">0.99</span>        <span class="co"># How memory fades over time</span></span></code></pre></div>
+<p>Each agent maintains internal parameters that evolve throughout the simulation. The <code>resource_attraction</code> and <code>toxic_avoidance</code> variables represent learned preferences that strengthen through positive and negative experiences. The <code>learning_rate</code> controls how quickly these preferences adapt, while <code>memory_decay</code> ensures that very old experiences gradually fade in importance.</p>
+<div id="the-exploration-exploitation-dilemma" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> The Exploration-Exploitation Dilemma<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>At the heart of our learning mechanism lies one of the most fundamental challenges in adaptive behavior: the exploration-exploitation trade-off. Should an agent exploit its current knowledge by moving toward known resources, or explore new areas that might contain even better opportunities?</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-1" tabindex="-1"></a><span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb14-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-2" tabindex="-1"></a>    <span class="co"># Choose move based on learning or exploration</span></span>
+<span id="cb14-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-3" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.exploration_rate:</span>
+<span id="cb14-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-4" tabindex="-1"></a>        <span class="co"># Explore randomly</span></span>
+<span id="cb14-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-5" tabindex="-1"></a>        new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb14-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-6" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb14-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-7" tabindex="-1"></a>        <span class="co"># Use learned preferences</span></span>
+<span id="cb14-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb14-8" tabindex="-1"></a>        new_position <span class="op">=</span> <span class="va">self</span>._choose_best_move(possible_steps)</span></code></pre></div>
+<p>Our agents handle this dilemma through a probabilistic approach. Early in the simulation, high exploration rates ensure broad sampling of the environment. As agents accumulate experience and develop reliable preferences, the exploration rate gradually decreases, shifting behavior toward exploitation of learned knowledge.</p>
+</div>
+<div id="adaptive-decision-making" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Adaptive Decision Making<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When agents choose to exploit rather than explore, they engage a sophisticated decision-making process that weighs multiple factors:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-1" tabindex="-1"></a><span class="kw">def</span> _choose_best_move(<span class="va">self</span>, possible_steps):</span>
+<span id="cb15-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-2" tabindex="-1"></a>    move_scores <span class="op">=</span> []</span>
+<span id="cb15-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-3" tabindex="-1"></a>    <span class="cf">for</span> pos <span class="kw">in</span> possible_steps:</span>
+<span id="cb15-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-4" tabindex="-1"></a>        score <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb15-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-5" tabindex="-1"></a>        </span>
+<span id="cb15-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-6" tabindex="-1"></a>        <span class="co"># Attraction to resource cells</span></span>
+<span id="cb15-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-7" tabindex="-1"></a>        <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb15-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-8" tabindex="-1"></a>            score <span class="op">+=</span> <span class="va">self</span>.resource_attraction</span>
+<span id="cb15-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-9" tabindex="-1"></a>        </span>
+<span id="cb15-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-10" tabindex="-1"></a>        <span class="co"># Avoidance of toxic cells</span></span>
+<span id="cb15-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-11" tabindex="-1"></a>        <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb15-12"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-12" tabindex="-1"></a>            score <span class="op">-=</span> <span class="va">self</span>.toxic_avoidance</span>
+<span id="cb15-13"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-13" tabindex="-1"></a>            </span>
+<span id="cb15-14"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-14" tabindex="-1"></a>        <span class="co"># Add small random component for tie-breaking</span></span>
+<span id="cb15-15"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-15" tabindex="-1"></a>        score <span class="op">+=</span> <span class="va">self</span>.random.random() <span class="op">*</span> <span class="fl">0.01</span></span>
+<span id="cb15-16"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-16" tabindex="-1"></a>        </span>
+<span id="cb15-17"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-17" tabindex="-1"></a>        move_scores.append(score)</span>
+<span id="cb15-18"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-18" tabindex="-1"></a>    </span>
+<span id="cb15-19"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-19" tabindex="-1"></a>    <span class="co"># Choose move with highest score</span></span>
+<span id="cb15-20"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-20" tabindex="-1"></a>    best_idx <span class="op">=</span> np.argmax(move_scores)</span>
+<span id="cb15-21"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb15-21" tabindex="-1"></a>    <span class="cf">return</span> possible_steps[best_idx]</span></code></pre></div>
+<p>This scoring system demonstrates how simple rules can create complex, adaptive behavior. Each potential move receives a score based on the agent’s learned preferences, with a small random component to break ties and maintain some unpredictability. The highest-scoring move wins, but the definition of “highest-scoring” evolves as the agent learns.</p>
+</div>
+<div id="learning-through-experience" class="section level3 hasAnchor" number="4.3.3">
+<h3><span class="header-section-number">4.3.3</span> Learning Through Experience<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The learning process itself operates through reinforcement principles that mirror biological and artificial intelligence systems:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-1" tabindex="-1"></a><span class="kw">def</span> _update_learning(<span class="va">self</span>, new_position):</span>
+<span id="cb16-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-2" tabindex="-1"></a>    <span class="cf">if</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb16-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-3" tabindex="-1"></a>        <span class="co"># Positive reinforcement for finding resources</span></span>
+<span id="cb16-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-4" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.resource_attraction <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb16-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-5" tabindex="-1"></a>        <span class="va">self</span>.resource_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb16-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-6" tabindex="-1"></a>    <span class="cf">elif</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb16-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-7" tabindex="-1"></a>        <span class="co"># Negative reinforcement for toxic cells</span></span>
+<span id="cb16-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-8" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.toxic_avoidance <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb16-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-9" tabindex="-1"></a>        <span class="va">self</span>.toxic_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb16-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-10" tabindex="-1"></a>    </span>
+<span id="cb16-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-11" tabindex="-1"></a>    <span class="co"># Gradually reduce exploration as agent learns</span></span>
+<span id="cb16-12"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb16-12" tabindex="-1"></a>    <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="bu">max</span>(<span class="fl">0.05</span>, <span class="va">self</span>.exploration_rate <span class="op">*</span> <span class="fl">0.999</span>)</span></code></pre></div>
+<p>Each experience—whether positive (finding resources) or negative (encountering toxins)—strengthens the corresponding preference. The learning rate determines how much each individual experience influences future behavior, while bounds prevent preferences from becoming infinitely strong. Simultaneously, the exploration rate decays slowly, implementing a form of simulated annealing that balances curiosity with accumulated wisdom.</p>
+</div>
+</div>
+<div id="environmental-architecture-and-complexity" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Environmental Architecture and Complexity<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our enhanced model creates rich environmental complexity through careful initialization and management of different cell types:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-1" tabindex="-1"></a><span class="kw">def</span> _initialize_cell_types(<span class="va">self</span>):</span>
+<span id="cb17-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-2" tabindex="-1"></a>    all_cells <span class="op">=</span> [(x, y) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height)]</span>
+<span id="cb17-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-3" tabindex="-1"></a>    total_cells <span class="op">=</span> <span class="va">self</span>.width <span class="op">*</span> <span class="va">self</span>.height</span>
+<span id="cb17-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-4" tabindex="-1"></a>    </span>
+<span id="cb17-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-5" tabindex="-1"></a>    num_resource_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.resource_percentage))</span>
+<span id="cb17-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-6" tabindex="-1"></a>    num_toxic_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.toxic_percentage))</span>
+<span id="cb17-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-7" tabindex="-1"></a>    </span>
+<span id="cb17-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-8" tabindex="-1"></a>    <span class="co"># Randomly select special cells</span></span>
+<span id="cb17-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-9" tabindex="-1"></a>    <span class="va">self</span>.resource_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(all_cells, num_resource_cells))</span>
+<span id="cb17-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-10" tabindex="-1"></a>    remaining_cells <span class="op">=</span> [cell <span class="cf">for</span> cell <span class="kw">in</span> all_cells <span class="cf">if</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.resource_cells]</span>
+<span id="cb17-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb17-11" tabindex="-1"></a>    <span class="va">self</span>.toxic_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(remaining_cells, num_toxic_cells))</span></code></pre></div>
+<p>This initialization process ensures that resource and toxic cells never overlap, creating a clear distinction between positive and negative experiences. The percentage-based allocation makes the model scalable—larger grids automatically contain proportionally more special cells, maintaining consistent environmental complexity regardless of size.</p>
+</div>
+<div id="comprehensive-data-collection-and-analysis" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Comprehensive Data Collection and Analysis<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To understand how learning emerges and evolves, our model collects extensive data on both individual and collective behaviors:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-1" tabindex="-1"></a>model_reporters <span class="op">=</span> {</span>
+<span id="cb18-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-2" tabindex="-1"></a>    <span class="st">&quot;resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb18-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-3" tabindex="-1"></a>                                   <span class="cf">if</span> agent.pos <span class="kw">in</span> m.resource_cells),</span>
+<span id="cb18-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-4" tabindex="-1"></a>    <span class="st">&quot;toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb18-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-5" tabindex="-1"></a>                                <span class="cf">if</span> agent.pos <span class="kw">in</span> m.toxic_cells),</span>
+<span id="cb18-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-6" tabindex="-1"></a>    <span class="st">&quot;avg_resource_attraction&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.resource_attraction </span>
+<span id="cb18-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-7" tabindex="-1"></a>                                                <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb18-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-8" tabindex="-1"></a>    <span class="st">&quot;avg_toxic_avoidance&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.toxic_avoidance </span>
+<span id="cb18-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-9" tabindex="-1"></a>                                            <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb18-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-10" tabindex="-1"></a>    <span class="st">&quot;avg_exploration_rate&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.exploration_rate </span>
+<span id="cb18-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-11" tabindex="-1"></a>                                             <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb18-12"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-12" tabindex="-1"></a>    <span class="st">&quot;total_resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.resource_visits </span>
+<span id="cb18-13"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-13" tabindex="-1"></a>                                          <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb18-14"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-14" tabindex="-1"></a>    <span class="st">&quot;total_toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.toxic_visits </span>
+<span id="cb18-15"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-15" tabindex="-1"></a>                                       <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents])</span>
+<span id="cb18-16"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb18-16" tabindex="-1"></a>}</span></code></pre></div>
+<p>This data collection strategy captures both instantaneous states (how many agents are currently on resource cells) and cumulative outcomes (total visits over time). By tracking average learning parameters across all agents, we can observe how collective intelligence emerges from individual adaptation.</p>
+</div>
+<div id="the-complete-learning-walker-implementation" class="section level2 hasAnchor" number="4.6">
+<h2><span class="header-section-number">4.6</span> The Complete Learning Walker Implementation<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Here’s our full implementation with all the learning mechanisms and analysis tools:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb19-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-2" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb19-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-4" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb19-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-5" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb19-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-6" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb19-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-7" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb19-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-8" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb19-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-9" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-10" tabindex="-1"></a><span class="kw">class</span> LearningWalkerAgent(Agent):</span>
+<span id="cb19-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-11" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb19-12"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-12" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb19-13"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-13" tabindex="-1"></a>        <span class="co"># Learning parameters</span></span>
+<span id="cb19-14"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-14" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb19-15"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-15" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb19-16"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-16" tabindex="-1"></a>        <span class="va">self</span>.learning_rate <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb19-17"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-17" tabindex="-1"></a>        <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="fl">0.3</span></span>
+<span id="cb19-18"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-18" tabindex="-1"></a>        <span class="va">self</span>.memory_decay <span class="op">=</span> <span class="fl">0.99</span></span>
+<span id="cb19-19"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-19" tabindex="-1"></a>        </span>
+<span id="cb19-20"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-20" tabindex="-1"></a>        <span class="co"># Track visits for this agent</span></span>
+<span id="cb19-21"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-21" tabindex="-1"></a>        <span class="va">self</span>.resource_visits <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-22"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-22" tabindex="-1"></a>        <span class="va">self</span>.toxic_visits <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-23"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-23" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-24" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb19-25"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-25" tabindex="-1"></a>        <span class="co"># Decay memory slightly each step</span></span>
+<span id="cb19-26"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-26" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">*=</span> <span class="va">self</span>.memory_decay</span>
+<span id="cb19-27"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-27" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">*=</span> <span class="va">self</span>.memory_decay</span>
+<span id="cb19-28"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-28" tabindex="-1"></a>        </span>
+<span id="cb19-29"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-29" tabindex="-1"></a>        <span class="co"># Get possible moves</span></span>
+<span id="cb19-30"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-30" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb19-31"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-31" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-32"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-32" tabindex="-1"></a>        </span>
+<span id="cb19-33"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-33" tabindex="-1"></a>        <span class="co"># Choose move based on learning or exploration</span></span>
+<span id="cb19-34"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-34" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.exploration_rate:</span>
+<span id="cb19-35"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-35" tabindex="-1"></a>            new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb19-36"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-36" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb19-37"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-37" tabindex="-1"></a>            new_position <span class="op">=</span> <span class="va">self</span>._choose_best_move(possible_steps)</span>
+<span id="cb19-38"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-38" tabindex="-1"></a>        </span>
+<span id="cb19-39"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-39" tabindex="-1"></a>        <span class="co"># Move and learn</span></span>
+<span id="cb19-40"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-40" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_position)</span>
+<span id="cb19-41"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-41" tabindex="-1"></a>        <span class="va">self</span>._update_learning(new_position)</span>
+<span id="cb19-42"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-42" tabindex="-1"></a></span>
+<span id="cb19-43"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-43" tabindex="-1"></a>    <span class="kw">def</span> _choose_best_move(<span class="va">self</span>, possible_steps):</span>
+<span id="cb19-44"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-44" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> possible_steps:</span>
+<span id="cb19-45"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-45" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.pos</span>
+<span id="cb19-46"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-46" tabindex="-1"></a>        </span>
+<span id="cb19-47"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-47" tabindex="-1"></a>        move_scores <span class="op">=</span> []</span>
+<span id="cb19-48"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-48" tabindex="-1"></a>        <span class="cf">for</span> pos <span class="kw">in</span> possible_steps:</span>
+<span id="cb19-49"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-49" tabindex="-1"></a>            score <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-50"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-50" tabindex="-1"></a>            <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb19-51"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-51" tabindex="-1"></a>                score <span class="op">+=</span> <span class="va">self</span>.resource_attraction</span>
+<span id="cb19-52"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-52" tabindex="-1"></a>            <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb19-53"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-53" tabindex="-1"></a>                score <span class="op">-=</span> <span class="va">self</span>.toxic_avoidance</span>
+<span id="cb19-54"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-54" tabindex="-1"></a>            score <span class="op">+=</span> <span class="va">self</span>.random.random() <span class="op">*</span> <span class="fl">0.01</span></span>
+<span id="cb19-55"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-55" tabindex="-1"></a>            move_scores.append(score)</span>
+<span id="cb19-56"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-56" tabindex="-1"></a>        </span>
+<span id="cb19-57"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-57" tabindex="-1"></a>        best_idx <span class="op">=</span> np.argmax(move_scores)</span>
+<span id="cb19-58"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-58" tabindex="-1"></a>        <span class="cf">return</span> possible_steps[best_idx]</span>
+<span id="cb19-59"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-59" tabindex="-1"></a></span>
+<span id="cb19-60"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-60" tabindex="-1"></a>    <span class="kw">def</span> _update_learning(<span class="va">self</span>, new_position):</span>
+<span id="cb19-61"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-61" tabindex="-1"></a>        <span class="cf">if</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb19-62"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-62" tabindex="-1"></a>            <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.resource_attraction <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb19-63"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-63" tabindex="-1"></a>            <span class="va">self</span>.resource_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb19-64"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-64" tabindex="-1"></a>        <span class="cf">elif</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb19-65"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-65" tabindex="-1"></a>            <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.toxic_avoidance <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb19-66"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-66" tabindex="-1"></a>            <span class="va">self</span>.toxic_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb19-67"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-67" tabindex="-1"></a>        </span>
+<span id="cb19-68"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-68" tabindex="-1"></a>        <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="bu">max</span>(<span class="fl">0.05</span>, <span class="va">self</span>.exploration_rate <span class="op">*</span> <span class="fl">0.999</span>)</span>
+<span id="cb19-69"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-69" tabindex="-1"></a></span>
+<span id="cb19-70"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-70" tabindex="-1"></a><span class="kw">class</span> LearningWalkerModel(Model):</span>
+<span id="cb19-71"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-71" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">20</span>, height<span class="op">=</span><span class="dv">20</span>, n_steps<span class="op">=</span><span class="dv">200</span>, num_agents<span class="op">=</span><span class="dv">10</span>, </span>
+<span id="cb19-72"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-72" tabindex="-1"></a>                 resource_percentage<span class="op">=</span><span class="fl">0.03</span>, toxic_percentage<span class="op">=</span><span class="fl">0.02</span>):</span>
+<span id="cb19-73"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-73" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb19-74"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-74" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-75"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-75" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb19-76"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-76" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb19-77"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-77" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb19-78"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-78" tabindex="-1"></a>        <span class="va">self</span>.resource_percentage <span class="op">=</span> resource_percentage</span>
+<span id="cb19-79"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-79" tabindex="-1"></a>        <span class="va">self</span>.toxic_percentage <span class="op">=</span> toxic_percentage</span>
+<span id="cb19-80"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-80" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb19-81"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-81" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb19-82"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-82" tabindex="-1"></a></span>
+<span id="cb19-83"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-83" tabindex="-1"></a>        <span class="co"># Initialize environment and agents</span></span>
+<span id="cb19-84"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-84" tabindex="-1"></a>        <span class="va">self</span>._initialize_cell_types()</span>
+<span id="cb19-85"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-85" tabindex="-1"></a>        <span class="va">self</span>._initialize_agents()</span>
+<span id="cb19-86"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-86" tabindex="-1"></a>        <span class="va">self</span>._initialize_datacollector()</span>
+<span id="cb19-87"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-87" tabindex="-1"></a></span>
+<span id="cb19-88"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-88" tabindex="-1"></a>    <span class="kw">def</span> _initialize_cell_types(<span class="va">self</span>):</span>
+<span id="cb19-89"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-89" tabindex="-1"></a>        all_cells <span class="op">=</span> [(x, y) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height)]</span>
+<span id="cb19-90"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-90" tabindex="-1"></a>        total_cells <span class="op">=</span> <span class="va">self</span>.width <span class="op">*</span> <span class="va">self</span>.height</span>
+<span id="cb19-91"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-91" tabindex="-1"></a>        </span>
+<span id="cb19-92"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-92" tabindex="-1"></a>        num_resource_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.resource_percentage))</span>
+<span id="cb19-93"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-93" tabindex="-1"></a>        num_toxic_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.toxic_percentage))</span>
+<span id="cb19-94"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-94" tabindex="-1"></a>        </span>
+<span id="cb19-95"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-95" tabindex="-1"></a>        <span class="va">self</span>.resource_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(all_cells, num_resource_cells))</span>
+<span id="cb19-96"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-96" tabindex="-1"></a>        remaining_cells <span class="op">=</span> [cell <span class="cf">for</span> cell <span class="kw">in</span> all_cells <span class="cf">if</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.resource_cells]</span>
+<span id="cb19-97"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-97" tabindex="-1"></a>        <span class="va">self</span>.toxic_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(remaining_cells, num_toxic_cells))</span>
+<span id="cb19-98"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-98" tabindex="-1"></a></span>
+<span id="cb19-99"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-99" tabindex="-1"></a>    <span class="kw">def</span> _initialize_agents(<span class="va">self</span>):</span>
+<span id="cb19-100"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-100" tabindex="-1"></a>        all_cells <span class="op">=</span> [(x, y) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height)]</span>
+<span id="cb19-101"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-101" tabindex="-1"></a>        safe_cells <span class="op">=</span> [cell <span class="cf">for</span> cell <span class="kw">in</span> all_cells </span>
+<span id="cb19-102"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-102" tabindex="-1"></a>                     <span class="cf">if</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.resource_cells <span class="kw">and</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.toxic_cells]</span>
+<span id="cb19-103"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-103" tabindex="-1"></a>        </span>
+<span id="cb19-104"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-104" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_agents):</span>
+<span id="cb19-105"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-105" tabindex="-1"></a>            agent <span class="op">=</span> LearningWalkerAgent(i, <span class="va">self</span>)</span>
+<span id="cb19-106"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-106" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb19-107"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-107" tabindex="-1"></a>            start_pos <span class="op">=</span> random.choice(safe_cells <span class="cf">if</span> safe_cells <span class="cf">else</span> all_cells)</span>
+<span id="cb19-108"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-108" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, start_pos)</span>
+<span id="cb19-109"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-109" tabindex="-1"></a></span>
+<span id="cb19-110"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-110" tabindex="-1"></a>    <span class="kw">def</span> _initialize_datacollector(<span class="va">self</span>):</span>
+<span id="cb19-111"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-111" tabindex="-1"></a>        model_reporters <span class="op">=</span> {</span>
+<span id="cb19-112"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-112" tabindex="-1"></a>            <span class="st">&quot;resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb19-113"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-113" tabindex="-1"></a>                                           <span class="cf">if</span> agent.pos <span class="kw">in</span> m.resource_cells),</span>
+<span id="cb19-114"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-114" tabindex="-1"></a>            <span class="st">&quot;toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb19-115"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-115" tabindex="-1"></a>                                        <span class="cf">if</span> agent.pos <span class="kw">in</span> m.toxic_cells),</span>
+<span id="cb19-116"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-116" tabindex="-1"></a>            <span class="st">&quot;avg_resource_attraction&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.resource_attraction </span>
+<span id="cb19-117"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-117" tabindex="-1"></a>                                                        <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb19-118"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-118" tabindex="-1"></a>            <span class="st">&quot;avg_toxic_avoidance&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.toxic_avoidance </span>
+<span id="cb19-119"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-119" tabindex="-1"></a>                                                    <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb19-120"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-120" tabindex="-1"></a>            <span class="st">&quot;avg_exploration_rate&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.exploration_rate </span>
+<span id="cb19-121"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-121" tabindex="-1"></a>                                                     <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb19-122"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-122" tabindex="-1"></a>            <span class="st">&quot;total_resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.resource_visits </span>
+<span id="cb19-123"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-123" tabindex="-1"></a>                                                  <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb19-124"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-124" tabindex="-1"></a>            <span class="st">&quot;total_toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.toxic_visits </span>
+<span id="cb19-125"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-125" tabindex="-1"></a>                                               <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents])</span>
+<span id="cb19-126"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-126" tabindex="-1"></a>        }</span>
+<span id="cb19-127"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-127" tabindex="-1"></a>        </span>
+<span id="cb19-128"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-128" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(model_reporters<span class="op">=</span>model_reporters)</span>
+<span id="cb19-129"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-129" tabindex="-1"></a></span>
+<span id="cb19-130"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-130" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb19-131"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-131" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb19-132"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-132" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb19-133"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-133" tabindex="-1"></a></span>
+<span id="cb19-134"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-134" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>, steps<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb19-135"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-135" tabindex="-1"></a>        <span class="cf">if</span> steps <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb19-136"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-136" tabindex="-1"></a>            steps <span class="op">=</span> <span class="va">self</span>.n_steps</span>
+<span id="cb19-137"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-137" tabindex="-1"></a>            </span>
+<span id="cb19-138"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-138" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb19-139"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-139" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb19-140"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-140" tabindex="-1"></a>        </span>
+<span id="cb19-141"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb19-141" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.datacollector.get_model_vars_dataframe()</span></code></pre></div>
+</div>
+<div id="emergent-intelligence-what-the-data-reveals" class="section level2 hasAnchor" number="4.7">
+<h2><span class="header-section-number">4.7</span> Emergent Intelligence: What the Data Reveals<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When we run our learning walker simulation, the results reveal fascinating patterns of adaptive behavior that emerge from simple learning rules. The comprehensive analysis function visualizes four key aspects of the learning process:</p>
+<p><strong>Current Location Dynamics</strong>: Over time, we observe agents spending increasing amounts of time on resource cells while avoiding toxic areas. This shift reflects the gradual development of environmental knowledge and preference-based navigation.</p>
+<p><strong>Cumulative Learning Curves</strong>: The total number of resource and toxic visits reveals learning efficiency. Successful learning produces accelerating resource discovery rates and plateauing toxic encounters as agents become better at avoiding dangers.</p>
+<p><strong>Preference Evolution</strong>: Average resource attraction and toxic avoidance parameters show how collective preferences develop. These curves typically display rapid initial growth followed by gradual stabilization as learning rates and memory decay reach equilibrium.</p>
+<p><strong>Exploration-Exploitation Balance</strong>: The declining exploration rate demonstrates how agents transition from broad environmental sampling to focused exploitation of learned knowledge, implementing a form of computational wisdom that balances curiosity with experience.</p>
+</div>
+<div id="research-implications-and-real-world-connections" class="section level2 hasAnchor" number="4.8">
+<h2><span class="header-section-number">4.8</span> Research Implications and Real-World Connections<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our learning walker model bridges abstract computational concepts with tangible real-world phenomena. The learning mechanisms we’ve implemented mirror those found in biological systems, from bacterial chemotaxis to animal foraging behavior. The exploration-exploitation trade-off appears throughout ecology, where organisms must balance the safety of known resources against the potential benefits of exploring new territories.</p>
+<p>In artificial intelligence, these same principles underlie reinforcement learning algorithms that power everything from game-playing systems to robotic navigation. Our Mesa implementation demonstrates how these sophisticated concepts can emerge from surprisingly simple rules and interactions.</p>
+<div id="extensions-and-future-directions" class="section level3 hasAnchor" number="4.8.1">
+<h3><span class="header-section-number">4.8.1</span> Extensions and Future Directions<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The learning walker framework opens numerous avenues for further exploration:</p>
+<p><strong>Social Learning</strong>: Agents could observe and learn from each other’s successes and failures, creating collective intelligence that exceeds individual capabilities.</p>
+<p><strong>Dynamic Environments</strong>: Resources and toxins could appear, disappear, or move over time, forcing agents to continuously adapt their strategies and challenging their ability to distinguish between environmental change and learning progress.</p>
+<p><strong>Specialized Roles</strong>: Different agent types could have varying learning rates, exploration tendencies, or sensory capabilities, creating diverse populations with complementary survival strategies.</p>
+<p><strong>Memory Architectures</strong>: More sophisticated memory systems could allow agents to remember specific locations, create mental maps, or develop complex behavioral routines based on spatial and temporal patterns.</p>
+</div>
+</div>
+<div id="computational-insights-and-performance" class="section level2 hasAnchor" number="4.9">
+<h2><span class="header-section-number">4.9</span> Computational Insights and Performance<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>From a software engineering perspective, our learning walker implementation demonstrates several important principles for building scalable agent-based models. The modular separation of learning logic from movement mechanics makes the code maintainable and extensible. The comprehensive data collection system enables deep analysis without cluttering the core simulation logic.</p>
+<p>The use of NumPy for vectorized operations in decision-making and pandas for data analysis showcases the power of Python’s scientific computing ecosystem. These tools make complex simulations both computationally efficient and analytically rich.</p>
+</div>
+<div id="conclusion-intelligence-as-emergent-property" class="section level2 hasAnchor" number="4.10">
+<h2><span class="header-section-number">4.10</span> Conclusion: Intelligence as Emergent Property<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our journey from random walks through multi-agent systems to learning walkers illustrates a fundamental principle: intelligence is not a binary property but an emergent characteristic that arises from the interaction of simple adaptive mechanisms with complex environments. Our agents begin each simulation as naive wanderers, indistinguishable from random walkers. Through experience, reinforcement, and the gradual accumulation of preferences, they develop sophisticated navigation strategies that dramatically improve their environmental outcomes.</p>
+<p>This transformation from random to rational behavior demonstrates how learning can bootstrap itself from minimal initial knowledge. The agents don’t require complex programming or extensive training data—they develop effective strategies through direct environmental interaction, guided by simple reinforcement principles and the fundamental trade-off between exploration and exploitation.</p>
+<p>The patterns that emerge from our simulations—the gradual shift from exploration to exploitation, the development of environmental preferences, the collective improvement in resource-finding efficiency—mirror phenomena we observe throughout the natural world. From the molecular level to ecosystem dynamics, learning and adaptation operate through remarkably similar principles, suggesting deep connections between biological and artificial intelligence.</p>
+<p>As we continue to develop more sophisticated agent-based models, the learning walker framework provides both a foundation and an inspiration. It shows how complex, adaptive behaviors can emerge from simple rules, how individual learning aggregates into collective intelligence, and how computational models can illuminate fundamental questions about intelligence, adaptation, and the relationship between individual behavior and system-level outcomes.</p>
+<p>In a world increasingly shaped by artificial intelligence and autonomous systems, understanding these basic principles of adaptive behavior has never been more important. Our learning walkers may exist only in computational worlds, but the insights they provide about learning, adaptation, and intelligence apply far beyond the boundaries of any simulation grid. They remind us that intelligence is not just about having the right answers—it’s about learning to ask better questions and adapting our strategies based on what we discover along the way.</p>
+</div>
+<div id="full-code-2" class="section level2 hasAnchor" number="4.11">
+<h2><span class="header-section-number">4.11</span> Full code<a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-2"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-2" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-3"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-4"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-4" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb20-5"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-5" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb20-6"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-6" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb20-7"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-7" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb20-8"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-8" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb20-9"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-9" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-10" tabindex="-1"></a><span class="kw">class</span> LearningWalkerAgent(Agent):</span>
+<span id="cb20-11"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-11" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb20-12"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-12" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb20-13"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-13" tabindex="-1"></a>        <span class="co"># Learning parameters</span></span>
+<span id="cb20-14"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-14" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="fl">0.1</span>  <span class="co"># Initial attraction to resource cells</span></span>
+<span id="cb20-15"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-15" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="fl">0.1</span>      <span class="co"># Initial avoidance of toxic cells</span></span>
+<span id="cb20-16"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-16" tabindex="-1"></a>        <span class="va">self</span>.learning_rate <span class="op">=</span> <span class="fl">0.05</span>       <span class="co"># How fast the agent learns</span></span>
+<span id="cb20-17"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-17" tabindex="-1"></a>        <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="fl">0.3</span>     <span class="co"># Probability of random move vs learned behavior</span></span>
+<span id="cb20-18"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-18" tabindex="-1"></a>        <span class="va">self</span>.memory_decay <span class="op">=</span> <span class="fl">0.99</span>        <span class="co"># How memory fades over time</span></span>
+<span id="cb20-19"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-19" tabindex="-1"></a>        </span>
+<span id="cb20-20"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-20" tabindex="-1"></a>        <span class="co"># Track visits for this agent</span></span>
+<span id="cb20-21"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-21" tabindex="-1"></a>        <span class="va">self</span>.resource_visits <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb20-22"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-22" tabindex="-1"></a>        <span class="va">self</span>.toxic_visits <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb20-23"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-23" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-24" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb20-25"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-25" tabindex="-1"></a>        <span class="co"># Decay memory slightly each step</span></span>
+<span id="cb20-26"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-26" tabindex="-1"></a>        <span class="va">self</span>.resource_attraction <span class="op">*=</span> <span class="va">self</span>.memory_decay</span>
+<span id="cb20-27"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-27" tabindex="-1"></a>        <span class="va">self</span>.toxic_avoidance <span class="op">*=</span> <span class="va">self</span>.memory_decay</span>
+<span id="cb20-28"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-28" tabindex="-1"></a>        </span>
+<span id="cb20-29"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-29" tabindex="-1"></a>        <span class="co"># Get possible moves</span></span>
+<span id="cb20-30"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-30" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb20-31"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-31" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-32"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-32" tabindex="-1"></a>        </span>
+<span id="cb20-33"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-33" tabindex="-1"></a>        <span class="co"># Choose move based on learning or exploration</span></span>
+<span id="cb20-34"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-34" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.exploration_rate:</span>
+<span id="cb20-35"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-35" tabindex="-1"></a>            <span class="co"># Explore randomly</span></span>
+<span id="cb20-36"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-36" tabindex="-1"></a>            new_position <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb20-37"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-37" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb20-38"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-38" tabindex="-1"></a>            <span class="co"># Use learned preferences</span></span>
+<span id="cb20-39"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-39" tabindex="-1"></a>            new_position <span class="op">=</span> <span class="va">self</span>._choose_best_move(possible_steps)</span>
+<span id="cb20-40"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-40" tabindex="-1"></a>        </span>
+<span id="cb20-41"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-41" tabindex="-1"></a>        <span class="co"># Move to new position</span></span>
+<span id="cb20-42"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-42" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_position)</span>
+<span id="cb20-43"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-43" tabindex="-1"></a>        </span>
+<span id="cb20-44"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-44" tabindex="-1"></a>        <span class="co"># Update learning based on new position</span></span>
+<span id="cb20-45"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-45" tabindex="-1"></a>        <span class="va">self</span>._update_learning(new_position)</span>
+<span id="cb20-46"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-46" tabindex="-1"></a></span>
+<span id="cb20-47"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-47" tabindex="-1"></a>    <span class="kw">def</span> _choose_best_move(<span class="va">self</span>, possible_steps):</span>
+<span id="cb20-48"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-48" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Choose move based on learned preferences&quot;&quot;&quot;</span></span>
+<span id="cb20-49"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-49" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> possible_steps:</span>
+<span id="cb20-50"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-50" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.pos</span>
+<span id="cb20-51"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-51" tabindex="-1"></a>        </span>
+<span id="cb20-52"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-52" tabindex="-1"></a>        <span class="co"># Calculate scores for each possible move</span></span>
+<span id="cb20-53"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-53" tabindex="-1"></a>        move_scores <span class="op">=</span> []</span>
+<span id="cb20-54"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-54" tabindex="-1"></a>        <span class="cf">for</span> pos <span class="kw">in</span> possible_steps:</span>
+<span id="cb20-55"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-55" tabindex="-1"></a>            score <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb20-56"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-56" tabindex="-1"></a>            </span>
+<span id="cb20-57"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-57" tabindex="-1"></a>            <span class="co"># Attraction to resource cells</span></span>
+<span id="cb20-58"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-58" tabindex="-1"></a>            <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb20-59"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-59" tabindex="-1"></a>                score <span class="op">+=</span> <span class="va">self</span>.resource_attraction</span>
+<span id="cb20-60"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-60" tabindex="-1"></a>            </span>
+<span id="cb20-61"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-61" tabindex="-1"></a>            <span class="co"># Avoidance of toxic cells</span></span>
+<span id="cb20-62"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-62" tabindex="-1"></a>            <span class="cf">if</span> pos <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb20-63"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-63" tabindex="-1"></a>                score <span class="op">-=</span> <span class="va">self</span>.toxic_avoidance</span>
+<span id="cb20-64"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-64" tabindex="-1"></a>                </span>
+<span id="cb20-65"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-65" tabindex="-1"></a>            <span class="co"># Add small random component for tie-breaking</span></span>
+<span id="cb20-66"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-66" tabindex="-1"></a>            score <span class="op">+=</span> <span class="va">self</span>.random.random() <span class="op">*</span> <span class="fl">0.01</span></span>
+<span id="cb20-67"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-67" tabindex="-1"></a>            </span>
+<span id="cb20-68"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-68" tabindex="-1"></a>            move_scores.append(score)</span>
+<span id="cb20-69"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-69" tabindex="-1"></a>        </span>
+<span id="cb20-70"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-70" tabindex="-1"></a>        <span class="co"># Choose move with highest score</span></span>
+<span id="cb20-71"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-71" tabindex="-1"></a>        best_idx <span class="op">=</span> np.argmax(move_scores)</span>
+<span id="cb20-72"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-72" tabindex="-1"></a>        <span class="cf">return</span> possible_steps[best_idx]</span>
+<span id="cb20-73"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-73" tabindex="-1"></a></span>
+<span id="cb20-74"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-74" tabindex="-1"></a>    <span class="kw">def</span> _update_learning(<span class="va">self</span>, new_position):</span>
+<span id="cb20-75"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-75" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Update learning parameters based on experience&quot;&quot;&quot;</span></span>
+<span id="cb20-76"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-76" tabindex="-1"></a>        <span class="cf">if</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.resource_cells:</span>
+<span id="cb20-77"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-77" tabindex="-1"></a>            <span class="co"># Positive reinforcement for finding resources</span></span>
+<span id="cb20-78"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-78" tabindex="-1"></a>            <span class="va">self</span>.resource_attraction <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.resource_attraction <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb20-79"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-79" tabindex="-1"></a>            <span class="va">self</span>.resource_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb20-80"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-80" tabindex="-1"></a>        <span class="cf">elif</span> new_position <span class="kw">in</span> <span class="va">self</span>.model.toxic_cells:</span>
+<span id="cb20-81"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-81" tabindex="-1"></a>            <span class="co"># Negative reinforcement for toxic cells</span></span>
+<span id="cb20-82"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-82" tabindex="-1"></a>            <span class="va">self</span>.toxic_avoidance <span class="op">=</span> <span class="bu">min</span>(<span class="fl">1.0</span>, <span class="va">self</span>.toxic_avoidance <span class="op">+</span> <span class="va">self</span>.learning_rate)</span>
+<span id="cb20-83"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-83" tabindex="-1"></a>            <span class="va">self</span>.toxic_visits <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb20-84"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-84" tabindex="-1"></a>        </span>
+<span id="cb20-85"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-85" tabindex="-1"></a>        <span class="co"># Gradually reduce exploration as agent learns</span></span>
+<span id="cb20-86"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-86" tabindex="-1"></a>        <span class="va">self</span>.exploration_rate <span class="op">=</span> <span class="bu">max</span>(<span class="fl">0.05</span>, <span class="va">self</span>.exploration_rate <span class="op">*</span> <span class="fl">0.999</span>)</span>
+<span id="cb20-87"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-87" tabindex="-1"></a></span>
+<span id="cb20-88"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-88" tabindex="-1"></a><span class="kw">class</span> LearningWalkerModel(Model):</span>
+<span id="cb20-89"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-89" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">20</span>, height<span class="op">=</span><span class="dv">20</span>, n_steps<span class="op">=</span><span class="dv">200</span>, num_agents<span class="op">=</span><span class="dv">10</span>, </span>
+<span id="cb20-90"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-90" tabindex="-1"></a>                 resource_percentage<span class="op">=</span><span class="fl">0.03</span>, toxic_percentage<span class="op">=</span><span class="fl">0.02</span>):</span>
+<span id="cb20-91"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-91" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb20-92"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-92" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-93"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-93" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb20-94"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-94" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb20-95"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-95" tabindex="-1"></a>        <span class="va">self</span>.n_steps <span class="op">=</span> n_steps</span>
+<span id="cb20-96"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-96" tabindex="-1"></a>        <span class="va">self</span>.resource_percentage <span class="op">=</span> resource_percentage</span>
+<span id="cb20-97"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-97" tabindex="-1"></a>        <span class="va">self</span>.toxic_percentage <span class="op">=</span> toxic_percentage</span>
+<span id="cb20-98"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-98" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb20-99"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-99" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb20-100"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-100" tabindex="-1"></a>        <span class="va">self</span>.running <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb20-101"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-101" tabindex="-1"></a></span>
+<span id="cb20-102"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-102" tabindex="-1"></a>        <span class="co"># Initialize cell types</span></span>
+<span id="cb20-103"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-103" tabindex="-1"></a>        <span class="va">self</span>._initialize_cell_types()</span>
+<span id="cb20-104"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-104" tabindex="-1"></a>        </span>
+<span id="cb20-105"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-105" tabindex="-1"></a>        <span class="co"># Initialize agents</span></span>
+<span id="cb20-106"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-106" tabindex="-1"></a>        <span class="va">self</span>._initialize_agents()</span>
+<span id="cb20-107"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-107" tabindex="-1"></a>        </span>
+<span id="cb20-108"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-108" tabindex="-1"></a>        <span class="co"># Initialize data collection</span></span>
+<span id="cb20-109"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-109" tabindex="-1"></a>        <span class="va">self</span>._initialize_datacollector()</span>
+<span id="cb20-110"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-110" tabindex="-1"></a></span>
+<span id="cb20-111"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-111" tabindex="-1"></a>    <span class="kw">def</span> _initialize_cell_types(<span class="va">self</span>):</span>
+<span id="cb20-112"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-112" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Initialize resource and toxic cells&quot;&quot;&quot;</span></span>
+<span id="cb20-113"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-113" tabindex="-1"></a>        all_cells <span class="op">=</span> [(x, y) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height)]</span>
+<span id="cb20-114"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-114" tabindex="-1"></a>        total_cells <span class="op">=</span> <span class="va">self</span>.width <span class="op">*</span> <span class="va">self</span>.height</span>
+<span id="cb20-115"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-115" tabindex="-1"></a>        </span>
+<span id="cb20-116"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-116" tabindex="-1"></a>        num_resource_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.resource_percentage))</span>
+<span id="cb20-117"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-117" tabindex="-1"></a>        num_toxic_cells <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, <span class="bu">int</span>(total_cells <span class="op">*</span> <span class="va">self</span>.toxic_percentage))</span>
+<span id="cb20-118"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-118" tabindex="-1"></a>        </span>
+<span id="cb20-119"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-119" tabindex="-1"></a>        <span class="co"># Ensure we don&#39;t exceed available cells</span></span>
+<span id="cb20-120"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-120" tabindex="-1"></a>        num_resource_cells <span class="op">=</span> <span class="bu">min</span>(num_resource_cells, <span class="bu">len</span>(all_cells) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb20-121"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-121" tabindex="-1"></a>        num_toxic_cells <span class="op">=</span> <span class="bu">min</span>(num_toxic_cells, <span class="bu">len</span>(all_cells) <span class="op">-</span> num_resource_cells <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb20-122"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-122" tabindex="-1"></a>        </span>
+<span id="cb20-123"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-123" tabindex="-1"></a>        <span class="co"># Randomly select special cells</span></span>
+<span id="cb20-124"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-124" tabindex="-1"></a>        <span class="va">self</span>.resource_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(all_cells, num_resource_cells))</span>
+<span id="cb20-125"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-125" tabindex="-1"></a>        remaining_cells <span class="op">=</span> [cell <span class="cf">for</span> cell <span class="kw">in</span> all_cells <span class="cf">if</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.resource_cells]</span>
+<span id="cb20-126"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-126" tabindex="-1"></a>        <span class="va">self</span>.toxic_cells <span class="op">=</span> <span class="bu">set</span>(random.sample(remaining_cells, num_toxic_cells))</span>
+<span id="cb20-127"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-127" tabindex="-1"></a>        </span>
+<span id="cb20-128"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-128" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Initialized </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>.resource_cells)<span class="sc">}</span><span class="ss"> resource cells and </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>.toxic_cells)<span class="sc">}</span><span class="ss"> toxic cells&quot;</span>)</span>
+<span id="cb20-129"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-129" tabindex="-1"></a></span>
+<span id="cb20-130"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-130" tabindex="-1"></a>    <span class="kw">def</span> _initialize_agents(<span class="va">self</span>):</span>
+<span id="cb20-131"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-131" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Initialize agents in safe starting positions&quot;&quot;&quot;</span></span>
+<span id="cb20-132"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-132" tabindex="-1"></a>        all_cells <span class="op">=</span> [(x, y) <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width) <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height)]</span>
+<span id="cb20-133"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-133" tabindex="-1"></a>        safe_cells <span class="op">=</span> [cell <span class="cf">for</span> cell <span class="kw">in</span> all_cells </span>
+<span id="cb20-134"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-134" tabindex="-1"></a>                     <span class="cf">if</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.resource_cells <span class="kw">and</span> cell <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.toxic_cells]</span>
+<span id="cb20-135"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-135" tabindex="-1"></a>        </span>
+<span id="cb20-136"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-136" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_agents):</span>
+<span id="cb20-137"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-137" tabindex="-1"></a>            agent <span class="op">=</span> LearningWalkerAgent(i, <span class="va">self</span>)</span>
+<span id="cb20-138"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-138" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb20-139"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-139" tabindex="-1"></a>            </span>
+<span id="cb20-140"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-140" tabindex="-1"></a>            <span class="cf">if</span> safe_cells:</span>
+<span id="cb20-141"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-141" tabindex="-1"></a>                start_pos <span class="op">=</span> random.choice(safe_cells)</span>
+<span id="cb20-142"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-142" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb20-143"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-143" tabindex="-1"></a>                <span class="co"># Fallback to any position if no safe cells available</span></span>
+<span id="cb20-144"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-144" tabindex="-1"></a>                start_pos <span class="op">=</span> random.choice(all_cells)</span>
+<span id="cb20-145"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-145" tabindex="-1"></a>                </span>
+<span id="cb20-146"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-146" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, start_pos)</span>
+<span id="cb20-147"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-147" tabindex="-1"></a></span>
+<span id="cb20-148"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-148" tabindex="-1"></a>    <span class="kw">def</span> _initialize_datacollector(<span class="va">self</span>):</span>
+<span id="cb20-149"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-149" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Initialize data collection&quot;&quot;&quot;</span></span>
+<span id="cb20-150"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-150" tabindex="-1"></a>        model_reporters <span class="op">=</span> {</span>
+<span id="cb20-151"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-151" tabindex="-1"></a>            <span class="st">&quot;resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb20-152"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-152" tabindex="-1"></a>                                           <span class="cf">if</span> agent.pos <span class="kw">in</span> m.resource_cells),</span>
+<span id="cb20-153"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-153" tabindex="-1"></a>            <span class="st">&quot;toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents </span>
+<span id="cb20-154"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-154" tabindex="-1"></a>                                        <span class="cf">if</span> agent.pos <span class="kw">in</span> m.toxic_cells),</span>
+<span id="cb20-155"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-155" tabindex="-1"></a>            <span class="st">&quot;avg_resource_attraction&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.resource_attraction </span>
+<span id="cb20-156"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-156" tabindex="-1"></a>                                                        <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb20-157"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-157" tabindex="-1"></a>            <span class="st">&quot;avg_toxic_avoidance&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.toxic_avoidance </span>
+<span id="cb20-158"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-158" tabindex="-1"></a>                                                    <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb20-159"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-159" tabindex="-1"></a>            <span class="st">&quot;avg_exploration_rate&quot;</span>: <span class="kw">lambda</span> m: np.mean([agent.exploration_rate </span>
+<span id="cb20-160"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-160" tabindex="-1"></a>                                                     <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb20-161"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-161" tabindex="-1"></a>            <span class="st">&quot;total_resource_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.resource_visits </span>
+<span id="cb20-162"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-162" tabindex="-1"></a>                                                  <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents]),</span>
+<span id="cb20-163"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-163" tabindex="-1"></a>            <span class="st">&quot;total_toxic_visits&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>([agent.toxic_visits </span>
+<span id="cb20-164"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-164" tabindex="-1"></a>                                               <span class="cf">for</span> agent <span class="kw">in</span> m.schedule.agents])</span>
+<span id="cb20-165"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-165" tabindex="-1"></a>        }</span>
+<span id="cb20-166"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-166" tabindex="-1"></a>        </span>
+<span id="cb20-167"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-167" tabindex="-1"></a>        agent_reporters <span class="op">=</span> {</span>
+<span id="cb20-168"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-168" tabindex="-1"></a>            <span class="st">&quot;pos_x&quot;</span>: <span class="st">&quot;pos&quot;</span>,</span>
+<span id="cb20-169"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-169" tabindex="-1"></a>            <span class="st">&quot;pos_y&quot;</span>: <span class="st">&quot;pos&quot;</span>, </span>
+<span id="cb20-170"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-170" tabindex="-1"></a>            <span class="st">&quot;resource_attraction&quot;</span>: <span class="st">&quot;resource_attraction&quot;</span>,</span>
+<span id="cb20-171"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-171" tabindex="-1"></a>            <span class="st">&quot;toxic_avoidance&quot;</span>: <span class="st">&quot;toxic_avoidance&quot;</span>,</span>
+<span id="cb20-172"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-172" tabindex="-1"></a>            <span class="st">&quot;exploration_rate&quot;</span>: <span class="st">&quot;exploration_rate&quot;</span></span>
+<span id="cb20-173"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-173" tabindex="-1"></a>        }</span>
+<span id="cb20-174"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-174" tabindex="-1"></a>        </span>
+<span id="cb20-175"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-175" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb20-176"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-176" tabindex="-1"></a>            model_reporters<span class="op">=</span>model_reporters,</span>
+<span id="cb20-177"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-177" tabindex="-1"></a>            agent_reporters<span class="op">=</span>agent_reporters</span>
+<span id="cb20-178"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-178" tabindex="-1"></a>        )</span>
+<span id="cb20-179"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-179" tabindex="-1"></a></span>
+<span id="cb20-180"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-180" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb20-181"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-181" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Advance the model by one step&quot;&quot;&quot;</span></span>
+<span id="cb20-182"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-182" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb20-183"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-183" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb20-184"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-184" tabindex="-1"></a></span>
+<span id="cb20-185"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-185" tabindex="-1"></a>    <span class="kw">def</span> run_model(<span class="va">self</span>, steps<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb20-186"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-186" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Run the model for specified number of steps&quot;&quot;&quot;</span></span>
+<span id="cb20-187"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-187" tabindex="-1"></a>        <span class="cf">if</span> steps <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb20-188"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-188" tabindex="-1"></a>            steps <span class="op">=</span> <span class="va">self</span>.n_steps</span>
+<span id="cb20-189"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-189" tabindex="-1"></a>            </span>
+<span id="cb20-190"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-190" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb20-191"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-191" tabindex="-1"></a>            <span class="va">self</span>.step()</span>
+<span id="cb20-192"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-192" tabindex="-1"></a>            <span class="cf">if</span> i <span class="op">%</span> <span class="dv">50</span> <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># Progress indicator</span></span>
+<span id="cb20-193"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-193" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Step </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>steps<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-194"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-194" tabindex="-1"></a>        </span>
+<span id="cb20-195"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-195" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.datacollector.get_model_vars_dataframe()</span>
+<span id="cb20-196"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-196" tabindex="-1"></a></span>
+<span id="cb20-197"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-197" tabindex="-1"></a><span class="kw">def</span> analyze_results(model_data):</span>
+<span id="cb20-198"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-198" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Analyze and plot the results&quot;&quot;&quot;</span></span>
+<span id="cb20-199"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-199" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">12</span>))</span>
+<span id="cb20-200"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-200" tabindex="-1"></a>    </span>
+<span id="cb20-201"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-201" tabindex="-1"></a>    <span class="co"># Plot 1: Current visits over time</span></span>
+<span id="cb20-202"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-202" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].plot(model_data.index, model_data[<span class="st">&#39;resource_visits&#39;</span>], </span>
+<span id="cb20-203"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-203" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Agents on Resource Cells&#39;</span>, color<span class="op">=</span><span class="st">&#39;green&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-204"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-204" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].plot(model_data.index, model_data[<span class="st">&#39;toxic_visits&#39;</span>], </span>
+<span id="cb20-205"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-205" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Agents on Toxic Cells&#39;</span>, color<span class="op">=</span><span class="st">&#39;red&#39;</span>, linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-206"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-206" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].set_xlabel(<span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb20-207"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-207" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].set_ylabel(<span class="st">&quot;Number of Agents&quot;</span>)</span>
+<span id="cb20-208"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-208" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">&quot;Current Agent Locations Over Time&quot;</span>)</span>
+<span id="cb20-209"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-209" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].legend()</span>
+<span id="cb20-210"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-210" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb20-211"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-211" tabindex="-1"></a>    </span>
+<span id="cb20-212"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-212" tabindex="-1"></a>    <span class="co"># Plot 2: Cumulative visits over time</span></span>
+<span id="cb20-213"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-213" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].plot(model_data.index, model_data[<span class="st">&#39;total_resource_visits&#39;</span>], </span>
+<span id="cb20-214"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-214" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Total Resource Visits&#39;</span>, color<span class="op">=</span><span class="st">&#39;green&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-215"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-215" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].plot(model_data.index, model_data[<span class="st">&#39;total_toxic_visits&#39;</span>], </span>
+<span id="cb20-216"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-216" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Total Toxic Visits&#39;</span>, color<span class="op">=</span><span class="st">&#39;red&#39;</span>, linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-217"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-217" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].set_xlabel(<span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb20-218"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-218" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].set_ylabel(<span class="st">&quot;Cumulative Visits&quot;</span>)</span>
+<span id="cb20-219"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-219" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">&quot;Cumulative Visits Over Time&quot;</span>)</span>
+<span id="cb20-220"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-220" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].legend()</span>
+<span id="cb20-221"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-221" tabindex="-1"></a>    axes[<span class="dv">0</span>, <span class="dv">1</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb20-222"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-222" tabindex="-1"></a>    </span>
+<span id="cb20-223"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-223" tabindex="-1"></a>    <span class="co"># Plot 3: Learning parameters over time</span></span>
+<span id="cb20-224"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-224" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].plot(model_data.index, model_data[<span class="st">&#39;avg_resource_attraction&#39;</span>], </span>
+<span id="cb20-225"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-225" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Resource Attraction&#39;</span>, color<span class="op">=</span><span class="st">&#39;green&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-226"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-226" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].plot(model_data.index, model_data[<span class="st">&#39;avg_toxic_avoidance&#39;</span>], </span>
+<span id="cb20-227"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-227" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Toxic Avoidance&#39;</span>, color<span class="op">=</span><span class="st">&#39;red&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-228"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-228" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].set_xlabel(<span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb20-229"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-229" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].set_ylabel(<span class="st">&quot;Average Learning Parameter&quot;</span>)</span>
+<span id="cb20-230"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-230" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">&quot;Learning Evolution Over Time&quot;</span>)</span>
+<span id="cb20-231"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-231" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].legend()</span>
+<span id="cb20-232"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-232" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb20-233"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-233" tabindex="-1"></a>    </span>
+<span id="cb20-234"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-234" tabindex="-1"></a>    <span class="co"># Plot 4: Exploration rate over time</span></span>
+<span id="cb20-235"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-235" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].plot(model_data.index, model_data[<span class="st">&#39;avg_exploration_rate&#39;</span>], </span>
+<span id="cb20-236"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-236" tabindex="-1"></a>                    label<span class="op">=</span><span class="st">&#39;Exploration Rate&#39;</span>, color<span class="op">=</span><span class="st">&#39;blue&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb20-237"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-237" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].set_xlabel(<span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb20-238"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-238" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].set_ylabel(<span class="st">&quot;Average Exploration Rate&quot;</span>)</span>
+<span id="cb20-239"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-239" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">&quot;Exploration vs Exploitation Over Time&quot;</span>)</span>
+<span id="cb20-240"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-240" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].legend()</span>
+<span id="cb20-241"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-241" tabindex="-1"></a>    axes[<span class="dv">1</span>, <span class="dv">1</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb20-242"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-242" tabindex="-1"></a>    </span>
+<span id="cb20-243"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-243" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb20-244"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-244" tabindex="-1"></a>    plt.show()</span>
+<span id="cb20-245"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-245" tabindex="-1"></a>    </span>
+<span id="cb20-246"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-246" tabindex="-1"></a>    <span class="co"># Print summary statistics</span></span>
+<span id="cb20-247"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-247" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">=== SIMULATION SUMMARY ===&quot;</span>)</span>
+<span id="cb20-248"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-248" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Final resource attraction: </span><span class="sc">{</span>model_data[<span class="st">&#39;avg_resource_attraction&#39;</span>]<span class="sc">.</span>iloc[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-249"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-249" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Final toxic avoidance: </span><span class="sc">{</span>model_data[<span class="st">&#39;avg_toxic_avoidance&#39;</span>]<span class="sc">.</span>iloc[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-250"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-250" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Final exploration rate: </span><span class="sc">{</span>model_data[<span class="st">&#39;avg_exploration_rate&#39;</span>]<span class="sc">.</span>iloc[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-251"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-251" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Total resource visits: </span><span class="sc">{</span>model_data[<span class="st">&#39;total_resource_visits&#39;</span>]<span class="sc">.</span>iloc[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-252"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-252" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Total toxic visits: </span><span class="sc">{</span>model_data[<span class="st">&#39;total_toxic_visits&#39;</span>]<span class="sc">.</span>iloc[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-253"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-253" tabindex="-1"></a>    </span>
+<span id="cb20-254"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-254" tabindex="-1"></a>    <span class="co"># Calculate visit ratios</span></span>
+<span id="cb20-255"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-255" tabindex="-1"></a>    resource_ratio <span class="op">=</span> model_data[<span class="st">&#39;total_resource_visits&#39;</span>].iloc[<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> model_data.index[<span class="op">-</span><span class="dv">1</span>] <span class="cf">if</span> model_data.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb20-256"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-256" tabindex="-1"></a>    toxic_ratio <span class="op">=</span> model_data[<span class="st">&#39;total_toxic_visits&#39;</span>].iloc[<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> model_data.index[<span class="op">-</span><span class="dv">1</span>] <span class="cf">if</span> model_data.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb20-257"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-257" tabindex="-1"></a>    </span>
+<span id="cb20-258"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-258" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Resource visits per step: </span><span class="sc">{</span>resource_ratio<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-259"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-259" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Toxic visits per step: </span><span class="sc">{</span>toxic_ratio<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-260"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-260" tabindex="-1"></a></span>
+<span id="cb20-261"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-261" tabindex="-1"></a><span class="co"># Run the improved model</span></span>
+<span id="cb20-262"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-262" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb20-263"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-263" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Running Learning Walker Model...&quot;</span>)</span>
+<span id="cb20-264"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-264" tabindex="-1"></a>    model <span class="op">=</span> LearningWalkerModel(width<span class="op">=</span><span class="dv">20</span>, height<span class="op">=</span><span class="dv">20</span>, n_steps<span class="op">=</span><span class="dv">200</span>, num_agents<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb20-265"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-265" tabindex="-1"></a>    model_data <span class="op">=</span> model.run_model()</span>
+<span id="cb20-266"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-266" tabindex="-1"></a>    </span>
+<span id="cb20-267"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-267" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Analyzing results...&quot;</span>)</span>
+<span id="cb20-268"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#cb20-268" tabindex="-1"></a>    analyze_results(model_data)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/03-Random_Walks_III.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/03-Random_Walks_III.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
