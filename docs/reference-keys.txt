@@ -55,3 +55,13 @@ extensions-and-future-directions
 computational-insights-and-performance
 conclusion-intelligence-as-emergent-property
 full-code-2
+from-random-walks-to-social-segregation-the-schelling-model
+the-mechanics-of-social-preference
+implementation-architecture-and-design-decisions
+the-emergence-of-segregated-patterns
+quantifying-segregation-dynamics
+extensions-and-variations
+policy-implications-and-interventions
+computational-considerations-and-future-directions
+connecting-theory-and-reality
+emergence-and-individual-responsibility

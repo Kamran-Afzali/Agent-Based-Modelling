@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 From Random Walks to Social Segregation: The Schelling Model | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 5 From Random Walks to Social Segregation: The Schelling Model | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 From Random Walks to Social Segregation: The Schelling Model | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 From Random Walks to Social Segregation: The Schelling Model | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="beyond-random-when-agents-learn-to-navigate-their-world.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html"><i class="fa fa-check"></i><b>4</b> Beyond Random: When Agents Learn to Navigate Their World</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm"><i class="fa fa-check"></i><b>4.1</b> From Random to Rational: The Learning Paradigm</a></li>
+<li class="chapter" data-level="4.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards"><i class="fa fa-check"></i><b>4.2</b> Environmental Complexity: Resources and Hazards</a></li>
+<li class="chapter" data-level="4.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior"><i class="fa fa-check"></i><b>4.3</b> The Architecture of Adaptive Behavior</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma"><i class="fa fa-check"></i><b>4.3.1</b> The Exploration-Exploitation Dilemma</a></li>
+<li class="chapter" data-level="4.3.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making"><i class="fa fa-check"></i><b>4.3.2</b> Adaptive Decision Making</a></li>
+<li class="chapter" data-level="4.3.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience"><i class="fa fa-check"></i><b>4.3.3</b> Learning Through Experience</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity"><i class="fa fa-check"></i><b>4.4</b> Environmental Architecture and Complexity</a></li>
+<li class="chapter" data-level="4.5" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis"><i class="fa fa-check"></i><b>4.5</b> Comprehensive Data Collection and Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation"><i class="fa fa-check"></i><b>4.6</b> The Complete Learning Walker Implementation</a></li>
+<li class="chapter" data-level="4.7" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals"><i class="fa fa-check"></i><b>4.7</b> Emergent Intelligence: What the Data Reveals</a></li>
+<li class="chapter" data-level="4.8" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections"><i class="fa fa-check"></i><b>4.8</b> Research Implications and Real-World Connections</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions"><i class="fa fa-check"></i><b>4.8.1</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance"><i class="fa fa-check"></i><b>4.9</b> Computational Insights and Performance</a></li>
+<li class="chapter" data-level="4.10" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property"><i class="fa fa-check"></i><b>4.10</b> Conclusion: Intelligence as Emergent Property</a></li>
+<li class="chapter" data-level="4.11" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2"><i class="fa fa-check"></i><b>4.11</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html"><i class="fa fa-check"></i><b>5</b> From Random Walks to Social Segregation: The Schelling Model</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-mechanics-of-social-preference"><i class="fa fa-check"></i><b>5.1</b> The Mechanics of Social Preference</a></li>
+<li class="chapter" data-level="5.2" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#implementation-architecture-and-design-decisions"><i class="fa fa-check"></i><b>5.2</b> Implementation Architecture and Design Decisions</a></li>
+<li class="chapter" data-level="5.3" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-emergence-of-segregated-patterns"><i class="fa fa-check"></i><b>5.3</b> The Emergence of Segregated Patterns</a></li>
+<li class="chapter" data-level="5.4" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#quantifying-segregation-dynamics"><i class="fa fa-check"></i><b>5.4</b> Quantifying Segregation Dynamics</a></li>
+<li class="chapter" data-level="5.5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#extensions-and-variations"><i class="fa fa-check"></i><b>5.5</b> Extensions and Variations</a></li>
+<li class="chapter" data-level="5.6" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#policy-implications-and-interventions"><i class="fa fa-check"></i><b>5.6</b> Policy Implications and Interventions</a></li>
+<li class="chapter" data-level="5.7" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#computational-considerations-and-future-directions"><i class="fa fa-check"></i><b>5.7</b> Computational Considerations and Future Directions</a></li>
+<li class="chapter" data-level="5.8" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#connecting-theory-and-reality"><i class="fa fa-check"></i><b>5.8</b> Connecting Theory and Reality</a></li>
+<li class="chapter" data-level="5.9" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#emergence-and-individual-responsibility"><i class="fa fa-check"></i><b>5.9</b> Emergence and Individual Responsibility</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="from-random-walks-to-social-segregation-the-schelling-model" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> From Random Walks to Social Segregation: The Schelling Model<a href="from-random-walks-to-social-segregation-the-schelling-model.html#from-random-walks-to-social-segregation-the-schelling-model" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In our previous exploration of random walks, we witnessed how simple movement rules could generate complex, unpredictable patterns. A single agent following one basic instruction—move randomly to a neighboring cell—created trajectories that appeared chaotic yet revealed underlying statistical properties. Now we venture into more sophisticated territory, where individual preferences and social dynamics intersect to produce one of the most striking examples of emergence in social science: the Schelling segregation model.</p>
+<p>Thomas Schelling’s groundbreaking work in the 1970s demonstrated how even mild preferences for similar neighbors could lead to dramatic residential segregation. Unlike our random walker, who moved without purpose or preference, Schelling agents possess desires and make decisions based on their local social environment. This transition from pure randomness to preference-driven behavior marks a fundamental shift in complexity, revealing how individual choices aggregate into system-wide patterns that often surprise even the agents themselves.</p>
+<div id="the-mechanics-of-social-preference" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> The Mechanics of Social Preference<a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-mechanics-of-social-preference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Schelling model operates on a deceptively simple premise: agents belonging to different groups prefer to live near others who share their characteristics. This preference need not be extreme—agents don’t require complete homogeneity in their neighborhood, merely a certain threshold of similarity. The mathematical formalization captures this elegantly through a similarity ratio S_i for agent i:</p>
+<p>S_i = N_similar,i / N_total,i</p>
+<p>where N_similar,i represents the number of neighbors sharing agent i’s type, and N_total,i denotes the total number of neighbors. Agent i remains content when S_i ≥ τ, where τ represents the similarity threshold. When this condition fails, the agent seeks a new location where greater similarity might be found.</p>
+<p>The agent’s decision-making process translates directly into code through the step method:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-1" tabindex="-1"></a><span class="kw">def</span> step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb21-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-2" tabindex="-1"></a>    <span class="co"># Get neighbors</span></span>
+<span id="cb21-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-3" tabindex="-1"></a>    neighbors <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighbors(</span>
+<span id="cb21-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-4" tabindex="-1"></a>        <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb21-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-5" tabindex="-1"></a>    )</span>
+<span id="cb21-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-6" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-7" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> neighbors:</span>
+<span id="cb21-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-8" tabindex="-1"></a>        <span class="cf">return</span>  <span class="co"># No neighbors to compare with</span></span>
+<span id="cb21-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-9" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-10" tabindex="-1"></a>    <span class="co"># Count similar neighbors</span></span>
+<span id="cb21-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-11" tabindex="-1"></a>    similar <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors <span class="cf">if</span> neighbor.<span class="bu">type</span> <span class="op">==</span> <span class="va">self</span>.<span class="bu">type</span>)</span>
+<span id="cb21-12"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-12" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-13" tabindex="-1"></a>    <span class="co"># Check if agent is unhappy</span></span>
+<span id="cb21-14"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-14" tabindex="-1"></a>    similarity_ratio <span class="op">=</span> similar <span class="op">/</span> <span class="bu">len</span>(neighbors)</span>
+<span id="cb21-15"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-15" tabindex="-1"></a>    <span class="cf">if</span> similarity_ratio <span class="op">&lt;</span> <span class="va">self</span>.model.similarity_threshold:</span>
+<span id="cb21-16"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb21-16" tabindex="-1"></a>        <span class="va">self</span>._move_to_empty_cell()</span></code></pre></div>
+<p>This formulation reveals the model’s power: the threshold τ serves as a control parameter that governs the strength of segregation preferences. Setting τ = 0.3 means agents require only 30% of their neighbors to share their type—a remarkably tolerant stance. Yet even this mild preference can generate surprising outcomes when scaled across an entire population.</p>
+<p>The neighborhood definition itself merits attention. Using Moore neighborhoods—the eight cells surrounding each agent—creates local interaction patterns that mirror real-world social geography. Each agent’s decision depends entirely on immediate neighbors, embodying the principle of local interaction that characterizes many social phenomena. This locality constraint ensures that global patterns emerge from purely local processes, making the model’s outcomes genuinely emergent rather than predetermined.</p>
+</div>
+<div id="implementation-architecture-and-design-decisions" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Implementation Architecture and Design Decisions<a href="from-random-walks-to-social-segregation-the-schelling-model.html#implementation-architecture-and-design-decisions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our Mesa implementation builds upon the foundation established in the random walk tutorial while introducing several sophisticated enhancements. The <code>SchellingAgent</code> class now carries state—specifically, an agent type that determines group membership. This seemingly minor addition fundamentally alters the model’s dynamics, transforming aimless wandering into purposeful relocation based on social preferences.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb22-1" tabindex="-1"></a><span class="kw">class</span> SchellingAgent(Agent):</span>
+<span id="cb22-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb22-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id: <span class="bu">int</span>, model: <span class="st">&#39;SchellingModel&#39;</span>, agent_type: <span class="bu">int</span>):</span>
+<span id="cb22-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb22-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb22-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb22-4" tabindex="-1"></a>        <span class="va">self</span>.<span class="bu">type</span> <span class="op">=</span> agent_type</span></code></pre></div>
+<p>The agent’s decision-making process encapsulates the core behavioral logic through the step method. Each agent surveys its immediate neighborhood, calculates the proportion of similar neighbors, and compares this ratio against the similarity threshold. When dissatisfaction occurs—when the local similarity falls below the threshold—the agent initiates a search for a more congenial location. This search process selects randomly from available empty cells, introducing an element of contingency that prevents the model from reaching overly deterministic outcomes.</p>
+<p>The <code>SchellingModel</code> class orchestrates the complex interplay between individual decisions and collective outcomes. The model initializes by randomly distributing agents across the grid according to specified density and minority proportion parameters:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-1" tabindex="-1"></a><span class="kw">def</span> _place_agents(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb23-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-2" tabindex="-1"></a>    agent_id <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-3" tabindex="-1"></a>    num_agents <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.width <span class="op">*</span> <span class="va">self</span>.height <span class="op">*</span> <span class="va">self</span>.density)</span>
+<span id="cb23-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-5" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_agents):</span>
+<span id="cb23-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-6" tabindex="-1"></a>        <span class="co"># Determine agent type</span></span>
+<span id="cb23-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-7" tabindex="-1"></a>        agent_type <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.minority_pc <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb23-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-8" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-9" tabindex="-1"></a>        <span class="co"># Find empty position</span></span>
+<span id="cb23-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-10" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb23-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-11" tabindex="-1"></a>        y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb23-12"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-12" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-13" tabindex="-1"></a>        <span class="co"># Create and place agent</span></span>
+<span id="cb23-14"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-14" tabindex="-1"></a>        agent <span class="op">=</span> SchellingAgent(agent_id, <span class="va">self</span>, agent_type)</span>
+<span id="cb23-15"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-15" tabindex="-1"></a>        <span class="va">self</span>.grid.place_agent(agent, (x, y))</span>
+<span id="cb23-16"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-16" tabindex="-1"></a>        <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb23-17"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb23-17" tabindex="-1"></a>        agent_id <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div>
+<p>This random initialization ensures that any subsequent segregation patterns result from the agents’ behavioral rules rather than biased starting conditions. The grid topology remains toroidal, eliminating edge effects that might artificially constrain agent movement patterns.</p>
+<p>Data collection mechanisms have evolved significantly from our simple random walk implementation. The model now tracks two key metrics: the overall segregation level and the total number of agent moves:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-1" tabindex="-1"></a><span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb24-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-2" tabindex="-1"></a>    model_reporters<span class="op">=</span>{</span>
+<span id="cb24-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-3" tabindex="-1"></a>        <span class="st">&quot;Segregation&quot;</span>: <span class="va">self</span>.calculate_segregation,</span>
+<span id="cb24-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-4" tabindex="-1"></a>        <span class="st">&quot;Total_Moves&quot;</span>: <span class="va">self</span>.count_total_moves</span>
+<span id="cb24-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-5" tabindex="-1"></a>    }</span>
+<span id="cb24-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb24-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>The segregation measure aggregates individual similarity ratios across all agents, providing a system-level indicator of residential homogeneity:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-1" tabindex="-1"></a><span class="kw">def</span> calculate_segregation(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb25-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-2" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.schedule.agents:</span>
+<span id="cb25-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-3" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb25-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-4" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-5" tabindex="-1"></a>    total_similar <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-6" tabindex="-1"></a>    total_neighbors <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb25-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-7" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-8" tabindex="-1"></a>    <span class="cf">for</span> agent <span class="kw">in</span> <span class="va">self</span>.schedule.agents:</span>
+<span id="cb25-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-9" tabindex="-1"></a>        neighbors <span class="op">=</span> <span class="va">self</span>.grid.get_neighbors(</span>
+<span id="cb25-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-10" tabindex="-1"></a>            agent.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb25-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-11" tabindex="-1"></a>        )</span>
+<span id="cb25-12"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-12" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-13" tabindex="-1"></a>        <span class="cf">if</span> neighbors:</span>
+<span id="cb25-14"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-14" tabindex="-1"></a>            similar <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors <span class="cf">if</span> neighbor.<span class="bu">type</span> <span class="op">==</span> agent.<span class="bu">type</span>)</span>
+<span id="cb25-15"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-15" tabindex="-1"></a>            total_similar <span class="op">+=</span> similar</span>
+<span id="cb25-16"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-16" tabindex="-1"></a>            total_neighbors <span class="op">+=</span> <span class="bu">len</span>(neighbors)</span>
+<span id="cb25-17"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-17" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb25-18" tabindex="-1"></a>    <span class="cf">return</span> total_similar <span class="op">/</span> total_neighbors <span class="cf">if</span> total_neighbors <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span></code></pre></div>
+<p>This aggregate measure enables us to quantify emergent phenomena that would be invisible when examining individual agents in isolation.</p>
+</div>
+<div id="the-emergence-of-segregated-patterns" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> The Emergence of Segregated Patterns<a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-emergence-of-segregated-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When we execute the Schelling model with moderate parameters—say, a 20×20 grid with 80% density, 30% minority agents, and a 60% similarity threshold—the results often prove startling. Despite the seemingly tolerant preferences (agents accept neighborhoods where 40% of neighbors differ from themselves), distinct clusters of similar agents emerge over time. These clusters grow and consolidate as dissatisfied agents relocate, creating increasingly homogeneous neighborhoods.</p>
+<p>The mathematical intuition behind this emergence centers on the concept of cascading effects. Consider an initially random distribution where most agents find themselves satisfied with their local similarity ratios. A small number of agents, perhaps those unlucky enough to land in particularly diverse neighborhoods, become dissatisfied and move. Their departure slightly alters the composition of their former neighborhoods, potentially pushing some previously satisfied agents below the similarity threshold. These newly dissatisfied agents then relocate, continuing the cascade.</p>
+<p>This process exhibits positive feedback: each relocation potentially creates new dissatisfaction elsewhere while simultaneously increasing homogeneity in the destination neighborhood. The system evolves toward configurations where most agents achieve their desired similarity levels, but this individual satisfaction comes at the cost of global segregation that likely exceeds what any individual agent intended or desired.</p>
+<p>The temporal dynamics reveal additional complexity. Early simulation steps often show rapid changes as many agents discover their initial placements unsatisfactory. Movement rates typically peak in these early phases, then gradually decline as agents find suitable neighborhoods. However, the system rarely reaches perfect equilibrium—periodic relocations continue as changing neighborhood compositions create new dissatisfactions. This ongoing turnover reflects the inherent instability of social systems where individual preferences interact through spatial constraints.</p>
+</div>
+<div id="quantifying-segregation-dynamics" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Quantifying Segregation Dynamics<a href="from-random-walks-to-social-segregation-the-schelling-model.html#quantifying-segregation-dynamics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The mathematical analysis of Schelling dynamics has generated substantial theoretical insights. The segregation index S(t) = Σᵢ Sᵢ(t)/N provides a global measure of residential homogeneity, where the sum extends over all N agents at time t. This index ranges from theoretical limits determined by the minority proportion and spatial constraints.</p>
+<p>For a system with minority proportion p and majority proportion (1-p), perfect random mixing would yield an expected segregation index of:</p>
+<p>S_random = p² + (1-p)²</p>
+<p>This baseline represents the segregation level that would arise purely by chance in a well-mixed population. Values of S(t) substantially exceeding S_random indicate genuine segregation beyond random clustering.</p>
+<p>The threshold parameter τ critically influences both the final segregation level and the dynamics of reaching that state. Higher threshold values—indicating stronger preferences for similarity—naturally produce more segregated outcomes. However, the relationship between τ and final segregation proves nonlinear, with small increases in the threshold sometimes producing disproportionately large increases in segregation. This nonlinearity suggests the existence of critical threshold values where the system’s behavior undergoes qualitative changes.</p>
+<p>Agent heterogeneity adds another layer of complexity. In our basic implementation, all agents share identical similarity thresholds, but real populations exhibit diverse tolerance levels. Some individuals strongly prefer homogeneous neighborhoods while others actively seek diversity. Incorporating threshold heterogeneity can significantly alter model dynamics, sometimes reducing overall segregation as diversity-seeking agents act as “bridges” between different groups.</p>
+<p>The spatial structure of segregation also merits attention. Clustered segregation—where similar agents form contiguous neighborhoods—differs qualitatively from scattered segregation where similar agents concentrate in disconnected pockets. The Schelling model typically produces clustered patterns, as agents can more easily achieve high similarity ratios by joining existing clusters rather than forming new ones. This clustering tendency reflects the efficiency of spatial proximity in social organization.</p>
+</div>
+<div id="extensions-and-variations" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Extensions and Variations<a href="from-random-walks-to-social-segregation-the-schelling-model.html#extensions-and-variations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The canonical Schelling model admits numerous extensions that illuminate different aspects of segregation dynamics. Multi-group extensions replace the binary agent classification with multiple types, examining how segregation patterns change when three, four, or more groups compete for residential space. These extensions reveal interesting dynamics: sometimes intermediate groups become “buffer zones” between more distinct populations, while in other configurations, minority groups form coalitions against dominant majorities.</p>
+<p>Economic constraints provide another avenue for model extension. Real housing markets involve financial considerations that can either amplify or mitigate segregation tendencies. Agents with limited economic resources face restricted housing choices, potentially forcing them to accept less preferred neighborhood compositions. Conversely, wealth disparities can enable some groups to monopolize desirable areas, creating segregation patterns that transcend mere social preferences.</p>
+<p>Network-based variations replace the regular grid topology with more realistic social networks. Instead of caring only about immediate spatial neighbors, agents might respond to the composition of their broader social networks, including friends, colleagues, and family members. These network effects can create segregation patterns that persist even when residential segregation decreases, highlighting the multiple dimensions along which social separation can occur.</p>
+<p>Dynamic preferences represent a particularly intriguing extension. Rather than maintaining fixed similarity thresholds throughout the simulation, agents might adjust their preferences based on experience. Agents who successfully find satisfying neighborhoods might become more tolerant over time, while those who repeatedly face rejection might develop stronger preferences for similarity. Such adaptive mechanisms could either stabilize or destabilize segregation patterns, depending on the specific adaptation rules employed.</p>
+</div>
+<div id="policy-implications-and-interventions" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Policy Implications and Interventions<a href="from-random-walks-to-social-segregation-the-schelling-model.html#policy-implications-and-interventions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Schelling model’s insights extend far beyond academic curiosity, offering valuable perspectives on real-world segregation and potential policy interventions. If mild individual preferences can generate substantial segregation, then reducing segregation might require interventions that address either the preferences themselves or the mechanisms through which those preferences operate.</p>
+<p>Housing policy represents one intervention domain. Regulations that promote mixed-income housing developments or prevent discriminatory practices might disrupt the feedback loops that sustain segregated patterns. However, the model suggests that such interventions must be carefully designed—simply mandating diversity without addressing underlying preferences might create unstable situations where agents continuously relocate to escape unwanted heterogeneity.</p>
+<p>Information and social contact provide alternative intervention strategies. If segregation partly results from limited inter-group contact that reinforces stereotypes and preferences for similarity, then policies promoting interaction across group boundaries might gradually reduce segregation preferences. Schools, workplaces, and community organizations could serve as venues for such cross-cutting interactions.</p>
+<p>The model also illuminates the challenge of unintended consequences in social policy. Well-intentioned interventions might sometimes backfire by creating new incentives for segregation or by concentrating problems in particular areas. Understanding the complex feedback loops inherent in social systems becomes crucial for designing effective policies.</p>
+</div>
+<div id="computational-considerations-and-future-directions" class="section level2 hasAnchor" number="5.7">
+<h2><span class="header-section-number">5.7</span> Computational Considerations and Future Directions<a href="from-random-walks-to-social-segregation-the-schelling-model.html#computational-considerations-and-future-directions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>From a computational perspective, the Schelling model demonstrates how object-oriented programming principles facilitate complex social simulations. The clear separation between agent behavior and model coordination makes the code both readable and extensible. The modular design allows researchers to easily modify individual components—changing decision rules, spatial structures, or measurement techniques—without restructuring the entire simulation.</p>
+<p>The visualization capabilities highlight another important aspect of agent-based modeling: the ability to directly observe emergent patterns as they unfold. The implementation includes sophisticated visualization tools that capture both spatial patterns and temporal dynamics:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-1" tabindex="-1"></a><span class="at">@staticmethod</span></span>
+<span id="cb26-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-2" tabindex="-1"></a><span class="kw">def</span> extract_grid(model: SchellingModel) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb26-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-3" tabindex="-1"></a>    grid <span class="op">=</span> np.zeros((model.width, model.height))</span>
+<span id="cb26-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-4" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(model.width):</span>
+<span id="cb26-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-5" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(model.height):</span>
+<span id="cb26-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-6" tabindex="-1"></a>            agents <span class="op">=</span> model.grid.get_cell_list_contents([(x, y)])</span>
+<span id="cb26-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-7" tabindex="-1"></a>            <span class="cf">if</span> agents:</span>
+<span id="cb26-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-8" tabindex="-1"></a>                grid[x, y] <span class="op">=</span> agents[<span class="dv">0</span>].<span class="bu">type</span> <span class="op">+</span> <span class="dv">1</span>  <span class="co"># 1 or 2 for agents</span></span>
+<span id="cb26-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-9" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb26-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-10" tabindex="-1"></a>                grid[x, y] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># 0 for empty</span></span>
+<span id="cb26-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb26-11" tabindex="-1"></a>    <span class="cf">return</span> grid</span></code></pre></div>
+<p>The complete simulation workflow demonstrates how these components integrate:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-1" tabindex="-1"></a><span class="kw">def</span> run_schelling_model(</span>
+<span id="cb27-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-2" tabindex="-1"></a>    width: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb27-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-3" tabindex="-1"></a>    height: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb27-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-4" tabindex="-1"></a>    density: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span id="cb27-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-5" tabindex="-1"></a>    minority_pc: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span id="cb27-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-6" tabindex="-1"></a>    similarity_threshold: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span id="cb27-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-7" tabindex="-1"></a>    steps: <span class="bu">int</span> <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb27-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-8" tabindex="-1"></a>) <span class="op">-&gt;</span> SchellingModel:</span>
+<span id="cb27-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-9" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-10" tabindex="-1"></a>    model <span class="op">=</span> SchellingModel(</span>
+<span id="cb27-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-11" tabindex="-1"></a>        width<span class="op">=</span>width,</span>
+<span id="cb27-12"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-12" tabindex="-1"></a>        height<span class="op">=</span>height,</span>
+<span id="cb27-13"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-13" tabindex="-1"></a>        density<span class="op">=</span>density,</span>
+<span id="cb27-14"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-14" tabindex="-1"></a>        minority_pc<span class="op">=</span>minority_pc,</span>
+<span id="cb27-15"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-15" tabindex="-1"></a>        similarity_threshold<span class="op">=</span>similarity_threshold</span>
+<span id="cb27-16"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-16" tabindex="-1"></a>    )</span>
+<span id="cb27-17"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-17" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-18" tabindex="-1"></a>    grids <span class="op">=</span> [SchellingVisualizer.extract_grid(model)]</span>
+<span id="cb27-19"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-19" tabindex="-1"></a></span>
+<span id="cb27-20"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-20" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb27-21"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-21" tabindex="-1"></a>        model.step()</span>
+<span id="cb27-22"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-22" tabindex="-1"></a>        <span class="cf">if</span> i <span class="kw">in</span> [<span class="dv">10</span>, steps <span class="op">-</span> <span class="dv">1</span>]:</span>
+<span id="cb27-23"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-23" tabindex="-1"></a>            grids.append(SchellingVisualizer.extract_grid(model))</span>
+<span id="cb27-24"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-24" tabindex="-1"></a></span>
+<span id="cb27-25"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-25" tabindex="-1"></a>    SchellingVisualizer.plot_grids(grids)</span>
+<span id="cb27-26"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-26" tabindex="-1"></a>    seg_data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb27-27"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-27" tabindex="-1"></a>    SchellingVisualizer.plot_segregation(seg_data)</span>
+<span id="cb27-28"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-28" tabindex="-1"></a></span>
+<span id="cb27-29"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb27-29" tabindex="-1"></a>    <span class="cf">return</span> model</span></code></pre></div>
+<p>Unlike mathematical models that provide analytical solutions, agent-based simulations generate dynamic visualizations that can reveal unexpected behaviors and provide intuitive understanding of complex processes. The animated visualizations of segregation formation often prove more convincing than statistical measures alone.</p>
+<p>Performance considerations become important as model complexity increases. While our basic implementation handles modest grid sizes efficiently, extensions involving multiple agent types, complex decision rules, or detailed spatial environments might require optimization strategies. Parallel processing, efficient data structures, and careful algorithm design become crucial for maintaining reasonable execution times as model sophistication grows.</p>
+</div>
+<div id="connecting-theory-and-reality" class="section level2 hasAnchor" number="5.8">
+<h2><span class="header-section-number">5.8</span> Connecting Theory and Reality<a href="from-random-walks-to-social-segregation-the-schelling-model.html#connecting-theory-and-reality" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Schelling model’s enduring influence stems from its ability to connect abstract theoretical insights with observable real-world phenomena. Residential segregation remains a persistent feature of many societies, and the model provides one compelling explanation for how such patterns might arise and persist even in the absence of explicit discriminatory policies or extreme prejudices.</p>
+<p>However, the model also illustrates the limitations of simplified representations. Real segregation involves complex historical, economic, and institutional factors that the basic Schelling framework ignores. Discriminatory lending practices, zoning regulations, transportation systems, and employment patterns all influence residential choices in ways that pure preference-based models cannot capture. The model serves as a starting point for understanding segregation, not a complete explanation.</p>
+<p>This tension between simplicity and realism represents a fundamental challenge in agent-based modeling. Simple models offer clear insights and robust predictions but risk oversimplifying complex phenomena. Detailed models might capture more realistic behaviors but become difficult to understand and analyze. The art of modeling lies in finding the appropriate balance between simplicity and complexity for addressing specific research questions.</p>
+</div>
+<div id="emergence-and-individual-responsibility" class="section level2 hasAnchor" number="5.9">
+<h2><span class="header-section-number">5.9</span> Emergence and Individual Responsibility<a href="from-random-walks-to-social-segregation-the-schelling-model.html#emergence-and-individual-responsibility" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Perhaps the most profound insight from the Schelling model concerns the relationship between individual actions and collective outcomes. The model demonstrates how individually rational and even tolerant preferences can generate collectively problematic patterns. No single agent intends to create a segregated society—each simply seeks a comfortable neighborhood composition. Yet the aggregation of these reasonable individual decisions produces system-wide segregation that might disadvantage everyone.</p>
+<p>This disconnect between individual intentions and collective outcomes raises important questions about responsibility and intervention in social systems. If segregation emerges from the interaction of individual preferences rather than explicit discriminatory policies, how should society address such patterns? The model suggests that changing outcomes might require changing either individual preferences or the structural constraints within which those preferences operate.</p>
+<p>The emergence of segregation from tolerance also challenges common intuitions about social problems. We might expect that moderate, tolerant attitudes would produce moderate, integrated outcomes. The Schelling model reveals how nonlinear social dynamics can amplify mild preferences into extreme patterns, suggesting that maintaining integrated communities might require more active effort than simple tolerance.</p>
+<p>Understanding these dynamics becomes particularly important in an era of increasing social and political polarization. If the basic mechanisms that drive residential segregation also operate in other social domains—political affiliation, media consumption, social networking—then we might expect to see similar clustering patterns across multiple dimensions of social life. The model provides a framework for understanding how individual choices about social environments can create broader patterns of social division.</p>
+<p>The Schelling model thus serves as both a specific analysis of residential segregation and a general illustration of how social systems can generate unintended consequences from reasonable individual behaviors. It exemplifies the power of agent-based modeling to reveal counterintuitive dynamics and challenge conventional wisdom about social phenomena. As we continue exploring agent-based approaches to social problems, the Schelling model reminds us that understanding individual behavior represents only the first step—the real challenge lies in comprehending how those individual behaviors interact to produce the complex social world we observe around us.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-1" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-2"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-2" tabindex="-1"></a><span class="co">Schelling Segregation Model</span></span>
+<span id="cb28-3"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-3" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-4"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-5" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb28-6"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-6" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb28-7"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-7" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb28-8"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-8" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb28-9"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-9" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb28-10"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-10" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb28-11"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-11" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Tuple, Optional</span>
+<span id="cb28-12"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-12" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb28-13"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-13" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-14" tabindex="-1"></a><span class="co"># Configure logging</span></span>
+<span id="cb28-15"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-15" tabindex="-1"></a>logging.basicConfig(level<span class="op">=</span>logging.INFO)</span>
+<span id="cb28-16"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-16" tabindex="-1"></a>logger <span class="op">=</span> logging.getLogger(<span class="va">__name__</span>)</span>
+<span id="cb28-17"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-17" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-18" tabindex="-1"></a><span class="kw">class</span> SchellingAgent(Agent):</span>
+<span id="cb28-19"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-19" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-20"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-20" tabindex="-1"></a><span class="co">    An agent in the Schelling segregation model.</span></span>
+<span id="cb28-21"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-21" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-22" tabindex="-1"></a><span class="co">    Attributes:</span></span>
+<span id="cb28-23"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-23" tabindex="-1"></a><span class="co">        unique_id: Unique identifier for the agent</span></span>
+<span id="cb28-24"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-24" tabindex="-1"></a><span class="co">        model: Reference to the model instance</span></span>
+<span id="cb28-25"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-25" tabindex="-1"></a><span class="co">        type: Agent type (0 or 1, representing different groups)</span></span>
+<span id="cb28-26"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-26" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb28-27"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-27" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-28" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id: <span class="bu">int</span>, model: <span class="st">&#39;SchellingModel&#39;</span>, agent_type: <span class="bu">int</span>):</span>
+<span id="cb28-29"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-29" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-30"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-30" tabindex="-1"></a><span class="co">        Initialize a Schelling agent.</span></span>
+<span id="cb28-31"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-31" tabindex="-1"></a></span>
+<span id="cb28-32"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-32" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb28-33"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-33" tabindex="-1"></a><span class="co">            unique_id: Unique identifier for the agent</span></span>
+<span id="cb28-34"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-34" tabindex="-1"></a><span class="co">            model: Reference to the model instance</span></span>
+<span id="cb28-35"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-35" tabindex="-1"></a><span class="co">            agent_type: Agent type (0 or 1)</span></span>
+<span id="cb28-36"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-36" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-37"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-37" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb28-38"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-38" tabindex="-1"></a>        <span class="va">self</span>.<span class="bu">type</span> <span class="op">=</span> agent_type</span>
+<span id="cb28-39"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-39" tabindex="-1"></a></span>
+<span id="cb28-40"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-40" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-41"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-41" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-42"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-42" tabindex="-1"></a><span class="co">        Agent&#39;s behavior for each step:</span></span>
+<span id="cb28-43"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-43" tabindex="-1"></a><span class="co">        - Calculate similarity ratio with neighbors</span></span>
+<span id="cb28-44"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-44" tabindex="-1"></a><span class="co">        - Move if unhappy (similarity &lt; threshold)</span></span>
+<span id="cb28-45"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-45" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-46"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-46" tabindex="-1"></a>        <span class="co"># Get neighbors</span></span>
+<span id="cb28-47"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-47" tabindex="-1"></a>        neighbors <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighbors(</span>
+<span id="cb28-48"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-48" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb28-49"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-49" tabindex="-1"></a>        )</span>
+<span id="cb28-50"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-50" tabindex="-1"></a></span>
+<span id="cb28-51"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-51" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> neighbors:</span>
+<span id="cb28-52"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-52" tabindex="-1"></a>            <span class="cf">return</span>  <span class="co"># No neighbors to compare with</span></span>
+<span id="cb28-53"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-53" tabindex="-1"></a></span>
+<span id="cb28-54"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-54" tabindex="-1"></a>        <span class="co"># Count similar neighbors</span></span>
+<span id="cb28-55"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-55" tabindex="-1"></a>        similar <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors <span class="cf">if</span> neighbor.<span class="bu">type</span> <span class="op">==</span> <span class="va">self</span>.<span class="bu">type</span>)</span>
+<span id="cb28-56"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-56" tabindex="-1"></a></span>
+<span id="cb28-57"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-57" tabindex="-1"></a>        <span class="co"># Check if agent is unhappy</span></span>
+<span id="cb28-58"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-58" tabindex="-1"></a>        similarity_ratio <span class="op">=</span> similar <span class="op">/</span> <span class="bu">len</span>(neighbors)</span>
+<span id="cb28-59"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-59" tabindex="-1"></a>        <span class="cf">if</span> similarity_ratio <span class="op">&lt;</span> <span class="va">self</span>.model.similarity_threshold:</span>
+<span id="cb28-60"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-60" tabindex="-1"></a>            <span class="va">self</span>._move_to_empty_cell()</span>
+<span id="cb28-61"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-61" tabindex="-1"></a></span>
+<span id="cb28-62"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-62" tabindex="-1"></a>    <span class="kw">def</span> _move_to_empty_cell(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-63"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-63" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Move agent to a random empty cell if available.&quot;&quot;&quot;</span></span>
+<span id="cb28-64"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-64" tabindex="-1"></a>        empty_cells <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.model.grid.empties)</span>
+<span id="cb28-65"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-65" tabindex="-1"></a>        <span class="cf">if</span> empty_cells:</span>
+<span id="cb28-66"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-66" tabindex="-1"></a>            new_pos <span class="op">=</span> <span class="va">self</span>.random.choice(empty_cells)</span>
+<span id="cb28-67"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-67" tabindex="-1"></a>            <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_pos)</span>
+<span id="cb28-68"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-68" tabindex="-1"></a></span>
+<span id="cb28-69"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-69" tabindex="-1"></a></span>
+<span id="cb28-70"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-70" tabindex="-1"></a><span class="kw">class</span> SchellingModel(Model):</span>
+<span id="cb28-71"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-71" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-72"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-72" tabindex="-1"></a><span class="co">    Schelling segregation model.</span></span>
+<span id="cb28-73"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-73" tabindex="-1"></a></span>
+<span id="cb28-74"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-74" tabindex="-1"></a><span class="co">    Attributes:</span></span>
+<span id="cb28-75"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-75" tabindex="-1"></a><span class="co">        width: Width of the grid</span></span>
+<span id="cb28-76"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-76" tabindex="-1"></a><span class="co">        height: Height of the grid</span></span>
+<span id="cb28-77"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-77" tabindex="-1"></a><span class="co">        density: Proportion of cells occupied by agents</span></span>
+<span id="cb28-78"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-78" tabindex="-1"></a><span class="co">        minority_pc: Proportion of minority agents</span></span>
+<span id="cb28-79"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-79" tabindex="-1"></a><span class="co">        similarity_threshold: Minimum similarity ratio for agent happiness</span></span>
+<span id="cb28-80"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-80" tabindex="-1"></a><span class="co">        grid: MultiGrid environment</span></span>
+<span id="cb28-81"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-81" tabindex="-1"></a><span class="co">        schedule: Activation schedule for agents</span></span>
+<span id="cb28-82"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-82" tabindex="-1"></a><span class="co">        datacollector: Data collection utility</span></span>
+<span id="cb28-83"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-83" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb28-84"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-84" tabindex="-1"></a></span>
+<span id="cb28-85"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-85" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb28-86"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-86" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb28-87"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-87" tabindex="-1"></a>        width: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb28-88"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-88" tabindex="-1"></a>        height: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb28-89"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-89" tabindex="-1"></a>        density: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span id="cb28-90"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-90" tabindex="-1"></a>        minority_pc: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span id="cb28-91"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-91" tabindex="-1"></a>        similarity_threshold: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.6</span></span>
+<span id="cb28-92"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-92" tabindex="-1"></a>    ):</span>
+<span id="cb28-93"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-93" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-94"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-94" tabindex="-1"></a><span class="co">        Initialize the Schelling model.</span></span>
+<span id="cb28-95"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-95" tabindex="-1"></a></span>
+<span id="cb28-96"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-96" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb28-97"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-97" tabindex="-1"></a><span class="co">            width: Width of the grid</span></span>
+<span id="cb28-98"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-98" tabindex="-1"></a><span class="co">            height: Height of the grid</span></span>
+<span id="cb28-99"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-99" tabindex="-1"></a><span class="co">            density: Proportion of cells occupied by agents</span></span>
+<span id="cb28-100"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-100" tabindex="-1"></a><span class="co">            minority_pc: Proportion of minority agents</span></span>
+<span id="cb28-101"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-101" tabindex="-1"></a><span class="co">            similarity_threshold: Minimum similarity ratio for happiness</span></span>
+<span id="cb28-102"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-102" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-103"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-103" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb28-104"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-104" tabindex="-1"></a></span>
+<span id="cb28-105"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-105" tabindex="-1"></a>        <span class="co"># Model parameters</span></span>
+<span id="cb28-106"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-106" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb28-107"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-107" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb28-108"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-108" tabindex="-1"></a>        <span class="va">self</span>.density <span class="op">=</span> density</span>
+<span id="cb28-109"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-109" tabindex="-1"></a>        <span class="va">self</span>.minority_pc <span class="op">=</span> minority_pc</span>
+<span id="cb28-110"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-110" tabindex="-1"></a>        <span class="va">self</span>.similarity_threshold <span class="op">=</span> similarity_threshold</span>
+<span id="cb28-111"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-111" tabindex="-1"></a></span>
+<span id="cb28-112"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-112" tabindex="-1"></a>        <span class="co"># Initialize model components</span></span>
+<span id="cb28-113"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-113" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-114"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-114" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb28-115"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-115" tabindex="-1"></a></span>
+<span id="cb28-116"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-116" tabindex="-1"></a>        <span class="co"># Data collection</span></span>
+<span id="cb28-117"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-117" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb28-118"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-118" tabindex="-1"></a>            model_reporters<span class="op">=</span>{</span>
+<span id="cb28-119"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-119" tabindex="-1"></a>                <span class="st">&quot;Segregation&quot;</span>: <span class="va">self</span>.calculate_segregation,</span>
+<span id="cb28-120"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-120" tabindex="-1"></a>                <span class="st">&quot;Total_Moves&quot;</span>: <span class="va">self</span>.count_total_moves</span>
+<span id="cb28-121"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-121" tabindex="-1"></a>            }</span>
+<span id="cb28-122"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-122" tabindex="-1"></a>        )</span>
+<span id="cb28-123"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-123" tabindex="-1"></a></span>
+<span id="cb28-124"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-124" tabindex="-1"></a>        <span class="co"># Initialize agents</span></span>
+<span id="cb28-125"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-125" tabindex="-1"></a>        <span class="va">self</span>._place_agents()</span>
+<span id="cb28-126"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-126" tabindex="-1"></a></span>
+<span id="cb28-127"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-127" tabindex="-1"></a>        <span class="co"># Track metrics</span></span>
+<span id="cb28-128"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-128" tabindex="-1"></a>        <span class="va">self</span>.total_moves <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb28-129"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-129" tabindex="-1"></a></span>
+<span id="cb28-130"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-130" tabindex="-1"></a>    <span class="kw">def</span> _place_agents(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-131"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-131" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Place agents randomly on the grid.&quot;&quot;&quot;</span></span>
+<span id="cb28-132"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-132" tabindex="-1"></a>        agent_id <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb28-133"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-133" tabindex="-1"></a>        num_agents <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.width <span class="op">*</span> <span class="va">self</span>.height <span class="op">*</span> <span class="va">self</span>.density)</span>
+<span id="cb28-134"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-134" tabindex="-1"></a></span>
+<span id="cb28-135"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-135" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_agents):</span>
+<span id="cb28-136"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-136" tabindex="-1"></a>            <span class="co"># Determine agent type</span></span>
+<span id="cb28-137"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-137" tabindex="-1"></a>            agent_type <span class="op">=</span> <span class="dv">1</span> <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.minority_pc <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb28-138"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-138" tabindex="-1"></a></span>
+<span id="cb28-139"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-139" tabindex="-1"></a>            <span class="co"># Find empty position</span></span>
+<span id="cb28-140"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-140" tabindex="-1"></a>            x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb28-141"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-141" tabindex="-1"></a>            y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb28-142"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-142" tabindex="-1"></a></span>
+<span id="cb28-143"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-143" tabindex="-1"></a>            <span class="co"># Create and place agent</span></span>
+<span id="cb28-144"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-144" tabindex="-1"></a>            agent <span class="op">=</span> SchellingAgent(agent_id, <span class="va">self</span>, agent_type)</span>
+<span id="cb28-145"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-145" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, (x, y))</span>
+<span id="cb28-146"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-146" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb28-147"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-147" tabindex="-1"></a>            agent_id <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb28-148"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-148" tabindex="-1"></a></span>
+<span id="cb28-149"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-149" tabindex="-1"></a>    <span class="kw">def</span> calculate_segregation(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb28-150"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-150" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-151"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-151" tabindex="-1"></a><span class="co">        Calculate the average proportion of similar neighbors across all agents.</span></span>
+<span id="cb28-152"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-152" tabindex="-1"></a></span>
+<span id="cb28-153"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-153" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb28-154"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-154" tabindex="-1"></a><span class="co">            Average similarity ratio (0-1)</span></span>
+<span id="cb28-155"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-155" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-156"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-156" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.schedule.agents:</span>
+<span id="cb28-157"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-157" tabindex="-1"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb28-158"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-158" tabindex="-1"></a></span>
+<span id="cb28-159"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-159" tabindex="-1"></a>        total_similar <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb28-160"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-160" tabindex="-1"></a>        total_neighbors <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb28-161"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-161" tabindex="-1"></a></span>
+<span id="cb28-162"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-162" tabindex="-1"></a>        <span class="cf">for</span> agent <span class="kw">in</span> <span class="va">self</span>.schedule.agents:</span>
+<span id="cb28-163"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-163" tabindex="-1"></a>            neighbors <span class="op">=</span> <span class="va">self</span>.grid.get_neighbors(</span>
+<span id="cb28-164"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-164" tabindex="-1"></a>                agent.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb28-165"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-165" tabindex="-1"></a>            )</span>
+<span id="cb28-166"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-166" tabindex="-1"></a></span>
+<span id="cb28-167"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-167" tabindex="-1"></a>            <span class="cf">if</span> neighbors:</span>
+<span id="cb28-168"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-168" tabindex="-1"></a>                similar <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors <span class="cf">if</span> neighbor.<span class="bu">type</span> <span class="op">==</span> agent.<span class="bu">type</span>)</span>
+<span id="cb28-169"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-169" tabindex="-1"></a>                total_similar <span class="op">+=</span> similar</span>
+<span id="cb28-170"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-170" tabindex="-1"></a>                total_neighbors <span class="op">+=</span> <span class="bu">len</span>(neighbors)</span>
+<span id="cb28-171"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-171" tabindex="-1"></a></span>
+<span id="cb28-172"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-172" tabindex="-1"></a>        <span class="cf">return</span> total_similar <span class="op">/</span> total_neighbors <span class="cf">if</span> total_neighbors <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb28-173"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-173" tabindex="-1"></a></span>
+<span id="cb28-174"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-174" tabindex="-1"></a>    <span class="kw">def</span> count_total_moves(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb28-175"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-175" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-176"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-176" tabindex="-1"></a><span class="co">        Count total moves made by agents.</span></span>
+<span id="cb28-177"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-177" tabindex="-1"></a></span>
+<span id="cb28-178"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-178" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb28-179"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-179" tabindex="-1"></a><span class="co">            Total number of moves</span></span>
+<span id="cb28-180"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-180" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-181"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-181" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.total_moves</span>
+<span id="cb28-182"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-182" tabindex="-1"></a></span>
+<span id="cb28-183"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-183" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-184"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-184" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Execute one step of the model.&quot;&quot;&quot;</span></span>
+<span id="cb28-185"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-185" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb28-186"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-186" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb28-187"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-187" tabindex="-1"></a>        <span class="va">self</span>.total_moves <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb28-188"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-188" tabindex="-1"></a></span>
+<span id="cb28-189"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-189" tabindex="-1"></a></span>
+<span id="cb28-190"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-190" tabindex="-1"></a><span class="kw">class</span> SchellingVisualizer:</span>
+<span id="cb28-191"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-191" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Handles visualization of the Schelling model.&quot;&quot;&quot;</span></span>
+<span id="cb28-192"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-192" tabindex="-1"></a></span>
+<span id="cb28-193"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-193" tabindex="-1"></a>    COLOR_MAP <span class="op">=</span> plt.get_cmap(<span class="st">&#39;viridis&#39;</span>, <span class="dv">3</span>)</span>
+<span id="cb28-194"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-194" tabindex="-1"></a>    TITLES <span class="op">=</span> [<span class="st">&quot;Initial&quot;</span>, <span class="st">&quot;Step 10&quot;</span>, <span class="st">&quot;Final&quot;</span>]</span>
+<span id="cb28-195"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-195" tabindex="-1"></a></span>
+<span id="cb28-196"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-196" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb28-197"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-197" tabindex="-1"></a>    <span class="kw">def</span> extract_grid(model: SchellingModel) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb28-198"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-198" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-199"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-199" tabindex="-1"></a><span class="co">        Extract grid state as a numpy array for visualization.</span></span>
+<span id="cb28-200"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-200" tabindex="-1"></a></span>
+<span id="cb28-201"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-201" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb28-202"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-202" tabindex="-1"></a><span class="co">            model: SchellingModel instance</span></span>
+<span id="cb28-203"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-203" tabindex="-1"></a></span>
+<span id="cb28-204"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-204" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb28-205"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-205" tabindex="-1"></a><span class="co">            2D numpy array representing grid state</span></span>
+<span id="cb28-206"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-206" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-207"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-207" tabindex="-1"></a>        grid <span class="op">=</span> np.zeros((model.width, model.height))</span>
+<span id="cb28-208"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-208" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(model.width):</span>
+<span id="cb28-209"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-209" tabindex="-1"></a>            <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(model.height):</span>
+<span id="cb28-210"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-210" tabindex="-1"></a>                agents <span class="op">=</span> model.grid.get_cell_list_contents([(x, y)])</span>
+<span id="cb28-211"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-211" tabindex="-1"></a>                <span class="cf">if</span> agents:</span>
+<span id="cb28-212"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-212" tabindex="-1"></a>                    grid[x, y] <span class="op">=</span> agents[<span class="dv">0</span>].<span class="bu">type</span> <span class="op">+</span> <span class="dv">1</span>  <span class="co"># 1 or 2 for agents</span></span>
+<span id="cb28-213"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-213" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb28-214"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-214" tabindex="-1"></a>                    grid[x, y] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># 0 for empty</span></span>
+<span id="cb28-215"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-215" tabindex="-1"></a>        <span class="cf">return</span> grid</span>
+<span id="cb28-216"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-216" tabindex="-1"></a></span>
+<span id="cb28-217"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-217" tabindex="-1"></a>    <span class="at">@classmethod</span></span>
+<span id="cb28-218"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-218" tabindex="-1"></a>    <span class="kw">def</span> plot_grids(cls, grids: List[np.ndarray]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-219"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-219" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-220"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-220" tabindex="-1"></a><span class="co">        Plot grid states at different time steps.</span></span>
+<span id="cb28-221"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-221" tabindex="-1"></a></span>
+<span id="cb28-222"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-222" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb28-223"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-223" tabindex="-1"></a><span class="co">            grids: List of grid arrays to plot</span></span>
+<span id="cb28-224"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-224" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-225"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-225" tabindex="-1"></a>        fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb28-226"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-226" tabindex="-1"></a></span>
+<span id="cb28-227"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-227" tabindex="-1"></a>        <span class="cf">for</span> ax, grid, title <span class="kw">in</span> <span class="bu">zip</span>(axes, grids, cls.TITLES):</span>
+<span id="cb28-228"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-228" tabindex="-1"></a>            im <span class="op">=</span> ax.imshow(grid, cmap<span class="op">=</span>cls.COLOR_MAP)</span>
+<span id="cb28-229"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-229" tabindex="-1"></a>            ax.set_title(title)</span>
+<span id="cb28-230"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-230" tabindex="-1"></a>            ax.set_xticks([])</span>
+<span id="cb28-231"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-231" tabindex="-1"></a>            ax.set_yticks([])</span>
+<span id="cb28-232"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-232" tabindex="-1"></a></span>
+<span id="cb28-233"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-233" tabindex="-1"></a>        plt.tight_layout()</span>
+<span id="cb28-234"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-234" tabindex="-1"></a>        plt.show()</span>
+<span id="cb28-235"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-235" tabindex="-1"></a></span>
+<span id="cb28-236"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-236" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb28-237"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-237" tabindex="-1"></a>    <span class="kw">def</span> plot_segregation(data_frame) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-238"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-238" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-239"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-239" tabindex="-1"></a><span class="co">        Plot segregation measure over time.</span></span>
+<span id="cb28-240"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-240" tabindex="-1"></a></span>
+<span id="cb28-241"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-241" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb28-242"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-242" tabindex="-1"></a><span class="co">            data_frame: Pandas DataFrame with collected data</span></span>
+<span id="cb28-243"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-243" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb28-244"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-244" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb28-245"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-245" tabindex="-1"></a>        plt.plot(data_frame[<span class="st">&quot;Segregation&quot;</span>], linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb28-246"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-246" tabindex="-1"></a>        plt.title(<span class="st">&quot;Segregation Over Time&quot;</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb28-247"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-247" tabindex="-1"></a>        plt.xlabel(<span class="st">&quot;Step&quot;</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb28-248"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-248" tabindex="-1"></a>        plt.ylabel(<span class="st">&quot;Proportion of Similar Neighbors&quot;</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb28-249"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-249" tabindex="-1"></a>        plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb28-250"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-250" tabindex="-1"></a>        plt.tight_layout()</span>
+<span id="cb28-251"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-251" tabindex="-1"></a>        plt.show()</span>
+<span id="cb28-252"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-252" tabindex="-1"></a></span>
+<span id="cb28-253"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-253" tabindex="-1"></a></span>
+<span id="cb28-254"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-254" tabindex="-1"></a><span class="kw">def</span> run_schelling_model(</span>
+<span id="cb28-255"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-255" tabindex="-1"></a>    width: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb28-256"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-256" tabindex="-1"></a>    height: <span class="bu">int</span> <span class="op">=</span> <span class="dv">20</span>,</span>
+<span id="cb28-257"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-257" tabindex="-1"></a>    density: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span id="cb28-258"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-258" tabindex="-1"></a>    minority_pc: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span id="cb28-259"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-259" tabindex="-1"></a>    similarity_threshold: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span id="cb28-260"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-260" tabindex="-1"></a>    steps: <span class="bu">int</span> <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb28-261"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-261" tabindex="-1"></a>) <span class="op">-&gt;</span> SchellingModel:</span>
+<span id="cb28-262"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-262" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb28-263"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-263" tabindex="-1"></a><span class="co">    Run the Schelling segregation model.</span></span>
+<span id="cb28-264"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-264" tabindex="-1"></a></span>
+<span id="cb28-265"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-265" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb28-266"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-266" tabindex="-1"></a><span class="co">        width: Grid width</span></span>
+<span id="cb28-267"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-267" tabindex="-1"></a><span class="co">        height: Grid height</span></span>
+<span id="cb28-268"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-268" tabindex="-1"></a><span class="co">        density: Proportion of occupied cells</span></span>
+<span id="cb28-269"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-269" tabindex="-1"></a><span class="co">        minority_pc: Proportion of minority agents</span></span>
+<span id="cb28-270"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-270" tabindex="-1"></a><span class="co">        similarity_threshold: Minimum similarity for happiness</span></span>
+<span id="cb28-271"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-271" tabindex="-1"></a><span class="co">        steps: Number of simulation steps</span></span>
+<span id="cb28-272"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-272" tabindex="-1"></a></span>
+<span id="cb28-273"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-273" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb28-274"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-274" tabindex="-1"></a><span class="co">        Completed SchellingModel instance</span></span>
+<span id="cb28-275"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-275" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb28-276"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-276" tabindex="-1"></a>    <span class="co"># Initialize model</span></span>
+<span id="cb28-277"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-277" tabindex="-1"></a>    model <span class="op">=</span> SchellingModel(</span>
+<span id="cb28-278"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-278" tabindex="-1"></a>        width<span class="op">=</span>width,</span>
+<span id="cb28-279"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-279" tabindex="-1"></a>        height<span class="op">=</span>height,</span>
+<span id="cb28-280"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-280" tabindex="-1"></a>        density<span class="op">=</span>density,</span>
+<span id="cb28-281"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-281" tabindex="-1"></a>        minority_pc<span class="op">=</span>minority_pc,</span>
+<span id="cb28-282"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-282" tabindex="-1"></a>        similarity_threshold<span class="op">=</span>similarity_threshold</span>
+<span id="cb28-283"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-283" tabindex="-1"></a>    )</span>
+<span id="cb28-284"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-284" tabindex="-1"></a></span>
+<span id="cb28-285"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-285" tabindex="-1"></a>    <span class="co"># Collect initial state</span></span>
+<span id="cb28-286"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-286" tabindex="-1"></a>    grids <span class="op">=</span> [SchellingVisualizer.extract_grid(model)]</span>
+<span id="cb28-287"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-287" tabindex="-1"></a></span>
+<span id="cb28-288"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-288" tabindex="-1"></a>    <span class="co"># Run simulation</span></span>
+<span id="cb28-289"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-289" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb28-290"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-290" tabindex="-1"></a>        model.step()</span>
+<span id="cb28-291"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-291" tabindex="-1"></a></span>
+<span id="cb28-292"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-292" tabindex="-1"></a>        <span class="co"># Save intermediate states</span></span>
+<span id="cb28-293"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-293" tabindex="-1"></a>        <span class="cf">if</span> i <span class="kw">in</span> [<span class="dv">10</span>, steps <span class="op">-</span> <span class="dv">1</span>]:</span>
+<span id="cb28-294"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-294" tabindex="-1"></a>            grids.append(SchellingVisualizer.extract_grid(model))</span>
+<span id="cb28-295"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-295" tabindex="-1"></a></span>
+<span id="cb28-296"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-296" tabindex="-1"></a>    <span class="co"># Visualize results</span></span>
+<span id="cb28-297"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-297" tabindex="-1"></a>    SchellingVisualizer.plot_grids(grids)</span>
+<span id="cb28-298"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-298" tabindex="-1"></a></span>
+<span id="cb28-299"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-299" tabindex="-1"></a>    <span class="co"># Plot segregation data</span></span>
+<span id="cb28-300"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-300" tabindex="-1"></a>    seg_data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb28-301"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-301" tabindex="-1"></a>    SchellingVisualizer.plot_segregation(seg_data)</span>
+<span id="cb28-302"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-302" tabindex="-1"></a></span>
+<span id="cb28-303"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-303" tabindex="-1"></a>    <span class="cf">return</span> model</span>
+<span id="cb28-304"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-304" tabindex="-1"></a></span>
+<span id="cb28-305"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-305" tabindex="-1"></a></span>
+<span id="cb28-306"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-306" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb28-307"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-307" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
+<span id="cb28-308"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-308" tabindex="-1"></a>    CONFIG <span class="op">=</span> {</span>
+<span id="cb28-309"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-309" tabindex="-1"></a>        <span class="st">&#39;width&#39;</span>: <span class="dv">20</span>,</span>
+<span id="cb28-310"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-310" tabindex="-1"></a>        <span class="st">&#39;height&#39;</span>: <span class="dv">20</span>,</span>
+<span id="cb28-311"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-311" tabindex="-1"></a>        <span class="st">&#39;density&#39;</span>: <span class="fl">0.8</span>,</span>
+<span id="cb28-312"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-312" tabindex="-1"></a>        <span class="st">&#39;minority_pc&#39;</span>: <span class="fl">0.3</span>,</span>
+<span id="cb28-313"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-313" tabindex="-1"></a>        <span class="st">&#39;similarity_threshold&#39;</span>: <span class="fl">0.6</span>,</span>
+<span id="cb28-314"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-314" tabindex="-1"></a>        <span class="st">&#39;steps&#39;</span>: <span class="dv">50</span></span>
+<span id="cb28-315"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-315" tabindex="-1"></a>    }</span>
+<span id="cb28-316"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-316" tabindex="-1"></a></span>
+<span id="cb28-317"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-317" tabindex="-1"></a>    <span class="co"># Run model</span></span>
+<span id="cb28-318"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-318" tabindex="-1"></a>    logger.info(<span class="st">&quot;Starting Schelling segregation model...&quot;</span>)</span>
+<span id="cb28-319"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-319" tabindex="-1"></a>    model <span class="op">=</span> run_schelling_model(<span class="op">**</span>CONFIG)</span>
+<span id="cb28-320"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#cb28-320" tabindex="-1"></a>    logger.info(<span class="st">&quot;Model execution completed.&quot;</span>)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="beyond-random-when-agents-learn-to-navigate-their-world.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/04-Schelling1.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/04-Schelling1.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
