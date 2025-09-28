@@ -65,3 +65,11 @@ policy-implications-and-interventions
 computational-considerations-and-future-directions
 connecting-theory-and-reality
 emergence-and-individual-responsibility
+an-economic-extension-of-the-schelling-segregation-model
+introduction-the-missing-economic-dimension
+redefining-agents-in-economic-terms
+emergent-dynamics-when-constraints-reshape-preferences
+research-applications-from-theory-to-policy
+methodological-innovations-and-extensions
+key-findings-the-economic-reality-of-social-sorting
+conclusion
