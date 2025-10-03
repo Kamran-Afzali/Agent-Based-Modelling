@@ -73,3 +73,12 @@ research-applications-from-theory-to-policy
 methodological-innovations-and-extensions
 key-findings-the-economic-reality-of-social-sorting
 conclusion
+space-matters-grids-neighborhoods-and-spatial-dynamics
+the-architecture-of-space-in-agent-based-models
+conways-game-of-life-emergence-from-simplicity
+patterns-structures-and-emergent-behaviors
+boundary-conditions-and-spatial-topology
+extending-the-framework-custom-rules-and-variations
+computational-complexity-and-performance-considerations
+connections-to-complex-systems-theory
+spatial-dynamics-and-future-directions
