@@ -82,3 +82,11 @@ extending-the-framework-custom-rules-and-variations
 computational-complexity-and-performance-considerations
 connections-to-complex-systems-theory
 spatial-dynamics-and-future-directions
+beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems
+mathematical-foundations-of-multi-state-systems
+implementation-architecture
+cyclic-dynamics-and-spatial-patterns
+parameter-sensitivity-and-system-stability
+complete-implementation-and-execution
+extensions-and-future-directions-1
+connecting-theory-to-reality
