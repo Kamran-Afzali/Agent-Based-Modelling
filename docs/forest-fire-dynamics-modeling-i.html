@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Forest Fire Dynamics Modeling I | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 9 Forest Fire Dynamics Modeling I | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Forest Fire Dynamics Modeling I | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Forest Fire Dynamics Modeling I | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-10-23" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"/>
+<link rel="next" href="forest-fire-dynamics-modeling-ii.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html"><i class="fa fa-check"></i><b>4</b> Beyond Random: When Agents Learn to Navigate Their World</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm"><i class="fa fa-check"></i><b>4.1</b> From Random to Rational: The Learning Paradigm</a></li>
+<li class="chapter" data-level="4.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards"><i class="fa fa-check"></i><b>4.2</b> Environmental Complexity: Resources and Hazards</a></li>
+<li class="chapter" data-level="4.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior"><i class="fa fa-check"></i><b>4.3</b> The Architecture of Adaptive Behavior</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma"><i class="fa fa-check"></i><b>4.3.1</b> The Exploration-Exploitation Dilemma</a></li>
+<li class="chapter" data-level="4.3.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making"><i class="fa fa-check"></i><b>4.3.2</b> Adaptive Decision Making</a></li>
+<li class="chapter" data-level="4.3.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience"><i class="fa fa-check"></i><b>4.3.3</b> Learning Through Experience</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity"><i class="fa fa-check"></i><b>4.4</b> Environmental Architecture and Complexity</a></li>
+<li class="chapter" data-level="4.5" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis"><i class="fa fa-check"></i><b>4.5</b> Comprehensive Data Collection and Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation"><i class="fa fa-check"></i><b>4.6</b> The Complete Learning Walker Implementation</a></li>
+<li class="chapter" data-level="4.7" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals"><i class="fa fa-check"></i><b>4.7</b> Emergent Intelligence: What the Data Reveals</a></li>
+<li class="chapter" data-level="4.8" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections"><i class="fa fa-check"></i><b>4.8</b> Research Implications and Real-World Connections</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions"><i class="fa fa-check"></i><b>4.8.1</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance"><i class="fa fa-check"></i><b>4.9</b> Computational Insights and Performance</a></li>
+<li class="chapter" data-level="4.10" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property"><i class="fa fa-check"></i><b>4.10</b> Conclusion: Intelligence as Emergent Property</a></li>
+<li class="chapter" data-level="4.11" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2"><i class="fa fa-check"></i><b>4.11</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html"><i class="fa fa-check"></i><b>5</b> From Random Walks to Social Segregation: The Schelling Model</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-mechanics-of-social-preference"><i class="fa fa-check"></i><b>5.1</b> The Mechanics of Social Preference</a></li>
+<li class="chapter" data-level="5.2" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#implementation-architecture-and-design-decisions"><i class="fa fa-check"></i><b>5.2</b> Implementation Architecture and Design Decisions</a></li>
+<li class="chapter" data-level="5.3" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-emergence-of-segregated-patterns"><i class="fa fa-check"></i><b>5.3</b> The Emergence of Segregated Patterns</a></li>
+<li class="chapter" data-level="5.4" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#quantifying-segregation-dynamics"><i class="fa fa-check"></i><b>5.4</b> Quantifying Segregation Dynamics</a></li>
+<li class="chapter" data-level="5.5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#extensions-and-variations"><i class="fa fa-check"></i><b>5.5</b> Extensions and Variations</a></li>
+<li class="chapter" data-level="5.6" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#policy-implications-and-interventions"><i class="fa fa-check"></i><b>5.6</b> Policy Implications and Interventions</a></li>
+<li class="chapter" data-level="5.7" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#computational-considerations-and-future-directions"><i class="fa fa-check"></i><b>5.7</b> Computational Considerations and Future Directions</a></li>
+<li class="chapter" data-level="5.8" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#connecting-theory-and-reality"><i class="fa fa-check"></i><b>5.8</b> Connecting Theory and Reality</a></li>
+<li class="chapter" data-level="5.9" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#emergence-and-individual-responsibility"><i class="fa fa-check"></i><b>5.9</b> Emergence and Individual Responsibility</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html"><i class="fa fa-check"></i><b>6</b> An Economic Extension of the Schelling Segregation Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#introduction-the-missing-economic-dimension"><i class="fa fa-check"></i><b>6.1</b> Introduction: The Missing Economic Dimension</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#redefining-agents-in-economic-terms"><i class="fa fa-check"></i><b>6.1.1</b> Redefining Agents in Economic Terms</a></li>
+<li class="chapter" data-level="6.1.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#emergent-dynamics-when-constraints-reshape-preferences"><i class="fa fa-check"></i><b>6.1.2</b> Emergent Dynamics: When Constraints Reshape Preferences</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#research-applications-from-theory-to-policy"><i class="fa fa-check"></i><b>6.2</b> Research Applications: From Theory to Policy</a></li>
+<li class="chapter" data-level="6.3" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#methodological-innovations-and-extensions"><i class="fa fa-check"></i><b>6.3</b> Methodological Innovations and Extensions</a></li>
+<li class="chapter" data-level="6.4" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#key-findings-the-economic-reality-of-social-sorting"><i class="fa fa-check"></i><b>6.4</b> Key Findings: The Economic Reality of Social Sorting</a></li>
+<li class="chapter" data-level="6.5" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#conclusion"><i class="fa fa-check"></i><b>6.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><i class="fa fa-check"></i><b>7</b> Space Matters: Grids, Neighborhoods, and Spatial Dynamics</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#the-architecture-of-space-in-agent-based-models"><i class="fa fa-check"></i><b>7.1</b> The Architecture of Space in Agent-Based Models</a></li>
+<li class="chapter" data-level="7.2" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#conways-game-of-life-emergence-from-simplicity"><i class="fa fa-check"></i><b>7.2</b> Conway’s Game of Life: Emergence from Simplicity</a></li>
+<li class="chapter" data-level="7.3" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#patterns-structures-and-emergent-behaviors"><i class="fa fa-check"></i><b>7.3</b> Patterns, Structures, and Emergent Behaviors</a></li>
+<li class="chapter" data-level="7.4" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#boundary-conditions-and-spatial-topology"><i class="fa fa-check"></i><b>7.4</b> Boundary Conditions and Spatial Topology</a></li>
+<li class="chapter" data-level="7.5" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#extending-the-framework-custom-rules-and-variations"><i class="fa fa-check"></i><b>7.5</b> Extending the Framework: Custom Rules and Variations</a></li>
+<li class="chapter" data-level="7.6" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#computational-complexity-and-performance-considerations"><i class="fa fa-check"></i><b>7.6</b> Computational Complexity and Performance Considerations</a></li>
+<li class="chapter" data-level="7.7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#connections-to-complex-systems-theory"><i class="fa fa-check"></i><b>7.7</b> Connections to Complex Systems Theory</a></li>
+<li class="chapter" data-level="7.8" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#spatial-dynamics-and-future-directions"><i class="fa fa-check"></i><b>7.8</b> Spatial Dynamics and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><i class="fa fa-check"></i><b>8</b> Beyond Binary: Multi-State Cellular Automata and Emergent Ecosystems</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#mathematical-foundations-of-multi-state-systems"><i class="fa fa-check"></i><b>8.1</b> Mathematical Foundations of Multi-State Systems</a></li>
+<li class="chapter" data-level="8.2" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#implementation-architecture"><i class="fa fa-check"></i><b>8.2</b> Implementation Architecture</a></li>
+<li class="chapter" data-level="8.3" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#cyclic-dynamics-and-spatial-patterns"><i class="fa fa-check"></i><b>8.3</b> Cyclic Dynamics and Spatial Patterns</a></li>
+<li class="chapter" data-level="8.4" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#parameter-sensitivity-and-system-stability"><i class="fa fa-check"></i><b>8.4</b> Parameter Sensitivity and System Stability</a></li>
+<li class="chapter" data-level="8.5" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#complete-implementation-and-execution"><i class="fa fa-check"></i><b>8.5</b> Complete Implementation and Execution</a></li>
+<li class="chapter" data-level="8.6" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#extensions-and-future-directions-1"><i class="fa fa-check"></i><b>8.6</b> Extensions and Future Directions</a></li>
+<li class="chapter" data-level="8.7" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#connecting-theory-to-reality"><i class="fa fa-check"></i><b>8.7</b> Connecting Theory to Reality</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html"><i class="fa fa-check"></i><b>9</b> Forest Fire Dynamics Modeling I</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#introduction-when-simple-rules-create-complex-patterns"><i class="fa fa-check"></i><b>9.1</b> Introduction: When Simple Rules Create Complex Patterns</a></li>
+<li class="chapter" data-level="9.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-forest-fire-model-four-states-infinite-possibilities"><i class="fa fa-check"></i><b>9.2</b> The Forest Fire Model: Four States, Infinite Possibilities</a></li>
+<li class="chapter" data-level="9.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#two-phase-evolution-separating-growth-from-fire"><i class="fa fa-check"></i><b>9.3</b> Two-Phase Evolution: Separating Growth from Fire</a></li>
+<li class="chapter" data-level="9.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#building-the-complete-model"><i class="fa fa-check"></i><b>9.4</b> Building the Complete Model</a></li>
+<li class="chapter" data-level="9.5" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#emergent-dynamics-self-organized-criticality"><i class="fa fa-check"></i><b>9.5</b> Emergent Dynamics: Self-Organized Criticality</a></li>
+<li class="chapter" data-level="9.6" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-critical-fire-spread-probability"><i class="fa fa-check"></i><b>9.6</b> The Critical Fire Spread Probability</a></li>
+<li class="chapter" data-level="9.7" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-patterns-forest-mosaics"><i class="fa fa-check"></i><b>9.7</b> Spatial Patterns: Forest Mosaics</a></li>
+<li class="chapter" data-level="9.8" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-oscillations-boom-and-bust-cycles"><i class="fa fa-check"></i><b>9.8</b> Temporal Oscillations: Boom and Bust Cycles</a></li>
+<li class="chapter" data-level="9.9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#equilibrium-and-stability"><i class="fa fa-check"></i><b>9.9</b> Equilibrium and Stability</a></li>
+<li class="chapter" data-level="9.10" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-from-theory-to-management"><i class="fa fa-check"></i><b>9.10</b> Applications: From Theory to Management</a>
+<ul>
+<li class="chapter" data-level="9.10.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#fuel-reduction-strategies"><i class="fa fa-check"></i><b>9.10.1</b> Fuel Reduction Strategies</a></li>
+<li class="chapter" data-level="9.10.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-scenarios"><i class="fa fa-check"></i><b>9.10.2</b> Climate Change Scenarios</a></li>
+<li class="chapter" data-level="9.10.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#firebreak-design"><i class="fa fa-check"></i><b>9.10.3</b> Firebreak Design</a></li>
+</ul></li>
+<li class="chapter" data-level="9.11" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-and-policy-implications"><i class="fa fa-check"></i><b>9.11</b> Applications and Policy Implications</a>
+<ul>
+<li class="chapter" data-level="9.11.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#forest-management-strategies"><i class="fa fa-check"></i><b>9.11.1</b> Forest Management Strategies</a></li>
+<li class="chapter" data-level="9.11.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-adaptation"><i class="fa fa-check"></i><b>9.11.2</b> Climate Change Adaptation</a></li>
+<li class="chapter" data-level="9.11.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conservation-planning"><i class="fa fa-check"></i><b>9.11.3</b> Conservation Planning</a></li>
+</ul></li>
+<li class="chapter" data-level="9.12" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#model-extensions-and-future-directions"><i class="fa fa-check"></i><b>9.12</b> Model Extensions and Future Directions</a>
+<ul>
+<li class="chapter" data-level="9.12.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-heterogeneity"><i class="fa fa-check"></i><b>9.12.1</b> Spatial Heterogeneity</a></li>
+<li class="chapter" data-level="9.12.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#multi-scale-dynamics"><i class="fa fa-check"></i><b>9.12.2</b> Multi-scale Dynamics</a></li>
+<li class="chapter" data-level="9.12.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#stochastic-fire-spread"><i class="fa fa-check"></i><b>9.12.3</b> Stochastic Fire Spread</a></li>
+</ul></li>
+<li class="chapter" data-level="9.13" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#limitations-and-model-assumptions"><i class="fa fa-check"></i><b>9.13</b> Limitations and Model Assumptions</a>
+<ul>
+<li class="chapter" data-level="9.13.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-resolution"><i class="fa fa-check"></i><b>9.13.1</b> Temporal Resolution</a></li>
+<li class="chapter" data-level="9.13.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-resolution"><i class="fa fa-check"></i><b>9.13.2</b> Spatial Resolution</a></li>
+<li class="chapter" data-level="9.13.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#deterministic-vs.-stochastic-elements"><i class="fa fa-check"></i><b>9.13.3</b> Deterministic vs. Stochastic Elements</a></li>
+<li class="chapter" data-level="9.13.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#human-dimensions"><i class="fa fa-check"></i><b>9.13.4</b> Human Dimensions</a></li>
+</ul></li>
+<li class="chapter" data-level="9.14" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conclusion-emergent-complexity-from-simple-rules"><i class="fa fa-check"></i><b>9.14</b> Conclusion: Emergent Complexity from Simple Rules</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html"><i class="fa fa-check"></i><b>10</b> Forest Fire Dynamics Modeling II</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#introduction-the-complex-dynamics-of-fire-suppression"><i class="fa fa-check"></i><b>10.1</b> Introduction: The Complex Dynamics of Fire Suppression</a></li>
+<li class="chapter" data-level="10.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#mathematical-framework-multi-agent-fire-suppression-dynamics"><i class="fa fa-check"></i><b>10.2</b> Mathematical Framework: Multi-Agent Fire-Suppression Dynamics</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#enhanced-state-space-definition"><i class="fa fa-check"></i><b>10.2.1</b> Enhanced State Space Definition</a></li>
+<li class="chapter" data-level="10.2.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-agent-dynamics"><i class="fa fa-check"></i><b>10.2.2</b> Firefighter Agent Dynamics</a></li>
+<li class="chapter" data-level="10.2.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#modified-fire-propagation-with-suppression"><i class="fa fa-check"></i><b>10.2.3</b> Modified Fire Propagation with Suppression</a></li>
+<li class="chapter" data-level="10.2.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-behavioral-rules"><i class="fa fa-check"></i><b>10.2.4</b> Firefighter Behavioral Rules</a></li>
+<li class="chapter" data-level="10.2.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-effects-on-fire-dynamics"><i class="fa fa-check"></i><b>10.2.5</b> Infrastructure Effects on Fire Dynamics</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-architecture-comparative-strategy-frameworks"><i class="fa fa-check"></i><b>10.3</b> Policy Architecture: Comparative Strategy Frameworks</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#reactive-suppression-policy"><i class="fa fa-check"></i><b>10.3.1</b> Reactive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#preventive-suppression-policy"><i class="fa fa-check"></i><b>10.3.2</b> Preventive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#aggressive-suppression-policy"><i class="fa fa-check"></i><b>10.3.3</b> Aggressive Suppression Policy</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#implementation-architecture-multi-phase-staged-activation"><i class="fa fa-check"></i><b>10.4</b> Implementation Architecture: Multi-Phase Staged Activation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#staged-temporal-dynamics"><i class="fa fa-check"></i><b>10.4.1</b> Staged Temporal Dynamics</a></li>
+<li class="chapter" data-level="10.4.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#multi-agent-coordination-mechanisms"><i class="fa fa-check"></i><b>10.4.2</b> Multi-Agent Coordination Mechanisms</a></li>
+<li class="chapter" data-level="10.4.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#state-machine-implementation"><i class="fa fa-check"></i><b>10.4.3</b> State Machine Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#emergent-dynamics-resource-allocation-and-spatial-coverage"><i class="fa fa-check"></i><b>10.5</b> Emergent Dynamics: Resource Allocation and Spatial Coverage</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#spatial-response-patterns"><i class="fa fa-check"></i><b>10.5.1</b> Spatial Response Patterns</a></li>
+<li class="chapter" data-level="10.5.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-resource-utilization"><i class="fa fa-check"></i><b>10.5.2</b> Temporal Resource Utilization</a></li>
+<li class="chapter" data-level="10.5.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#fire-size-distribution-effects"><i class="fa fa-check"></i><b>10.5.3</b> Fire Size Distribution Effects</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#performance-metrics-multi-objective-policy-evaluation"><i class="fa fa-check"></i><b>10.6</b> Performance Metrics: Multi-Objective Policy Evaluation</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#suppression-effectiveness-measures"><i class="fa fa-check"></i><b>10.6.1</b> Suppression Effectiveness Measures</a></li>
+<li class="chapter" data-level="10.6.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-efficiency-indicators"><i class="fa fa-check"></i><b>10.6.2</b> Resource Efficiency Indicators</a></li>
+<li class="chapter" data-level="10.6.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#economic-cost-considerations"><i class="fa fa-check"></i><b>10.6.3</b> Economic Cost Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="10.7" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#simulation-results-comparative-policy-analysis"><i class="fa fa-check"></i><b>10.7</b> Simulation Results: Comparative Policy Analysis</a>
+<ul>
+<li class="chapter" data-level="10.7.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#burned-area-performance"><i class="fa fa-check"></i><b>10.7.1</b> Burned Area Performance</a></li>
+<li class="chapter" data-level="10.7.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-dynamics-comparison"><i class="fa fa-check"></i><b>10.7.2</b> Temporal Dynamics Comparison</a></li>
+<li class="chapter" data-level="10.7.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-utilization-trade-offs"><i class="fa fa-check"></i><b>10.7.3</b> Resource Utilization Trade-offs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.8" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-implications-strategic-fire-management"><i class="fa fa-check"></i><b>10.8</b> Policy Implications: Strategic Fire Management</a>
+<ul>
+<li class="chapter" data-level="10.8.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#cost-benefit-optimization"><i class="fa fa-check"></i><b>10.8.1</b> Cost-Benefit Optimization</a></li>
+<li class="chapter" data-level="10.8.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-investment-strategies"><i class="fa fa-check"></i><b>10.8.2</b> Infrastructure Investment Strategies</a></li>
+<li class="chapter" data-level="10.8.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#adaptive-management-frameworks"><i class="fa fa-check"></i><b>10.8.3</b> Adaptive Management Frameworks</a></li>
+</ul></li>
+<li class="chapter" data-level="10.9" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#model-extensions-and-future-directions-1"><i class="fa fa-check"></i><b>10.9</b> Model Extensions and Future Directions</a></li>
+<li class="chapter" data-level="10.10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#limitations-and-critical-assessment"><i class="fa fa-check"></i><b>10.10</b> Limitations and Critical Assessment</a></li>
+<li class="chapter" data-level="10.11" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#conclusion-1"><i class="fa fa-check"></i><b>10.11</b> Conclusion</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="forest-fire-dynamics-modeling-i" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Forest Fire Dynamics Modeling I<a href="forest-fire-dynamics-modeling-i.html#forest-fire-dynamics-modeling-i" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-when-simple-rules-create-complex-patterns" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> Introduction: When Simple Rules Create Complex Patterns<a href="forest-fire-dynamics-modeling-i.html#introduction-when-simple-rules-create-complex-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine standing at the edge of a vast forest after a wildfire. The landscape tells a story: patches of green survivors, black scars of destruction, and empty clearings awaiting rebirth. This isn’t random chaos—it’s the signature of a complex adaptive system, where simple local interactions between trees, fire, and chance create intricate patterns spanning thousands of acres.</p>
+<p>Forest fires represent one of nature’s most dramatic examples of <strong>emergent behavior</strong>: sophisticated patterns arising from simple rules. While predicting exactly where fire will spread remains challenging, we can understand the fundamental principles governing fire dynamics through computational modeling. This post explores how cellular automata—grid-based models where each cell follows simple rules—reveal the hidden order within seemingly chaotic fire patterns.</p>
+</div>
+<div id="the-forest-fire-model-four-states-infinite-possibilities" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> The Forest Fire Model: Four States, Infinite Possibilities<a href="forest-fire-dynamics-modeling-i.html#the-forest-fire-model-four-states-infinite-possibilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The classical forest fire model, introduced by Drossel and Schwabl in 1992, reduces forest dynamics to their essence. Each location on a grid exists in one of four states:</p>
+<ul>
+<li><strong>Empty</strong> (E): Bare ground, ready for regrowth</li>
+<li><strong>Tree</strong> (T): Living vegetation that can burn</li>
+<li><strong>Fire</strong> (F): Active combustion</li>
+<li><strong>Burned</strong> (B): Recently consumed, temporarily barren</li>
+</ul>
+<p>These states transition according to three fundamental processes:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Growth</strong>: Empty cells sprout new trees with probability <code>p_g</code></li>
+<li><strong>Lightning</strong>: Trees ignite spontaneously with probability <code>p_l</code><br />
+</li>
+<li><strong>Spread</strong>: Fire jumps to neighboring trees with probability <code>p_f</code></li>
+</ol>
+<p>Let’s implement this in Python using the Mesa agent-based modeling framework:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="forest-fire-dynamics-modeling-i.html#cb46-1" tabindex="-1"></a><span class="im">from</span> enum <span class="im">import</span> Enum</span>
+<span id="cb46-2"><a href="forest-fire-dynamics-modeling-i.html#cb46-2" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb46-3"><a href="forest-fire-dynamics-modeling-i.html#cb46-3" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="forest-fire-dynamics-modeling-i.html#cb46-4" tabindex="-1"></a><span class="kw">class</span> TreeState(Enum):</span>
+<span id="cb46-5"><a href="forest-fire-dynamics-modeling-i.html#cb46-5" tabindex="-1"></a>    EMPTY <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb46-6"><a href="forest-fire-dynamics-modeling-i.html#cb46-6" tabindex="-1"></a>    TREE <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb46-7"><a href="forest-fire-dynamics-modeling-i.html#cb46-7" tabindex="-1"></a>    FIRE <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb46-8"><a href="forest-fire-dynamics-modeling-i.html#cb46-8" tabindex="-1"></a>    BURNED <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb46-9"><a href="forest-fire-dynamics-modeling-i.html#cb46-9" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="forest-fire-dynamics-modeling-i.html#cb46-10" tabindex="-1"></a><span class="kw">class</span> TreeAgent:</span>
+<span id="cb46-11"><a href="forest-fire-dynamics-modeling-i.html#cb46-11" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model):</span>
+<span id="cb46-12"><a href="forest-fire-dynamics-modeling-i.html#cb46-12" tabindex="-1"></a>        <span class="va">self</span>.unique_id <span class="op">=</span> unique_id</span>
+<span id="cb46-13"><a href="forest-fire-dynamics-modeling-i.html#cb46-13" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> model</span>
+<span id="cb46-14"><a href="forest-fire-dynamics-modeling-i.html#cb46-14" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> TreeState.EMPTY</span>
+<span id="cb46-15"><a href="forest-fire-dynamics-modeling-i.html#cb46-15" tabindex="-1"></a>        <span class="va">self</span>.age <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>Each cell is an autonomous agent tracking its current state and age. This simple structure enables surprisingly rich dynamics.</p>
+</div>
+<div id="two-phase-evolution-separating-growth-from-fire" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> Two-Phase Evolution: Separating Growth from Fire<a href="forest-fire-dynamics-modeling-i.html#two-phase-evolution-separating-growth-from-fire" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model’s temporal evolution uses a <strong>staged activation</strong> protocol—a critical design choice that prevents artifacts from update ordering. Without staging, cells updated early in a timestep would influence those updated later, breaking the synchronous nature of cellular automata.</p>
+<p>We separate each timestep into two phases:</p>
+<p><strong>Phase 1 - Growth</strong>: Trees grow on empty land, existing trees age</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="forest-fire-dynamics-modeling-i.html#cb47-1" tabindex="-1"></a><span class="kw">def</span> growth_step(<span class="va">self</span>):</span>
+<span id="cb47-2"><a href="forest-fire-dynamics-modeling-i.html#cb47-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Trees grow probabilistically on empty cells&quot;&quot;&quot;</span></span>
+<span id="cb47-3"><a href="forest-fire-dynamics-modeling-i.html#cb47-3" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> TreeState.EMPTY:</span>
+<span id="cb47-4"><a href="forest-fire-dynamics-modeling-i.html#cb47-4" tabindex="-1"></a>        <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.growth_rate:</span>
+<span id="cb47-5"><a href="forest-fire-dynamics-modeling-i.html#cb47-5" tabindex="-1"></a>            <span class="va">self</span>.state <span class="op">=</span> TreeState.TREE</span>
+<span id="cb47-6"><a href="forest-fire-dynamics-modeling-i.html#cb47-6" tabindex="-1"></a>            <span class="va">self</span>.age <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-7"><a href="forest-fire-dynamics-modeling-i.html#cb47-7" tabindex="-1"></a>    <span class="cf">elif</span> <span class="va">self</span>.state <span class="op">==</span> TreeState.TREE:</span>
+<span id="cb47-8"><a href="forest-fire-dynamics-modeling-i.html#cb47-8" tabindex="-1"></a>        <span class="va">self</span>.age <span class="op">+=</span> <span class="dv">1</span>  <span class="co"># Track forest maturity</span></span></code></pre></div>
+<p><strong>Phase 2 - Fire</strong>: Burning cells become burned, fires spread to neighbors, lightning strikes occur</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="forest-fire-dynamics-modeling-i.html#cb48-1" tabindex="-1"></a><span class="kw">def</span> fire_step(<span class="va">self</span>):</span>
+<span id="cb48-2"><a href="forest-fire-dynamics-modeling-i.html#cb48-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Fire spreads and burns out&quot;&quot;&quot;</span></span>
+<span id="cb48-3"><a href="forest-fire-dynamics-modeling-i.html#cb48-3" tabindex="-1"></a>    <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> TreeState.FIRE:</span>
+<span id="cb48-4"><a href="forest-fire-dynamics-modeling-i.html#cb48-4" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> TreeState.BURNED  <span class="co"># Fire burns out after one step</span></span>
+<span id="cb48-5"><a href="forest-fire-dynamics-modeling-i.html#cb48-5" tabindex="-1"></a>        </span>
+<span id="cb48-6"><a href="forest-fire-dynamics-modeling-i.html#cb48-6" tabindex="-1"></a>    <span class="cf">elif</span> <span class="va">self</span>.state <span class="op">==</span> TreeState.TREE:</span>
+<span id="cb48-7"><a href="forest-fire-dynamics-modeling-i.html#cb48-7" tabindex="-1"></a>        <span class="co"># Check if fire spreads from burning neighbors</span></span>
+<span id="cb48-8"><a href="forest-fire-dynamics-modeling-i.html#cb48-8" tabindex="-1"></a>        neighbors <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighbors(</span>
+<span id="cb48-9"><a href="forest-fire-dynamics-modeling-i.html#cb48-9" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb48-10"><a href="forest-fire-dynamics-modeling-i.html#cb48-10" tabindex="-1"></a>        )</span>
+<span id="cb48-11"><a href="forest-fire-dynamics-modeling-i.html#cb48-11" tabindex="-1"></a>        </span>
+<span id="cb48-12"><a href="forest-fire-dynamics-modeling-i.html#cb48-12" tabindex="-1"></a>        <span class="cf">for</span> neighbor <span class="kw">in</span> neighbors:</span>
+<span id="cb48-13"><a href="forest-fire-dynamics-modeling-i.html#cb48-13" tabindex="-1"></a>            <span class="cf">if</span> neighbor.state <span class="op">==</span> TreeState.FIRE:</span>
+<span id="cb48-14"><a href="forest-fire-dynamics-modeling-i.html#cb48-14" tabindex="-1"></a>                <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.fire_spread_rate:</span>
+<span id="cb48-15"><a href="forest-fire-dynamics-modeling-i.html#cb48-15" tabindex="-1"></a>                    <span class="va">self</span>.state <span class="op">=</span> TreeState.FIRE</span>
+<span id="cb48-16"><a href="forest-fire-dynamics-modeling-i.html#cb48-16" tabindex="-1"></a>                    <span class="cf">return</span>  <span class="co"># Already ignited, no need to check lightning</span></span>
+<span id="cb48-17"><a href="forest-fire-dynamics-modeling-i.html#cb48-17" tabindex="-1"></a>        </span>
+<span id="cb48-18"><a href="forest-fire-dynamics-modeling-i.html#cb48-18" tabindex="-1"></a>        <span class="co"># Random lightning strikes</span></span>
+<span id="cb48-19"><a href="forest-fire-dynamics-modeling-i.html#cb48-19" tabindex="-1"></a>        <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.lightning_rate:</span>
+<span id="cb48-20"><a href="forest-fire-dynamics-modeling-i.html#cb48-20" tabindex="-1"></a>            <span class="va">self</span>.state <span class="op">=</span> TreeState.FIRE</span></code></pre></div>
+<p>This staged approach ensures all cells evaluate their state based on the <em>previous</em> timestep’s configuration, maintaining mathematical consistency.</p>
+</div>
+<div id="building-the-complete-model" class="section level2 hasAnchor" number="9.4">
+<h2><span class="header-section-number">9.4</span> Building the Complete Model<a href="forest-fire-dynamics-modeling-i.html#building-the-complete-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Let’s construct the full forest fire simulation:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="forest-fire-dynamics-modeling-i.html#cb49-1" tabindex="-1"></a><span class="im">import</span> mesa</span>
+<span id="cb49-2"><a href="forest-fire-dynamics-modeling-i.html#cb49-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb49-3"><a href="forest-fire-dynamics-modeling-i.html#cb49-3" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="forest-fire-dynamics-modeling-i.html#cb49-4" tabindex="-1"></a><span class="kw">class</span> ForestFireModel(mesa.Model):</span>
+<span id="cb49-5"><a href="forest-fire-dynamics-modeling-i.html#cb49-5" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, width<span class="op">=</span><span class="dv">100</span>, height<span class="op">=</span><span class="dv">100</span>, </span>
+<span id="cb49-6"><a href="forest-fire-dynamics-modeling-i.html#cb49-6" tabindex="-1"></a>                 growth_rate<span class="op">=</span><span class="fl">0.01</span>, </span>
+<span id="cb49-7"><a href="forest-fire-dynamics-modeling-i.html#cb49-7" tabindex="-1"></a>                 fire_spread_rate<span class="op">=</span><span class="fl">0.7</span>, </span>
+<span id="cb49-8"><a href="forest-fire-dynamics-modeling-i.html#cb49-8" tabindex="-1"></a>                 lightning_rate<span class="op">=</span><span class="fl">0.0001</span>):</span>
+<span id="cb49-9"><a href="forest-fire-dynamics-modeling-i.html#cb49-9" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb49-10"><a href="forest-fire-dynamics-modeling-i.html#cb49-10" tabindex="-1"></a>        </span>
+<span id="cb49-11"><a href="forest-fire-dynamics-modeling-i.html#cb49-11" tabindex="-1"></a>        <span class="co"># Model parameters</span></span>
+<span id="cb49-12"><a href="forest-fire-dynamics-modeling-i.html#cb49-12" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb49-13"><a href="forest-fire-dynamics-modeling-i.html#cb49-13" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb49-14"><a href="forest-fire-dynamics-modeling-i.html#cb49-14" tabindex="-1"></a>        <span class="va">self</span>.growth_rate <span class="op">=</span> growth_rate</span>
+<span id="cb49-15"><a href="forest-fire-dynamics-modeling-i.html#cb49-15" tabindex="-1"></a>        <span class="va">self</span>.fire_spread_rate <span class="op">=</span> fire_spread_rate</span>
+<span id="cb49-16"><a href="forest-fire-dynamics-modeling-i.html#cb49-16" tabindex="-1"></a>        <span class="va">self</span>.lightning_rate <span class="op">=</span> lightning_rate</span>
+<span id="cb49-17"><a href="forest-fire-dynamics-modeling-i.html#cb49-17" tabindex="-1"></a>        </span>
+<span id="cb49-18"><a href="forest-fire-dynamics-modeling-i.html#cb49-18" tabindex="-1"></a>        <span class="co"># Spatial grid</span></span>
+<span id="cb49-19"><a href="forest-fire-dynamics-modeling-i.html#cb49-19" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> mesa.space.MultiGrid(width, height, torus<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb49-20"><a href="forest-fire-dynamics-modeling-i.html#cb49-20" tabindex="-1"></a>        </span>
+<span id="cb49-21"><a href="forest-fire-dynamics-modeling-i.html#cb49-21" tabindex="-1"></a>        <span class="co"># Staged scheduler: growth phase, then fire phase</span></span>
+<span id="cb49-22"><a href="forest-fire-dynamics-modeling-i.html#cb49-22" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> mesa.time.StagedActivation(</span>
+<span id="cb49-23"><a href="forest-fire-dynamics-modeling-i.html#cb49-23" tabindex="-1"></a>            <span class="va">self</span>, </span>
+<span id="cb49-24"><a href="forest-fire-dynamics-modeling-i.html#cb49-24" tabindex="-1"></a>            stage_list<span class="op">=</span>[<span class="st">&quot;growth_step&quot;</span>, <span class="st">&quot;fire_step&quot;</span>],</span>
+<span id="cb49-25"><a href="forest-fire-dynamics-modeling-i.html#cb49-25" tabindex="-1"></a>            shuffle<span class="op">=</span><span class="va">True</span></span>
+<span id="cb49-26"><a href="forest-fire-dynamics-modeling-i.html#cb49-26" tabindex="-1"></a>        )</span>
+<span id="cb49-27"><a href="forest-fire-dynamics-modeling-i.html#cb49-27" tabindex="-1"></a>        </span>
+<span id="cb49-28"><a href="forest-fire-dynamics-modeling-i.html#cb49-28" tabindex="-1"></a>        <span class="co"># Create agents</span></span>
+<span id="cb49-29"><a href="forest-fire-dynamics-modeling-i.html#cb49-29" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(width):</span>
+<span id="cb49-30"><a href="forest-fire-dynamics-modeling-i.html#cb49-30" tabindex="-1"></a>            <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(height):</span>
+<span id="cb49-31"><a href="forest-fire-dynamics-modeling-i.html#cb49-31" tabindex="-1"></a>                agent <span class="op">=</span> TreeAgent(x <span class="op">*</span> height <span class="op">+</span> y, <span class="va">self</span>)</span>
+<span id="cb49-32"><a href="forest-fire-dynamics-modeling-i.html#cb49-32" tabindex="-1"></a>                <span class="va">self</span>.grid.place_agent(agent, (x, y))</span>
+<span id="cb49-33"><a href="forest-fire-dynamics-modeling-i.html#cb49-33" tabindex="-1"></a>                <span class="va">self</span>.schedule.add(agent)</span>
+<span id="cb49-34"><a href="forest-fire-dynamics-modeling-i.html#cb49-34" tabindex="-1"></a>                </span>
+<span id="cb49-35"><a href="forest-fire-dynamics-modeling-i.html#cb49-35" tabindex="-1"></a>                <span class="co"># Initialize with 30% tree cover</span></span>
+<span id="cb49-36"><a href="forest-fire-dynamics-modeling-i.html#cb49-36" tabindex="-1"></a>                <span class="cf">if</span> random.random() <span class="op">&lt;</span> <span class="fl">0.3</span>:</span>
+<span id="cb49-37"><a href="forest-fire-dynamics-modeling-i.html#cb49-37" tabindex="-1"></a>                    agent.state <span class="op">=</span> TreeState.TREE</span>
+<span id="cb49-38"><a href="forest-fire-dynamics-modeling-i.html#cb49-38" tabindex="-1"></a>        </span>
+<span id="cb49-39"><a href="forest-fire-dynamics-modeling-i.html#cb49-39" tabindex="-1"></a>        <span class="co"># Track population dynamics over time</span></span>
+<span id="cb49-40"><a href="forest-fire-dynamics-modeling-i.html#cb49-40" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> mesa.DataCollector(</span>
+<span id="cb49-41"><a href="forest-fire-dynamics-modeling-i.html#cb49-41" tabindex="-1"></a>            model_reporters<span class="op">=</span>{</span>
+<span id="cb49-42"><a href="forest-fire-dynamics-modeling-i.html#cb49-42" tabindex="-1"></a>                <span class="st">&quot;Trees&quot;</span>: <span class="kw">lambda</span> m: <span class="va">self</span>.count_state(m, TreeState.TREE),</span>
+<span id="cb49-43"><a href="forest-fire-dynamics-modeling-i.html#cb49-43" tabindex="-1"></a>                <span class="st">&quot;Fires&quot;</span>: <span class="kw">lambda</span> m: <span class="va">self</span>.count_state(m, TreeState.FIRE),</span>
+<span id="cb49-44"><a href="forest-fire-dynamics-modeling-i.html#cb49-44" tabindex="-1"></a>                <span class="st">&quot;Burned&quot;</span>: <span class="kw">lambda</span> m: <span class="va">self</span>.count_state(m, TreeState.BURNED)</span>
+<span id="cb49-45"><a href="forest-fire-dynamics-modeling-i.html#cb49-45" tabindex="-1"></a>            }</span>
+<span id="cb49-46"><a href="forest-fire-dynamics-modeling-i.html#cb49-46" tabindex="-1"></a>        )</span>
+<span id="cb49-47"><a href="forest-fire-dynamics-modeling-i.html#cb49-47" tabindex="-1"></a>        </span>
+<span id="cb49-48"><a href="forest-fire-dynamics-modeling-i.html#cb49-48" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb49-49"><a href="forest-fire-dynamics-modeling-i.html#cb49-49" tabindex="-1"></a>    <span class="kw">def</span> count_state(model, state):</span>
+<span id="cb49-50"><a href="forest-fire-dynamics-modeling-i.html#cb49-50" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> a <span class="kw">in</span> model.schedule.agents <span class="cf">if</span> a.state <span class="op">==</span> state)</span>
+<span id="cb49-51"><a href="forest-fire-dynamics-modeling-i.html#cb49-51" tabindex="-1"></a>    </span>
+<span id="cb49-52"><a href="forest-fire-dynamics-modeling-i.html#cb49-52" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb49-53"><a href="forest-fire-dynamics-modeling-i.html#cb49-53" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Execute one timestep&quot;&quot;&quot;</span></span>
+<span id="cb49-54"><a href="forest-fire-dynamics-modeling-i.html#cb49-54" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb49-55"><a href="forest-fire-dynamics-modeling-i.html#cb49-55" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span></code></pre></div>
+</div>
+<div id="emergent-dynamics-self-organized-criticality" class="section level2 hasAnchor" number="9.5">
+<h2><span class="header-section-number">9.5</span> Emergent Dynamics: Self-Organized Criticality<a href="forest-fire-dynamics-modeling-i.html#emergent-dynamics-self-organized-criticality" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When you run this model, something remarkable happens. The system doesn’t settle into a boring steady state. Instead, it exhibits <strong>self-organized criticality</strong>—the forest naturally evolves toward a critical threshold where small perturbations (a single lightning strike) can trigger avalanches of change (massive fires).</p>
+<p>Here’s what a typical simulation reveals:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="forest-fire-dynamics-modeling-i.html#cb50-1" tabindex="-1"></a><span class="kw">def</span> analyze_fire_sizes(model, steps<span class="op">=</span><span class="dv">5000</span>):</span>
+<span id="cb50-2"><a href="forest-fire-dynamics-modeling-i.html#cb50-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Track the size distribution of fire events&quot;&quot;&quot;</span></span>
+<span id="cb50-3"><a href="forest-fire-dynamics-modeling-i.html#cb50-3" tabindex="-1"></a>    fire_sizes <span class="op">=</span> []</span>
+<span id="cb50-4"><a href="forest-fire-dynamics-modeling-i.html#cb50-4" tabindex="-1"></a>    current_fire_size <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb50-5"><a href="forest-fire-dynamics-modeling-i.html#cb50-5" tabindex="-1"></a>    </span>
+<span id="cb50-6"><a href="forest-fire-dynamics-modeling-i.html#cb50-6" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb50-7"><a href="forest-fire-dynamics-modeling-i.html#cb50-7" tabindex="-1"></a>        fires_before <span class="op">=</span> model.count_state(model, TreeState.FIRE)</span>
+<span id="cb50-8"><a href="forest-fire-dynamics-modeling-i.html#cb50-8" tabindex="-1"></a>        model.step()</span>
+<span id="cb50-9"><a href="forest-fire-dynamics-modeling-i.html#cb50-9" tabindex="-1"></a>        fires_after <span class="op">=</span> model.count_state(model, TreeState.FIRE)</span>
+<span id="cb50-10"><a href="forest-fire-dynamics-modeling-i.html#cb50-10" tabindex="-1"></a>        </span>
+<span id="cb50-11"><a href="forest-fire-dynamics-modeling-i.html#cb50-11" tabindex="-1"></a>        <span class="cf">if</span> fires_after <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb50-12"><a href="forest-fire-dynamics-modeling-i.html#cb50-12" tabindex="-1"></a>            current_fire_size <span class="op">+=</span> fires_after</span>
+<span id="cb50-13"><a href="forest-fire-dynamics-modeling-i.html#cb50-13" tabindex="-1"></a>        <span class="cf">elif</span> current_fire_size <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb50-14"><a href="forest-fire-dynamics-modeling-i.html#cb50-14" tabindex="-1"></a>            fire_sizes.append(current_fire_size)</span>
+<span id="cb50-15"><a href="forest-fire-dynamics-modeling-i.html#cb50-15" tabindex="-1"></a>            current_fire_size <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb50-16"><a href="forest-fire-dynamics-modeling-i.html#cb50-16" tabindex="-1"></a>    </span>
+<span id="cb50-17"><a href="forest-fire-dynamics-modeling-i.html#cb50-17" tabindex="-1"></a>    <span class="cf">return</span> fire_sizes</span></code></pre></div>
+<p>When you plot fire size distributions, you often see a <strong>power law</strong>: many small fires and occasional catastrophic ones. This scale-invariant pattern appears throughout nature—from earthquakes to avalanches—and signals that the system operates at a critical point.</p>
+</div>
+<div id="the-critical-fire-spread-probability" class="section level2 hasAnchor" number="9.6">
+<h2><span class="header-section-number">9.6</span> The Critical Fire Spread Probability<a href="forest-fire-dynamics-modeling-i.html#the-critical-fire-spread-probability" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model’s behavior transforms dramatically at a critical fire spread probability, <strong>p_f^c</strong>. This phase transition separates two distinct regimes:</p>
+<p><strong>Subcritical</strong> (p_f &lt; p_f^c): Fires remain localized, burning small patches before dying out. The forest maintains high tree density with frequent small disturbances.</p>
+<p><strong>Supercritical</strong> (p_f &gt; p_f^c): Fires percolate across the landscape, creating system-spanning burns. Tree density crashes during major events, then slowly recovers.</p>
+<p>The critical value depends on the grid’s connectivity. For the Moore neighborhood (8 neighbors), it’s approximately:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="forest-fire-dynamics-modeling-i.html#cb51-1" tabindex="-1"></a><span class="kw">def</span> estimate_critical_probability(grid_type<span class="op">=</span><span class="st">&#39;moore&#39;</span>):</span>
+<span id="cb51-2"><a href="forest-fire-dynamics-modeling-i.html#cb51-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Estimate percolation threshold&quot;&quot;&quot;</span></span>
+<span id="cb51-3"><a href="forest-fire-dynamics-modeling-i.html#cb51-3" tabindex="-1"></a>    <span class="cf">if</span> grid_type <span class="op">==</span> <span class="st">&#39;moore&#39;</span>:</span>
+<span id="cb51-4"><a href="forest-fire-dynamics-modeling-i.html#cb51-4" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">1.0</span> <span class="op">/</span> <span class="dv">8</span>  <span class="co"># ~0.125 for 8-connected grid</span></span>
+<span id="cb51-5"><a href="forest-fire-dynamics-modeling-i.html#cb51-5" tabindex="-1"></a>    <span class="cf">elif</span> grid_type <span class="op">==</span> <span class="st">&#39;von_neumann&#39;</span>:</span>
+<span id="cb51-6"><a href="forest-fire-dynamics-modeling-i.html#cb51-6" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">1.0</span> <span class="op">/</span> <span class="dv">4</span>  <span class="co"># ~0.25 for 4-connected grid</span></span></code></pre></div>
+<p>However, the interplay of growth and lightning creates complex dynamics that shift this threshold in practice.</p>
+</div>
+<div id="spatial-patterns-forest-mosaics" class="section level2 hasAnchor" number="9.7">
+<h2><span class="header-section-number">9.7</span> Spatial Patterns: Forest Mosaics<a href="forest-fire-dynamics-modeling-i.html#spatial-patterns-forest-mosaics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model generates striking spatial patterns. After a large fire event, the landscape resembles a patchwork quilt:</p>
+<ul>
+<li><strong>Fire scars</strong>: Contiguous burned areas marking where flames spread</li>
+<li><strong>Survivor patches</strong>: Isolated tree clusters that escaped ignition</li>
+<li><strong>Recovery zones</strong>: Young forests regrowing on old burn scars</li>
+</ul>
+<p>These patterns aren’t random—they reflect the spatial correlation inherent in fire spread. Trees cluster because empty spaces between them act as firebreaks. When fire does arrive, these dense clusters provide connected fuel that enables rapid propagation.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="forest-fire-dynamics-modeling-i.html#cb52-1" tabindex="-1"></a><span class="kw">def</span> calculate_spatial_correlation(model, distance_range<span class="op">=</span><span class="dv">20</span>):</span>
+<span id="cb52-2"><a href="forest-fire-dynamics-modeling-i.html#cb52-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Measure how tree presence correlates with distance&quot;&quot;&quot;</span></span>
+<span id="cb52-3"><a href="forest-fire-dynamics-modeling-i.html#cb52-3" tabindex="-1"></a>    correlations <span class="op">=</span> []</span>
+<span id="cb52-4"><a href="forest-fire-dynamics-modeling-i.html#cb52-4" tabindex="-1"></a>    </span>
+<span id="cb52-5"><a href="forest-fire-dynamics-modeling-i.html#cb52-5" tabindex="-1"></a>    <span class="cf">for</span> distance <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, distance_range):</span>
+<span id="cb52-6"><a href="forest-fire-dynamics-modeling-i.html#cb52-6" tabindex="-1"></a>        correlation_sum <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb52-7"><a href="forest-fire-dynamics-modeling-i.html#cb52-7" tabindex="-1"></a>        sample_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb52-8"><a href="forest-fire-dynamics-modeling-i.html#cb52-8" tabindex="-1"></a>        </span>
+<span id="cb52-9"><a href="forest-fire-dynamics-modeling-i.html#cb52-9" tabindex="-1"></a>        <span class="co"># Sample random cell pairs at this distance</span></span>
+<span id="cb52-10"><a href="forest-fire-dynamics-modeling-i.html#cb52-10" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
+<span id="cb52-11"><a href="forest-fire-dynamics-modeling-i.html#cb52-11" tabindex="-1"></a>            x1, y1 <span class="op">=</span> random.randint(<span class="dv">0</span>, model.width<span class="op">-</span><span class="dv">1</span>), random.randint(<span class="dv">0</span>, model.height<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb52-12"><a href="forest-fire-dynamics-modeling-i.html#cb52-12" tabindex="-1"></a>            angle <span class="op">=</span> random.uniform(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span> np.pi)</span>
+<span id="cb52-13"><a href="forest-fire-dynamics-modeling-i.html#cb52-13" tabindex="-1"></a>            x2 <span class="op">=</span> <span class="bu">int</span>(x1 <span class="op">+</span> distance <span class="op">*</span> np.cos(angle))</span>
+<span id="cb52-14"><a href="forest-fire-dynamics-modeling-i.html#cb52-14" tabindex="-1"></a>            y2 <span class="op">=</span> <span class="bu">int</span>(y1 <span class="op">+</span> distance <span class="op">*</span> np.sin(angle))</span>
+<span id="cb52-15"><a href="forest-fire-dynamics-modeling-i.html#cb52-15" tabindex="-1"></a>            </span>
+<span id="cb52-16"><a href="forest-fire-dynamics-modeling-i.html#cb52-16" tabindex="-1"></a>            <span class="cf">if</span> <span class="dv">0</span> <span class="op">&lt;=</span> x2 <span class="op">&lt;</span> model.width <span class="kw">and</span> <span class="dv">0</span> <span class="op">&lt;=</span> y2 <span class="op">&lt;</span> model.height:</span>
+<span id="cb52-17"><a href="forest-fire-dynamics-modeling-i.html#cb52-17" tabindex="-1"></a>                agent1 <span class="op">=</span> model.grid.get_cell_list_contents((x1, y1))[<span class="dv">0</span>]</span>
+<span id="cb52-18"><a href="forest-fire-dynamics-modeling-i.html#cb52-18" tabindex="-1"></a>                agent2 <span class="op">=</span> model.grid.get_cell_list_contents((x2, y2))[<span class="dv">0</span>]</span>
+<span id="cb52-19"><a href="forest-fire-dynamics-modeling-i.html#cb52-19" tabindex="-1"></a>                </span>
+<span id="cb52-20"><a href="forest-fire-dynamics-modeling-i.html#cb52-20" tabindex="-1"></a>                <span class="co"># Both trees = 1, otherwise 0</span></span>
+<span id="cb52-21"><a href="forest-fire-dynamics-modeling-i.html#cb52-21" tabindex="-1"></a>                both_trees <span class="op">=</span> <span class="bu">int</span>(agent1.state <span class="op">==</span> TreeState.TREE <span class="kw">and</span> </span>
+<span id="cb52-22"><a href="forest-fire-dynamics-modeling-i.html#cb52-22" tabindex="-1"></a>                               agent2.state <span class="op">==</span> TreeState.TREE)</span>
+<span id="cb52-23"><a href="forest-fire-dynamics-modeling-i.html#cb52-23" tabindex="-1"></a>                correlation_sum <span class="op">+=</span> both_trees</span>
+<span id="cb52-24"><a href="forest-fire-dynamics-modeling-i.html#cb52-24" tabindex="-1"></a>                sample_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb52-25"><a href="forest-fire-dynamics-modeling-i.html#cb52-25" tabindex="-1"></a>        </span>
+<span id="cb52-26"><a href="forest-fire-dynamics-modeling-i.html#cb52-26" tabindex="-1"></a>        correlations.append(correlation_sum <span class="op">/</span> sample_count <span class="cf">if</span> sample_count <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span>)</span>
+<span id="cb52-27"><a href="forest-fire-dynamics-modeling-i.html#cb52-27" tabindex="-1"></a>    </span>
+<span id="cb52-28"><a href="forest-fire-dynamics-modeling-i.html#cb52-28" tabindex="-1"></a>    <span class="cf">return</span> correlations</span></code></pre></div>
+</div>
+<div id="temporal-oscillations-boom-and-bust-cycles" class="section level2 hasAnchor" number="9.8">
+<h2><span class="header-section-number">9.8</span> Temporal Oscillations: Boom and Bust Cycles<a href="forest-fire-dynamics-modeling-i.html#temporal-oscillations-boom-and-bust-cycles" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Long-term dynamics reveal quasi-periodic oscillations—alternating phases of forest accumulation and catastrophic fire:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Accumulation phase</strong>: Trees grow and spread, connectivity increases</li>
+<li><strong>Critical buildup</strong>: Dense fuel loads make the landscape highly flammable<br />
+</li>
+<li><strong>Trigger event</strong>: Lightning strike initiates fire in the mature forest</li>
+<li><strong>Catastrophic burn</strong>: Fire spreads rapidly through connected fuel</li>
+<li><strong>Reset</strong>: Landscape returns to sparse cover, cycle restarts</li>
+</ol>
+<p>The characteristic timescale of these cycles depends on parameter ratios:</p>
+<p><strong>τ_cycle ≈ (1/p_l) × ln(1/p_g) / p_f</strong></p>
+<ul>
+<li><strong>1/p_l</strong>: Average waiting time between lightning strikes</li>
+<li><strong>ln(1/p_g)</strong>: Time to rebuild forest density</li>
+<li><strong>1/p_f</strong>: Inverse fire efficiency</li>
+</ul>
+<p>For typical parameters (p_g=0.01, p_f=0.7, p_l=0.0001), cycles span hundreds to thousands of timesteps.</p>
+</div>
+<div id="equilibrium-and-stability" class="section level2 hasAnchor" number="9.9">
+<h2><span class="header-section-number">9.9</span> Equilibrium and Stability<a href="forest-fire-dynamics-modeling-i.html#equilibrium-and-stability" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Despite oscillations, the system exhibits a dynamic equilibrium where average tree density stabilizes. A mean-field approximation estimates:</p>
+<p><strong>ρ_T* = p_g / (p_g + p_l + ⟨p_spread⟩)</strong></p>
+<p>Here, <strong>⟨p_spread⟩</strong> represents the effective fire spread rate accounting for spatial correlations. This equilibrium balances growth (which increases tree density) against mortality from lightning and neighbor-induced fire.</p>
+<p>The stability of this equilibrium determines whether perturbations dissipate or amplify:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="forest-fire-dynamics-modeling-i.html#cb53-1" tabindex="-1"></a><span class="kw">def</span> analyze_stability(model, perturbation_size<span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb53-2"><a href="forest-fire-dynamics-modeling-i.html#cb53-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Test response to density perturbations&quot;&quot;&quot;</span></span>
+<span id="cb53-3"><a href="forest-fire-dynamics-modeling-i.html#cb53-3" tabindex="-1"></a>    <span class="co"># Reach equilibrium</span></span>
+<span id="cb53-4"><a href="forest-fire-dynamics-modeling-i.html#cb53-4" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
+<span id="cb53-5"><a href="forest-fire-dynamics-modeling-i.html#cb53-5" tabindex="-1"></a>        model.step()</span>
+<span id="cb53-6"><a href="forest-fire-dynamics-modeling-i.html#cb53-6" tabindex="-1"></a>    </span>
+<span id="cb53-7"><a href="forest-fire-dynamics-modeling-i.html#cb53-7" tabindex="-1"></a>    baseline_density <span class="op">=</span> model.count_state(model, TreeState.TREE) <span class="op">/</span> (model.width <span class="op">*</span> model.height)</span>
+<span id="cb53-8"><a href="forest-fire-dynamics-modeling-i.html#cb53-8" tabindex="-1"></a>    </span>
+<span id="cb53-9"><a href="forest-fire-dynamics-modeling-i.html#cb53-9" tabindex="-1"></a>    <span class="co"># Introduce perturbation: randomly remove trees</span></span>
+<span id="cb53-10"><a href="forest-fire-dynamics-modeling-i.html#cb53-10" tabindex="-1"></a>    agents_to_perturb <span class="op">=</span> random.sample(</span>
+<span id="cb53-11"><a href="forest-fire-dynamics-modeling-i.html#cb53-11" tabindex="-1"></a>        [a <span class="cf">for</span> a <span class="kw">in</span> model.schedule.agents <span class="cf">if</span> a.state <span class="op">==</span> TreeState.TREE],</span>
+<span id="cb53-12"><a href="forest-fire-dynamics-modeling-i.html#cb53-12" tabindex="-1"></a>        <span class="bu">int</span>(perturbation_size <span class="op">*</span> model.width <span class="op">*</span> model.height)</span>
+<span id="cb53-13"><a href="forest-fire-dynamics-modeling-i.html#cb53-13" tabindex="-1"></a>    )</span>
+<span id="cb53-14"><a href="forest-fire-dynamics-modeling-i.html#cb53-14" tabindex="-1"></a>    <span class="cf">for</span> agent <span class="kw">in</span> agents_to_perturb:</span>
+<span id="cb53-15"><a href="forest-fire-dynamics-modeling-i.html#cb53-15" tabindex="-1"></a>        agent.state <span class="op">=</span> TreeState.EMPTY</span>
+<span id="cb53-16"><a href="forest-fire-dynamics-modeling-i.html#cb53-16" tabindex="-1"></a>    </span>
+<span id="cb53-17"><a href="forest-fire-dynamics-modeling-i.html#cb53-17" tabindex="-1"></a>    <span class="co"># Track recovery</span></span>
+<span id="cb53-18"><a href="forest-fire-dynamics-modeling-i.html#cb53-18" tabindex="-1"></a>    densities <span class="op">=</span> []</span>
+<span id="cb53-19"><a href="forest-fire-dynamics-modeling-i.html#cb53-19" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">500</span>):</span>
+<span id="cb53-20"><a href="forest-fire-dynamics-modeling-i.html#cb53-20" tabindex="-1"></a>        model.step()</span>
+<span id="cb53-21"><a href="forest-fire-dynamics-modeling-i.html#cb53-21" tabindex="-1"></a>        density <span class="op">=</span> model.count_state(model, TreeState.TREE) <span class="op">/</span> (model.width <span class="op">*</span> model.height)</span>
+<span id="cb53-22"><a href="forest-fire-dynamics-modeling-i.html#cb53-22" tabindex="-1"></a>        densities.append(density <span class="op">-</span> baseline_density)</span>
+<span id="cb53-23"><a href="forest-fire-dynamics-modeling-i.html#cb53-23" tabindex="-1"></a>    </span>
+<span id="cb53-24"><a href="forest-fire-dynamics-modeling-i.html#cb53-24" tabindex="-1"></a>    <span class="cf">return</span> densities</span></code></pre></div>
+<p>Systems returning smoothly to equilibrium exhibit <strong>damped oscillations</strong>, while those with amplifying perturbations may spiral into chaos or alternative stable states.</p>
+</div>
+<div id="applications-from-theory-to-management" class="section level2 hasAnchor" number="9.10">
+<h2><span class="header-section-number">9.10</span> Applications: From Theory to Management<a href="forest-fire-dynamics-modeling-i.html#applications-from-theory-to-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="fuel-reduction-strategies" class="section level3 hasAnchor" number="9.10.1">
+<h3><span class="header-section-number">9.10.1</span> Fuel Reduction Strategies<a href="forest-fire-dynamics-modeling-i.html#fuel-reduction-strategies" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Forest managers can use the model to evaluate thinning programs. Reducing tree density (lowering initial tree cover or growth rate) can shift the system below the critical fire spread threshold:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="forest-fire-dynamics-modeling-i.html#cb54-1" tabindex="-1"></a><span class="kw">def</span> compare_fuel_treatments(baseline_growth<span class="op">=</span><span class="fl">0.01</span>, reduced_growth<span class="op">=</span><span class="fl">0.005</span>):</span>
+<span id="cb54-2"><a href="forest-fire-dynamics-modeling-i.html#cb54-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Compare fire regimes with and without fuel reduction&quot;&quot;&quot;</span></span>
+<span id="cb54-3"><a href="forest-fire-dynamics-modeling-i.html#cb54-3" tabindex="-1"></a>    </span>
+<span id="cb54-4"><a href="forest-fire-dynamics-modeling-i.html#cb54-4" tabindex="-1"></a>    <span class="co"># Baseline scenario</span></span>
+<span id="cb54-5"><a href="forest-fire-dynamics-modeling-i.html#cb54-5" tabindex="-1"></a>    model_baseline <span class="op">=</span> ForestFireModel(growth_rate<span class="op">=</span>baseline_growth)</span>
+<span id="cb54-6"><a href="forest-fire-dynamics-modeling-i.html#cb54-6" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2000</span>):</span>
+<span id="cb54-7"><a href="forest-fire-dynamics-modeling-i.html#cb54-7" tabindex="-1"></a>        model_baseline.step()</span>
+<span id="cb54-8"><a href="forest-fire-dynamics-modeling-i.html#cb54-8" tabindex="-1"></a>    </span>
+<span id="cb54-9"><a href="forest-fire-dynamics-modeling-i.html#cb54-9" tabindex="-1"></a>    <span class="co"># Fuel reduction scenario  </span></span>
+<span id="cb54-10"><a href="forest-fire-dynamics-modeling-i.html#cb54-10" tabindex="-1"></a>    model_treated <span class="op">=</span> ForestFireModel(growth_rate<span class="op">=</span>reduced_growth)</span>
+<span id="cb54-11"><a href="forest-fire-dynamics-modeling-i.html#cb54-11" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2000</span>):</span>
+<span id="cb54-12"><a href="forest-fire-dynamics-modeling-i.html#cb54-12" tabindex="-1"></a>        model_treated.step()</span>
+<span id="cb54-13"><a href="forest-fire-dynamics-modeling-i.html#cb54-13" tabindex="-1"></a>    </span>
+<span id="cb54-14"><a href="forest-fire-dynamics-modeling-i.html#cb54-14" tabindex="-1"></a>    <span class="co"># Compare fire frequencies</span></span>
+<span id="cb54-15"><a href="forest-fire-dynamics-modeling-i.html#cb54-15" tabindex="-1"></a>    fires_baseline <span class="op">=</span> model_baseline.datacollector.get_model_vars_dataframe()[<span class="st">&#39;Fires&#39;</span>]</span>
+<span id="cb54-16"><a href="forest-fire-dynamics-modeling-i.html#cb54-16" tabindex="-1"></a>    fires_treated <span class="op">=</span> model_treated.datacollector.get_model_vars_dataframe()[<span class="st">&#39;Fires&#39;</span>]</span>
+<span id="cb54-17"><a href="forest-fire-dynamics-modeling-i.html#cb54-17" tabindex="-1"></a>    </span>
+<span id="cb54-18"><a href="forest-fire-dynamics-modeling-i.html#cb54-18" tabindex="-1"></a>    <span class="cf">return</span> fires_baseline.mean(), fires_treated.mean()</span></code></pre></div>
+<p>However, excessive thinning eliminates the natural fire cycles that maintain ecosystem health. The model helps identify the sweet spot balancing fire risk and ecological integrity.</p>
+</div>
+<div id="climate-change-scenarios" class="section level3 hasAnchor" number="9.10.2">
+<h3><span class="header-section-number">9.10.2</span> Climate Change Scenarios<a href="forest-fire-dynamics-modeling-i.html#climate-change-scenarios" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Rising temperatures increase both ignition probability (drier fuels) and fire spread rates (faster combustion). We can simulate these changes:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb55-1"><a href="forest-fire-dynamics-modeling-i.html#cb55-1" tabindex="-1"></a><span class="kw">def</span> climate_change_scenario(temperature_increase_celsius):</span>
+<span id="cb55-2"><a href="forest-fire-dynamics-modeling-i.html#cb55-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Model fire regime under climate warming&quot;&quot;&quot;</span></span>
+<span id="cb55-3"><a href="forest-fire-dynamics-modeling-i.html#cb55-3" tabindex="-1"></a>    </span>
+<span id="cb55-4"><a href="forest-fire-dynamics-modeling-i.html#cb55-4" tabindex="-1"></a>    <span class="co"># Empirical relationships (simplified)</span></span>
+<span id="cb55-5"><a href="forest-fire-dynamics-modeling-i.html#cb55-5" tabindex="-1"></a>    lightning_multiplier <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> temperature_increase_celsius</span>
+<span id="cb55-6"><a href="forest-fire-dynamics-modeling-i.html#cb55-6" tabindex="-1"></a>    spread_multiplier <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> temperature_increase_celsius</span>
+<span id="cb55-7"><a href="forest-fire-dynamics-modeling-i.html#cb55-7" tabindex="-1"></a>    </span>
+<span id="cb55-8"><a href="forest-fire-dynamics-modeling-i.html#cb55-8" tabindex="-1"></a>    model <span class="op">=</span> ForestFireModel(</span>
+<span id="cb55-9"><a href="forest-fire-dynamics-modeling-i.html#cb55-9" tabindex="-1"></a>        lightning_rate<span class="op">=</span><span class="fl">0.0001</span> <span class="op">*</span> lightning_multiplier,</span>
+<span id="cb55-10"><a href="forest-fire-dynamics-modeling-i.html#cb55-10" tabindex="-1"></a>        fire_spread_rate<span class="op">=</span><span class="bu">min</span>(<span class="fl">0.9</span>, <span class="fl">0.7</span> <span class="op">*</span> spread_multiplier)</span>
+<span id="cb55-11"><a href="forest-fire-dynamics-modeling-i.html#cb55-11" tabindex="-1"></a>    )</span>
+<span id="cb55-12"><a href="forest-fire-dynamics-modeling-i.html#cb55-12" tabindex="-1"></a>    </span>
+<span id="cb55-13"><a href="forest-fire-dynamics-modeling-i.html#cb55-13" tabindex="-1"></a>    <span class="cf">return</span> model</span></code></pre></div>
+<p>These scenarios reveal how correlated parameter changes create non-linear responses potentially pushing ecosystems beyond historical ranges of variability.</p>
+</div>
+<div id="firebreak-design" class="section level3 hasAnchor" number="9.10.3">
+<h3><span class="header-section-number">9.10.3</span> Firebreak Design<a href="forest-fire-dynamics-modeling-i.html#firebreak-design" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The model illuminates optimal firebreak design by showing how barrier width affects fire connectivity:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="forest-fire-dynamics-modeling-i.html#cb56-1" tabindex="-1"></a><span class="kw">def</span> add_firebreak(model, x_position, width):</span>
+<span id="cb56-2"><a href="forest-fire-dynamics-modeling-i.html#cb56-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Create a vertical firebreak by clearing trees&quot;&quot;&quot;</span></span>
+<span id="cb56-3"><a href="forest-fire-dynamics-modeling-i.html#cb56-3" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(x_position, <span class="bu">min</span>(x_position <span class="op">+</span> width, model.width)):</span>
+<span id="cb56-4"><a href="forest-fire-dynamics-modeling-i.html#cb56-4" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(model.height):</span>
+<span id="cb56-5"><a href="forest-fire-dynamics-modeling-i.html#cb56-5" tabindex="-1"></a>            agent <span class="op">=</span> model.grid.get_cell_list_contents((x, y))[<span class="dv">0</span>]</span>
+<span id="cb56-6"><a href="forest-fire-dynamics-modeling-i.html#cb56-6" tabindex="-1"></a>            agent.state <span class="op">=</span> TreeState.EMPTY</span></code></pre></div>
+<p>Narrow firebreaks prove ineffective as ember transport and extreme fire behavior can jump gaps. Excessively wide breaks fragment habitat. Optimal design emerges from this trade-off.</p>
+</div>
+</div>
+<div id="applications-and-policy-implications" class="section level2 hasAnchor" number="9.11">
+<h2><span class="header-section-number">9.11</span> Applications and Policy Implications<a href="forest-fire-dynamics-modeling-i.html#applications-and-policy-implications" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="forest-management-strategies" class="section level3 hasAnchor" number="9.11.1">
+<h3><span class="header-section-number">9.11.1</span> Forest Management Strategies<a href="forest-fire-dynamics-modeling-i.html#forest-management-strategies" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The model enables systematic evaluation of different management interventions by manipulating parameters that represent various management tools and strategies. Fuel reduction programs that decrease tree density effectively lower the probability of fire connectivity, potentially shifting the system below critical fire spread thresholds where large fires become rare events. However, the model also reveals potential unintended consequences, such as how excessive fuel reduction might eliminate the natural fire cycles that maintain ecosystem integrity.</p>
+<p>Prescribed burning strategies can be evaluated by introducing controlled fires with specific spatial and temporal patterns. The model suggests that strategically timed and positioned prescribed fires can break up large fuel loads while maintaining overall forest structure, essentially mimicking the natural role of lightning strikes but with enhanced spatial and temporal control. The effectiveness of prescribed burning depends critically on timing relative to fuel accumulation cycles and spatial positioning relative to natural fire barriers.</p>
+<p>Firebreaks and landscape fragmentation strategies create permanent empty cells that disrupt fire connectivity across the landscape. The model reveals that firebreak effectiveness depends on width relative to characteristic fire correlation lengths, with narrow firebreaks having minimal impact while excessively wide firebreaks may fragment habitat beyond acceptable ecological limits. Optimal firebreak design emerges as a balance between fire containment and habitat connectivity.</p>
+</div>
+<div id="climate-change-adaptation" class="section level3 hasAnchor" number="9.11.2">
+<h3><span class="header-section-number">9.11.2</span> Climate Change Adaptation<a href="forest-fire-dynamics-modeling-i.html#climate-change-adaptation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Parameter sensitivity analysis provides a framework for assessing how changing environmental conditions might alter fire regimes and inform adaptive management strategies. Increased drought conditions translate to higher lightning ignition probabilities and enhanced fire spread rates, shifting the system toward more frequent and intense fire cycles that may exceed historical ranges of variability.</p>
+<p>Temperature increases affect multiple model parameters simultaneously by influencing both ignition probability through fuel desiccation and fire spread rates through enhanced combustion efficiency. The model enables exploration of how these correlated parameter changes interact to produce potentially non-linear responses in fire regime characteristics.</p>
+<p>Precipitation changes influence growth rates and fuel moisture content, creating complex interactions between fuel accumulation and fire spread potential. The model suggests that moderate increases in growing season precipitation might enhance fuel loads while simultaneously reducing fire spread efficiency, creating competing effects whose net impact depends on the relative magnitude of parameter changes.</p>
+</div>
+<div id="conservation-planning" class="section level3 hasAnchor" number="9.11.3">
+<h3><span class="header-section-number">9.11.3</span> Conservation Planning<a href="forest-fire-dynamics-modeling-i.html#conservation-planning" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The model provides insights into spatial patterns that promote biodiversity through intermediate disturbance mechanisms. Moderate fire frequencies create habitat heterogeneity by maintaining a mosaic of different-aged forest patches while preventing both complete forest loss and fire exclusion that leads to homogeneous mature forests.</p>
+<p>Conservation planning applications can use the model to identify landscape configurations that maintain fire regime integrity while protecting critical habitats. The analysis reveals trade-offs between fire management objectives and conservation goals, helping planners develop strategies that balance multiple objectives across complex landscapes.</p>
+</div>
+</div>
+<div id="model-extensions-and-future-directions" class="section level2 hasAnchor" number="9.12">
+<h2><span class="header-section-number">9.12</span> Model Extensions and Future Directions<a href="forest-fire-dynamics-modeling-i.html#model-extensions-and-future-directions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="spatial-heterogeneity" class="section level3 hasAnchor" number="9.12.1">
+<h3><span class="header-section-number">9.12.1</span> Spatial Heterogeneity<a href="forest-fire-dynamics-modeling-i.html#spatial-heterogeneity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The current model assumes uniform parameters across space, but real landscapes exhibit significant spatial variation in factors that influence fire behavior. Extensions incorporating topographic effects could represent how slope and aspect influence fire spread rates and directions, while fuel load variability could capture different vegetation types with distinct flammability characteristics.</p>
+<p>Weather pattern extensions could introduce spatially and temporally varying wind, humidity, and temperature conditions that create realistic fire weather scenarios. These extensions would enable exploration of how synoptic weather patterns create correlated fire conditions across large regions, leading to widespread fire activity during extreme weather events.</p>
+</div>
+<div id="multi-scale-dynamics" class="section level3 hasAnchor" number="9.12.2">
+<h3><span class="header-section-number">9.12.2</span> Multi-scale Dynamics<a href="forest-fire-dynamics-modeling-i.html#multi-scale-dynamics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Hierarchical models could capture interactions between local fire behavior and landscape-scale patterns that operate over different temporal and spatial scales. Seed dispersal mechanisms could represent long-distance forest recovery following large fires, while regional fire weather systems could create correlations in fire activity across multiple landscapes.</p>
+<p>Human impact extensions could incorporate road networks, urban interfaces, and fire suppression efforts that increasingly dominate fire regimes in many regions. These extensions would enable exploration of how human infrastructure and management activities interact with natural fire processes to create novel fire regimes.</p>
+</div>
+<div id="stochastic-fire-spread" class="section level3 hasAnchor" number="9.12.3">
+<h3><span class="header-section-number">9.12.3</span> Stochastic Fire Spread<a href="forest-fire-dynamics-modeling-i.html#stochastic-fire-spread" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Rather than uniform fire spread probability, more realistic models could incorporate directional spread patterns driven by wind conditions and topographic effects. Variable fire intensity could represent how different fire temperatures affect vegetation recovery and soil properties, while ember transport could enable long-distance fire spread that creates complex spatial patterns.</p>
+<p>These extensions would enhance model realism while maintaining computational efficiency and conceptual clarity. The challenge lies in balancing added complexity with interpretability and computational tractability.</p>
+</div>
+</div>
+<div id="limitations-and-model-assumptions" class="section level2 hasAnchor" number="9.13">
+<h2><span class="header-section-number">9.13</span> Limitations and Model Assumptions<a href="forest-fire-dynamics-modeling-i.html#limitations-and-model-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="temporal-resolution" class="section level3 hasAnchor" number="9.13.1">
+<h3><span class="header-section-number">9.13.1</span> Temporal Resolution<a href="forest-fire-dynamics-modeling-i.html#temporal-resolution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The discrete time step approach assumes that all processes occur at similar temporal scales, which conflicts with the reality that fire spread occurs over hours or days while forest growth operates over years or decades. Multi-scale temporal approaches could address this limitation by implementing hierarchical time stepping or continuous-time formulations that better represent the natural separation of temporal scales.</p>
+</div>
+<div id="spatial-resolution" class="section level3 hasAnchor" number="9.13.2">
+<h3><span class="header-section-number">9.13.2</span> Spatial Resolution<a href="forest-fire-dynamics-modeling-i.html#spatial-resolution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The regular grid assumes uniform spatial discretization that may not capture fine-scale heterogeneity in fuel loads, moisture, or topography that critically influence real fire behavior. Adaptive spatial resolution or irregular spatial networks could provide more realistic representations of landscape heterogeneity while maintaining computational efficiency.</p>
+</div>
+<div id="deterministic-vs.-stochastic-elements" class="section level3 hasAnchor" number="9.13.3">
+<h3><span class="header-section-number">9.13.3</span> Deterministic vs. Stochastic Elements<a href="forest-fire-dynamics-modeling-i.html#deterministic-vs.-stochastic-elements" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While the model includes stochastic elements for tree growth and ignition, fire spread remains purely probabilistic without incorporating the complex feedbacks between fire behavior, local weather, and fuel consumption that create deterministic elements within stochastic frameworks. Enhanced fire spread models could incorporate fire intensity effects, fuel depletion, and weather feedback mechanisms.</p>
+</div>
+<div id="human-dimensions" class="section level3 hasAnchor" number="9.13.4">
+<h3><span class="header-section-number">9.13.4</span> Human Dimensions<a href="forest-fire-dynamics-modeling-i.html#human-dimensions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The current model excludes human factors that increasingly dominate fire regimes in many regions, including fire suppression, anthropogenic ignition sources, land use patterns, and the wildland-urban interface. These human dimensions fundamentally alter fire regime characteristics and represent critical factors for contemporary fire management.</p>
+</div>
+</div>
+<div id="conclusion-emergent-complexity-from-simple-rules" class="section level2 hasAnchor" number="9.14">
+<h2><span class="header-section-number">9.14</span> Conclusion: Emergent Complexity from Simple Rules<a href="forest-fire-dynamics-modeling-i.html#conclusion-emergent-complexity-from-simple-rules" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The cellular automaton approach to forest fire modeling demonstrates how complex spatiotemporal patterns emerge from simple local interaction rules operating across spatial networks. Through the interplay of stochastic growth processes, probabilistic ignition, and deterministic fire spread, the model reproduces many qualitative features observed in real forest ecosystems, including patchy spatial patterns, quasi-periodic temporal dynamics, and critical behavior near phase transition boundaries.</p>
+<p>For ecological research, the model provides a conceptual framework for understanding how local processes scale up to landscape-level patterns through emergent phenomena. The emergence of self-organized criticality suggests that forest ecosystems naturally evolve toward states that maximize information transfer and pattern formation, providing insight into fundamental principles governing ecological organization and resilience.</p>
+<p>For forest management, the model offers practical tools for evaluating intervention strategies under different scenarios while revealing potential unintended consequences of management actions. The ability to manipulate parameters representing fuel loads, ignition sources, and fire spread rates enables systematic exploration of management trade-offs between fire suppression objectives and ecological integrity requirements.</p>
+<p>For climate adaptation, the framework provides a foundation for assessing how changing environmental conditions might alter fire regimes and challenge existing management paradigms. By linking climate variables to model parameters, managers can explore potential futures and develop adaptive strategies that maintain ecosystem resilience under novel environmental conditions.</p>
+<p>The model ultimately illustrates a fundamental principle of complex systems: sophisticated collective behaviors can arise from simple individual rules operating across networks of interacting agents. In the case of forest fire dynamics, the interaction between growth, death, and disturbance creates rich spatiotemporal patterns that mirror those observed in real ecosystems, despite the underlying simplicity of the cellular automaton framework.</p>
+<p>As we face increasing challenges from climate change and altered fire regimes, computational models like this provide essential tools for understanding and managing complex ecological systems. The marriage of mathematical formalism with agent-based implementation creates a powerful approach for exploring how local actions aggregate into global patterns, a perspective essential for navigating the complex dynamics of our changing planet.</p>
+<p>Understanding fire as an emergent phenomenon arising from simple local rules provides both humility about our ability to control complex natural systems and confidence in our capacity to understand the fundamental principles governing their behavior. In an era of unprecedented environmental change, such understanding becomes crucial for developing effective strategies that work with, rather than against, the inherent dynamics of ecological systems.</p>
+<pre><code>import mesa
+import random
+import matplotlib.pyplot as plt
+import numpy as np
+from enum import Enum
+
+class TreeState(Enum):
+    EMPTY = 0
+    TREE = 1
+    FIRE = 2
+    BURNED = 3
+
+class TreeAgent(mesa.Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.state = TreeState.EMPTY
+        self.age = 0
+    
+    def step(self):
+        &quot;&quot;&quot;Growth phase - trees can grow on empty land&quot;&quot;&quot;
+        if self.state == TreeState.EMPTY:
+            if random.random() &lt; self.model.growth_rate:
+                self.state = TreeState.TREE
+                self.age = 0
+        elif self.state == TreeState.TREE:
+            self.age += 1
+    
+    def fire_step(self):
+        &quot;&quot;&quot;Fire phase - fire spreads and burns out&quot;&quot;&quot;
+        if self.state == TreeState.FIRE:
+            # Fire burns out after one step
+            self.state = TreeState.BURNED
+        elif self.state == TreeState.TREE:
+            # Check for fire spread from neighbors
+            neighbors = self.model.grid.get_neighbors(
+                self.pos, moore=True, include_center=False
+            )
+            
+            # Fire spreads from burning neighbors
+            for neighbor in neighbors:
+                if neighbor.state == TreeState.FIRE:
+                    if random.random() &lt; self.model.fire_spread_rate:
+                        self.state = TreeState.FIRE
+                        break
+            
+            # Lightning strikes
+            if random.random() &lt; self.model.lightning_rate:
+                self.state = TreeState.FIRE
+
+class ForestFireModel(mesa.Model):
+    def __init__(self, width=50, height=50, growth_rate=0.01, 
+                 fire_spread_rate=0.8, lightning_rate=0.0001):
+        super().__init__()
+        
+        self.width = width
+        self.height = height
+        self.growth_rate = growth_rate
+        self.fire_spread_rate = fire_spread_rate
+        self.lightning_rate = lightning_rate
+        
+        # Use MultiGrid to allow multiple agents per cell (not needed here but good practice)
+        self.grid = mesa.space.MultiGrid(width, height, torus=False)
+        
+        # Use StagedActivation for two-phase updates
+        self.schedule = mesa.time.StagedActivation(
+            self, 
+            stage_list=[&quot;step&quot;, &quot;fire_step&quot;],
+            shuffle=True
+        )
+        
+        # Create agents for each cell
+        for x in range(width):
+            for y in range(height):
+                agent = TreeAgent(x * height + y, self)
+                self.grid.place_agent(agent, (x, y))
+                self.schedule.add(agent)
+                
+                # Start with some random trees
+                if random.random() &lt; 0.3:
+                    agent.state = TreeState.TREE
+        
+        # Data collection
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                &quot;Trees&quot;: lambda m: sum(1 for a in m.schedule.agents if a.state == TreeState.TREE),
+                &quot;Fires&quot;: lambda m: sum(1 for a in m.schedule.agents if a.state == TreeState.FIRE),
+                &quot;Burned&quot;: lambda m: sum(1 for a in m.schedule.agents if a.state == TreeState.BURNED),
+                &quot;Empty&quot;: lambda m: sum(1 for a in m.schedule.agents if a.state == TreeState.EMPTY)
+            }
+        )
+        
+        self.running = True
+        self.datacollector.collect(self)
+    
+    def step(self):
+        &quot;&quot;&quot;Execute one step of the model&quot;&quot;&quot;
+        self.schedule.step()
+        self.datacollector.collect(self)
+
+def visualize_forest(model, step_num):
+    &quot;&quot;&quot;Create visualization of the forest state&quot;&quot;&quot;
+    grid = np.zeros((model.width, model.height))
+    
+    for agent in model.schedule.agents:
+        x, y = agent.pos
+        grid[x][y] = agent.state.value
+    
+    # Create color map
+    colors = [&#39;white&#39;, &#39;green&#39;, &#39;red&#39;, &#39;black&#39;]  # Empty, Tree, Fire, Burned
+    cmap = plt.matplotlib.colors.ListedColormap(colors)
+    
+    plt.figure(figsize=(10, 8))
+    plt.imshow(grid.T, cmap=cmap, origin=&#39;lower&#39;, vmin=0, vmax=3)
+    plt.title(f&#39;Forest Fire Model - Step {step_num}&#39;)
+    plt.colorbar(ticks=[0, 1, 2, 3], label=&#39;State&#39;)
+    
+    # Add legend
+    legend_elements = [
+        plt.Rectangle((0,0),1,1, facecolor=&#39;white&#39;, edgecolor=&#39;black&#39;, label=&#39;Empty&#39;),
+        plt.Rectangle((0,0),1,1, facecolor=&#39;green&#39;, label=&#39;Tree&#39;),
+        plt.Rectangle((0,0),1,1, facecolor=&#39;red&#39;, label=&#39;Fire&#39;),
+        plt.Rectangle((0,0),1,1, facecolor=&#39;black&#39;, label=&#39;Burned&#39;)
+    ]
+    plt.legend(handles=legend_elements, loc=&#39;upper left&#39;, bbox_to_anchor=(1.02, 1))
+    
+    plt.tight_layout()
+    plt.show()
+
+def run_simulation():
+    &quot;&quot;&quot;Run the forest fire simulation&quot;&quot;&quot;
+    # Create model
+    model = ForestFireModel(
+        width=50, 
+        height=50, 
+        growth_rate=0.02,      # Trees grow slowly
+        fire_spread_rate=0.7,   # Fire spreads readily
+        lightning_rate=0.0005   # Occasional lightning strikes
+    )
+    
+    # Run simulation and collect data
+    steps_to_run = 200
+    
+    for i in range(steps_to_run):
+        model.step()
+        
+        # Visualize every 50 steps
+        if i % 50 == 0:
+            print(f&quot;Step {i}&quot;)
+            visualize_forest(model, i)
+    
+    # Plot time series data
+    model_data = model.datacollector.get_model_vars_dataframe()
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(model_data.index, model_data[&#39;Trees&#39;], label=&#39;Trees&#39;, color=&#39;green&#39;)
+    plt.plot(model_data.index, model_data[&#39;Fires&#39;], label=&#39;Fires&#39;, color=&#39;red&#39;)
+    plt.plot(model_data.index, model_data[&#39;Burned&#39;], label=&#39;Burned&#39;, color=&#39;black&#39;)
+    plt.plot(model_data.index, model_data[&#39;Empty&#39;], label=&#39;Empty&#39;, color=&#39;lightgray&#39;)
+    
+    plt.xlabel(&#39;Time Steps&#39;)
+    plt.ylabel(&#39;Number of Cells&#39;)
+    plt.title(&#39;Forest Fire Model - Population Dynamics&#39;)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    
+    return model
+
+# Run the simulation
+if __name__ == &quot;__main__&quot;:
+    model = run_simulation()</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="forest-fire-dynamics-modeling-ii.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/08-Forest_Fire_1.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/08-Forest_Fire_1.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

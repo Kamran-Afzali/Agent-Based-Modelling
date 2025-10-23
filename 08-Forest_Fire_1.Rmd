@@ -1,4 +1,4 @@
-# Forest Fire Dynamics Modeling Complexity from Simple Rules
+# Forest Fire Dynamics Modeling I 
 
 ## Introduction: When Simple Rules Create Complex Patterns
 
