@@ -1,0 +1,549 @@
+# Predator-Prey Dynamics: The Wolf-Sheep Model
+
+Our journey through agent-based modeling has taken us from the aimless wandering of random walkers to the preference-driven relocations of the Schelling segregation model. Each step has introduced new layers of complexity: first adding purposeful behavior, then incorporating social preferences and feedback loops. Now we venture into ecological territory, where agents don't merely move or seek compatible neighborhoods—they interact directly with one another through predation, competition, and resource consumption. The wolf-sheep predation model represents a leap into multi-species dynamics where survival, reproduction, and death create oscillating population patterns that have captivated ecologists and mathematicians for over a century.
+
+The predator-prey relationship stands among the most fundamental interactions in ecology. A classic question animates this field: why don't predators simply eat all their prey and then starve, driving both species to extinction? Or conversely, why don't prey populations explode when predators decline? The answers lie in the intricate feedback mechanisms that couple predator and prey populations, creating cycles of abundance and scarcity that can persist indefinitely. Our Mesa implementation captures these dynamics through individual agents making simple decisions about movement, feeding, and reproduction, allowing us to observe how population-level patterns emerge from individual-level behaviors.
+
+## The Mathematical Foundation
+
+The conceptual ancestor of our agent-based wolf-sheep model traces back to the Lotka-Volterra equations, a pair of differential equations that describe predator-prey dynamics in continuous time. For prey population x and predator population y, these equations take the form:
+
+dx/dt = αx - βxy
+
+dy/dt = δβxy - γy
+
+Here α represents the prey's intrinsic growth rate, β captures the predation rate, δ converts consumed prey into predator offspring, and γ denotes the predator death rate. These equations reveal the fundamental coupling between populations: prey growth depends negatively on predator abundance, while predator growth depends positively on prey availability. The nonlinear term βxy—the product of both populations—creates the interaction that generates cyclical dynamics.
+
+The Lotka-Volterra framework predicts oscillations in population sizes. As prey become abundant, predators find food plentiful and their population grows. This growing predator population increasingly depletes prey numbers, eventually reducing prey to scarcity. With food limited, predators begin starving, their population declines, relieving predation pressure on prey. The cycle repeats, creating periodic oscillations in both populations with predators lagging behind prey—a pattern observed in real ecosystems from snowshoe hares and lynx in Canada to plankton and fish in marine environments.
+
+Our agent-based implementation differs fundamentally from these differential equations by discretizing space, time, and individuals. Rather than tracking continuous population densities, we simulate individual wolves and sheep making discrete decisions on a gridded landscape. This discretization introduces stochasticity—random variation in individual fates—and spatial structure that can profoundly affect population dynamics. The model represents what we might call spatially-explicit, individual-based predator-prey dynamics.
+
+## Agent Architecture and Behavioral Rules
+
+The implementation defines three agent classes representing the ecological community: sheep (prey), wolves (predators), and grass patches (resources). Each agent class encapsulates specific behaviors that together generate system-level dynamics.
+
+Sheep agents embody the classic prey species, maintaining an energy reserve that governs survival and reproduction:
+
+```python
+class Sheep(Agent):
+    def __init__(self, unique_id, model, energy=None):
+        super().__init__(unique_id, model)
+        self.energy = energy if energy is not None else 2 * model.sheep_gain_from_food
+
+    def step(self):
+        # Move randomly
+        possible_steps = self.model.grid.get_neighborhood(
+            self.pos, moore=True, include_center=False
+        )
+        new_pos = self.random.choice(possible_steps)
+        self.model.grid.move_agent(self, new_pos)
+
+        # Eat grass if available
+        if self.model.grass:
+            cell_contents = self.model.grid.get_cell_list_contents([self.pos])
+            grass_patches = [obj for obj in cell_contents if isinstance(obj, GrassPatch)]
+            if grass_patches and grass_patches[0].fully_grown:
+                grass_patches[0].fully_grown = False
+                self.energy += self.model.sheep_gain_from_food
+
+        # Reproduce
+        if self.random.random() < self.model.sheep_reproduce:
+            offspring_energy = self.energy // 2
+            self.energy -= offspring_energy
+            lamb = Sheep(self.model.next_id(), self.model, energy=offspring_energy)
+            self.model.grid.place_agent(lamb, self.pos)
+            self.model.schedule.add(lamb)
+
+        # Lose energy and possibly die
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+```
+
+Each sheep begins with an energy endowment twice the grass feeding value, providing initial viability. At each time step, sheep execute a fixed behavioral sequence: move randomly to a neighboring cell, consume grass if present and fully grown, potentially reproduce, then expend one energy unit. This final energy cost represents the metabolic expense of simply existing—the energetic price of life itself.
+
+The reproduction mechanism demonstrates a key principle in population modeling. Rather than deterministic reproduction at fixed intervals, sheep reproduce probabilistically with rate parameter sheep_reproduce. When reproduction occurs, the parent splits its energy equally with offspring, implementing an energetic trade-off between reproduction and survival. This energy-sharing mechanism prevents unbounded population growth—reproducing when energy runs low risks both parent and offspring death.
+
+Wolf agents mirror sheep structure while implementing predation rather than herbivory:
+
+```python
+class Wolf(Agent):
+    def __init__(self, unique_id, model, energy=None):
+        super().__init__(unique_id, model)
+        self.energy = energy if energy is not None else 2 * model.wolf_gain_from_food
+
+    def step(self):
+        # Move randomly
+        possible_steps = self.model.grid.get_neighborhood(
+            self.pos, moore=True, include_center=False
+        )
+        new_pos = self.random.choice(possible_steps)
+        self.model.grid.move_agent(self, new_pos)
+
+        # Hunt sheep if present
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        sheep = [obj for obj in cellmates if isinstance(obj, Sheep)]
+        if sheep:
+            prey = self.random.choice(sheep)
+            self.energy += self.model.wolf_gain_from_food
+            self.model.grid.remove_agent(prey)
+            self.model.schedule.remove(prey)
+
+        # Reproduce
+        if self.random.random() < self.model.wolf_reproduce:
+            offspring_energy = self.energy // 2
+            self.energy -= offspring_energy
+            pup = Wolf(self.model.next_id(), self.model, energy=offspring_energy)
+            self.model.grid.place_agent(pup, self.pos)
+            self.model.schedule.add(pup)
+
+        # Lose energy and possibly die
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+```
+
+Wolves follow the same movement-feeding-reproduction-mortality sequence as sheep, but feed on sheep rather than grass. When a wolf occupies a cell containing sheep, it randomly selects one victim, gains energy, and removes the prey from the simulation. This predation mechanism couples wolf and sheep populations through direct interaction—wolf survival depends on sheep availability.
+
+The grass patch agents introduce resource dynamics that can stabilize or destabilize predator-prey cycles:
+
+```python
+class GrassPatch(Agent):
+    def __init__(self, unique_id, model, fully_grown, countdown):
+        super().__init__(unique_id, model)
+        self.fully_grown = fully_grown
+        self.countdown = countdown
+
+    def step(self):
+        if not self.fully_grown:
+            self.countdown -= 1
+            if self.countdown <= 0:
+                self.fully_grown = True
+                self.countdown = self.model.grass_regrowth_time
+```
+
+Each grid cell contains a grass patch that alternates between fully grown (edible) and regrowing (inedible) states. When consumed by sheep, grass enters a countdown period before becoming available again. This regrowth delay prevents instantaneous resource renewal, creating resource scarcity that limits prey population growth. The model can run with or without grass dynamics—without grass, sheep reproduce without resource constraints, simplifying the system to pure predator-prey interactions.
+
+## Model Initialization and Parameter Space
+
+The `WolfSheepPredation` model class orchestrates the three-species system through careful initialization and data collection:
+
+```python
+class WolfSheepPredation(Model):
+    def __init__(
+        self,
+        width=20,
+        height=20,
+        initial_sheep=100,
+        initial_wolves=25,
+        sheep_reproduce=0.04,
+        wolf_reproduce=0.05,
+        wolf_gain_from_food=20,
+        sheep_gain_from_food=4,
+        grass=True,
+        grass_regrowth_time=20,
+        seed=None,
+    ):
+        super().__init__(seed=seed)
+        self.width = width
+        self.height = height
+        self.initial_sheep = initial_sheep
+        self.initial_wolves = initial_wolves
+        self.sheep_reproduce = sheep_reproduce
+        self.wolf_reproduce = wolf_reproduce
+        self.wolf_gain_from_food = wolf_gain_from_food
+        self.sheep_gain_from_food = sheep_gain_from_food
+        self.grass = grass
+        self.grass_regrowth_time = grass_regrowth_time
+
+        self.schedule = RandomActivation(self)
+        self.grid = MultiGrid(width, height, torus=True)
+        self.running = True
+```
+
+The parameter set reveals the model's dimensional structure. A 20×20 grid provides 400 spatial locations, initially populated by 100 sheep and 25 wolves—a 4:1 prey-predator ratio common in natural systems. The reproduction probabilities (0.04 for sheep, 0.05 for wolves) define per-timestep birth rates, while energy gains (20 for wolves, 4 for sheep) determine how much feeding extends survival. The grass regrowth time of 20 timesteps creates resource renewal dynamics.
+
+These parameters don't exist in isolation—they interact to determine system stability. Consider the relationship between wolf energy gain and sheep reproduction rate. If wolves gain substantial energy per kill (high wolf_gain_from_food) while sheep reproduce slowly (low sheep_reproduce), wolves may drive sheep extinct. Conversely, rapid sheep reproduction combined with low wolf energy gains might allow sheep to overwhelm the system. Finding parameter combinations that sustain both populations requires careful balance or extensive parameter exploration.
+
+The initialization process places agents randomly across the grid:
+
+```python
+# Add sheep
+for _ in range(self.initial_sheep):
+    x = self.random.randrange(self.width)
+    y = self.random.randrange(self.height)
+    sheep = Sheep(self.next_id(), self)
+    self.grid.place_agent(sheep, (x, y))
+    self.schedule.add(sheep)
+
+# Add wolves
+for _ in range(self.initial_wolves):
+    x = self.random.randrange(self.width)
+    y = self.random.randrange(self.height)
+    wolf = Wolf(self.next_id(), self)
+    self.grid.place_agent(wolf, (x, y))
+    self.schedule.add(wolf)
+```
+
+This random placement creates spatial heterogeneity in initial predator-prey encounters. Some sheep might find themselves immediately adjacent to wolves, facing quick predation, while others occupy safe regions distant from predators. This spatial variation introduces stochasticity beyond the probabilistic reproduction and movement—even identical parameter sets generate different trajectories due to initial spatial configuration.
+
+Grass patches receive special treatment, creating a complete spatial coverage:
+
+```python
+if self.grass:
+    for x in range(self.width):
+        for y in range(self.height):
+            fully_grown = self.random.choice([True, False])
+            countdown = (
+                0 if fully_grown else self.random.randrange(self.grass_regrowth_time)
+            )
+            patch = GrassPatch(self.next_id(), self, fully_grown, countdown)
+            self.grid.place_agent(patch, (x, y))
+            self.schedule.add(patch)
+```
+
+Every grid cell receives a grass patch, each initialized randomly as either fully grown or in various stages of regrowth. This heterogeneous initialization prevents synchronized grass dynamics where all patches regrow simultaneously—a scenario that would create artificial resource pulses.
+
+## Data Collection and Population Tracking
+
+The model employs Mesa's `DataCollector` to track population sizes through time:
+
+```python
+self.datacollector = DataCollector(
+    model_reporters={
+        "Wolves": lambda m: sum(isinstance(a, Wolf) for a in m.schedule.agents),
+        "Sheep": lambda m: sum(isinstance(a, Sheep) for a in m.schedule.agents),
+        "Grass": lambda m: sum(
+            1 for a in m.schedule.agents if isinstance(a, GrassPatch) and a.fully_grown
+        ),
+    }
+)
+```
+
+At each timestep, the collector counts agents of each type, creating time series of population dynamics. The wolf and sheep counts simply sum agents matching each class, while grass counts only fully grown patches—the resource actually available to sheep. This distinction matters because total grass patches remain constant (one per cell) while available grass fluctuates as sheep consume and patches regrow.
+
+## Emergent Population Dynamics
+
+Running the model for 200 timesteps with standard parameters reveals characteristic predator-prey oscillations:
+
+```python
+params = {
+    "width": 20,
+    "height": 20,
+    "initial_sheep": 100,
+    "initial_wolves": 25,
+    "sheep_reproduce": 0.04,
+    "wolf_reproduce": 0.05,
+    "wolf_gain_from_food": 20,
+    "sheep_gain_from_food": 4,
+    "grass": True,
+    "grass_regrowth_time": 20,
+}
+
+model = WolfSheepPredation(**params)
+for _ in range(200):
+    model.step()
+
+data = model.datacollector.get_model_vars_dataframe()
+plt.figure(figsize=(10, 6))
+plt.plot(data["Wolves"], label="Wolves", color="red")
+plt.plot(data["Sheep"], label="Sheep", color="blue")
+plt.plot(data["Grass"], label="Grass (Fully Grown)", color="green", alpha=0.6)
+plt.xlabel("Steps")
+plt.ylabel("Population")
+plt.title("Wolf–Sheep Predation Dynamics")
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+The resulting dynamics typically show sheep populations rising initially as abundant grass supports reproduction. This sheep abundance attracts wolf predation, and wolf numbers increase with the plentiful food supply. Eventually, intensive predation reduces sheep below the level that can sustain the wolf population. Wolves begin starving, their population crashes, releasing predation pressure on sheep. The cycle repeats, though not with perfect periodicity—stochasticity in individual deaths and births creates irregular oscillations rather than smooth sine waves.
+
+The grass population introduces a third dynamic layer. When sheep proliferate, they heavily graze available grass, reducing the fully grown patches. This resource depletion can exacerbate sheep population crashes beyond what predation alone would cause—sheep starve even without wolves present. Conversely, when sheep numbers fall, grass recovers, preparing abundant resources for the next sheep expansion phase. This three-species system exhibits more complex dynamics than pure predator-prey models, with grass acting as a stabilizing or destabilizing force depending on parameter values.
+
+The phase space representation provides deeper insight into these dynamics. Plotting wolf population against sheep population at each timestep traces trajectories through state space. The Lotka-Volterra equations predict closed orbits—trajectories that cycle repeatedly through the same states. Our agent-based model produces more complex patterns: trajectories spiral inward toward stable equilibria, spiral outward toward extinction, or follow irregular paths reflecting stochastic fluctuations. This divergence from classic theory stems from spatial structure, discrete individuals, and random events—factors absent from deterministic differential equations.
+
+## Spatial Patterns and Local Dynamics
+
+Unlike the Lotka-Volterra framework assuming well-mixed populations, our spatially-explicit model generates spatial patterns invisible in mean-field equations. Wolves and sheep don't interact randomly across the entire landscape—they interact only with immediate neighbors. This locality creates spatial segregation where wolves concentrate in sheep-rich areas while leaving sheep-sparse regions as temporary refugia.
+
+The resulting spatial dynamics resemble a shifting mosaic. High-density sheep patches attract wolves, which then deplete those patches, creating local extinctions. Sheep in distant patches continue thriving, eventually recolonizing depleted areas once wolves move on. This spatial heterogeneity can stabilize populations that would otherwise cycle to extinction—some fraction of sheep always survives in refugia, preventing total prey loss.
+
+Mathematical ecologists have extensively studied spatial predator-prey models, revealing phenomena like traveling waves where predator-prey fronts sweep across landscapes, or spiral patterns where predator and prey populations rotate spatially. Our grid-based model can exhibit simplified versions of these patterns, particularly when the grid size increases beyond 20×20. Larger landscapes allow spatial pattern formation at scales impossible in small arenas where agents quickly encounter all neighbors.
+
+## Parameter Sensitivity and System Stability
+
+The model's behavior depends critically on parameter values, and exploring this parameter space reveals conditions for population persistence versus extinction. Consider the reproduction rates: increasing sheep_reproduce allows faster prey recovery after predation events, potentially stabilizing the system. However, excessive reproduction might cause sheep to overconsume grass, creating resource-driven crashes independent of predation.
+
+Similarly, wolf reproduction rates determine predator response speed to prey abundance. Low wolf_reproduce prevents predators from tracking prey oscillations, leading to predator extinction. High wolf_reproduce might enable wolves to overexploit sheep, driving both populations extinct—the classic overexploitation scenario.
+
+The energy parameters create another critical relationship. The ratio wolf_gain_from_food / sheep_gain_from_food determines energy transfer efficiency between trophic levels. Ecological theory predicts approximately 10% energy transfer between trophic levels, suggesting this ratio should be roughly 10:1. Our default parameters use 20:4, yielding a 5:1 ratio—more efficient than typical ecosystems. Adjusting this ratio toward more realistic values would strengthen sheep populations relative to wolves.
+
+Systematic parameter exploration through simulation experiments could map the viable parameter space—combinations sustaining both populations—versus extinction regions where one or both species disappear. Such explorations parallel empirical ecology's search for conditions enabling predator-prey coexistence in natural systems.
+
+## Extensions and Ecological Complexity
+
+The basic wolf-sheep model admits numerous extensions incorporating additional ecological realism. Age structure could differentiate juveniles from adults, with reproduction restricted to adults and vulnerability to predation varying by age. This demographic complexity often stabilizes population dynamics by creating time delays between birth and reproductive maturity.
+
+Multiple prey or predator species introduce competitive and complementary interactions. Two prey species might compete for grass while both suffering wolf predation, raising questions about coexistence conditions and competitive exclusion. Alternative prey can stabilize predator populations by providing food during primary prey scarcity, preventing predator crashes that would otherwise occur.
+
+Behavioral complexity offers another extension avenue. Rather than random movement, agents could employ directed search strategies, moving toward food sources or away from predators. Learning mechanisms might allow agents to remember successful foraging locations or dangerous areas. These cognitive enhancements would transform simple reflex behaviors into adaptive strategies, potentially generating novel population dynamics.
+
+Environmental heterogeneity introduces spatial variation in resource quality or predation risk. Some grid cells might grow grass faster than others, creating productive patches that attract herbivores. Terrain features could provide hiding spots reducing predation risk, essentially creating spatial structure in parameter values rather than homogeneous landscapes.
+
+Evolutionary dynamics represent perhaps the most profound extension. Rather than fixed reproduction rates, these parameters could evolve through natural selection. Sheep with higher reproduction rates produce more offspring but deplete energy faster, creating a life-history trade-off. Wolves with higher energy efficiency survive longer but might reproduce more slowly. Allowing these traits to evolve could generate evolutionary arms races between predator and prey, producing dynamics operating on longer timescales than ecological population cycles.
+
+## Connections to Conservation and Management
+
+Beyond theoretical interest, predator-prey models inform practical conservation and wildlife management decisions. Reintroducing wolves to Yellowstone National Park in the 1990s created a natural experiment in predator-prey dynamics. Wolves reduced elk populations, which allowed vegetation recovery in riparian areas, demonstrating trophic cascades where predator effects ripple through ecosystems.
+
+Our model could be adapted to explore reintroduction scenarios: what initial wolf populations sustain themselves without driving prey extinct? How do spatial configurations of protected areas affect predator-prey persistence? Can corridors connecting habitat patches stabilize regional populations even when local populations fluctuate dramatically?
+
+Fisheries management faces similar questions regarding harvest rates and population stability. Commercial fishing essentially acts as predation on fish stocks, and overfishing can collapse populations, sometimes irreversibly. Agent-based models incorporating fishing pressure alongside natural predation could inform sustainable harvest policies, identifying safe exploitation levels that maintain viable populations.
+
+Climate change introduces another management challenge by altering resource availability, reproduction rates, and species interactions. Rising temperatures might increase grass growth rates while stressing heat-sensitive species. Such environmental changes shift the parameter values our model takes as fixed, potentially destabilizing previously viable populations. Exploring parameter shifts in simulation could anticipate climate-driven population changes before they occur in nature.
+
+## Computational and Theoretical Reflections
+
+The wolf-sheep model demonstrates agent-based modeling's power to bridge individual behaviors and population dynamics. Traditional population models treat populations as continuous quantities governed by differential equations—an approach that succeeds when populations are large and well-mixed but struggles with small populations, spatial structure, or discrete events. Agent-based models naturally incorporate these features by explicitly representing individuals and their interactions.
+
+This individual-level representation comes at computational cost. Simulating 125 agents (100 sheep + 25 wolves) over 200 timesteps requires tracking thousands of agent states and executing behavioral rules for each agent at each timestep. Scaling to realistic landscape sizes with thousands of agents demands computational resources unavailable for differential equation models solvable with pencil and paper.
+
+Yet this computational expense buys flexibility and realism. Adding new behaviors—directed movement, learning, age structure—requires minimal code changes, simply extending existing agent classes with new methods or attributes. Contrast this with modifying differential equations, which often demands deriving entirely new mathematical formulations. Agent-based approaches trade mathematical elegance for computational practicality and conceptual clarity.
+
+The stochasticity inherent in agent-based models also deserves reflection. Unlike deterministic differential equations producing identical outcomes from identical initial conditions, our model generates different trajectories each run due to random movement, reproduction, and feeding events. This variability mirrors real population dynamics, where chance events—random mutations, weather fluctuations, individual encounters—create unpredictable variation around average trends.
+
+Understanding model behavior therefore requires running multiple replications with different random seeds, generating distributions of outcomes rather than single predictions. This statistical approach to model analysis parallels empirical ecology's use of statistical inference from noisy field data. The model becomes a tool for exploring possibility spaces and probability distributions rather than making precise point predictions.
+
+## From Individual Decisions to Collective Patterns
+
+The progression from random walks through Schelling segregation to predator-prey dynamics illustrates a fundamental theme in complex systems: how individual-level rules generate collective patterns irreducible to those rules. Our random walker followed one rule and generated unpredictable paths. Schelling agents followed one rule and generated surprising segregation. Wolf and sheep agents follow a handful of rules and generate oscillating populations, spatial patterns, and potential extinctions or equilibria.
+
+None of these emergent patterns appears explicitly in the agent rules. Nowhere do we program "generate population cycles" or "create spatial segregation." These system-level phenomena emerge from interaction networks—agents affecting other agents through spatial proximity, resource competition, and predation. This emergence represents the core insight of agent-based modeling: complex outcomes need not require complex rules, merely interacting simple components.
+
+This insight extends far beyond ecology or social science into any domain featuring interacting autonomous entities: economies with trading agents, immune systems with competing pathogens and defenders, neural networks with interconnected neurons, traffic with independent drivers. In each case, agent-based models provide frameworks for exploring how microscopic rules generate macroscopic patterns, bridging scales from individual to collective, from neuron to brain, from wolf to ecosystem.
+
+
+```# Install Mesa if not already installed
+!pip install -q mesa
+
+import random
+import matplotlib.pyplot as plt
+from mesa import Agent, Model
+from mesa.space import MultiGrid
+from mesa.time import RandomActivation
+from mesa.datacollection import DataCollector
+
+
+# ----------------------------
+# AGENT CLASSES
+# ----------------------------
+
+class Sheep(Agent):
+    """Sheep that move, eat grass, reproduce, and die."""
+    def __init__(self, unique_id, model, energy=None):
+        super().__init__(unique_id, model)
+        self.energy = energy if energy is not None else 2 * model.sheep_gain_from_food
+
+    def step(self):
+        # Move randomly
+        possible_steps = self.model.grid.get_neighborhood(
+            self.pos, moore=True, include_center=False
+        )
+        new_pos = self.random.choice(possible_steps)
+        self.model.grid.move_agent(self, new_pos)
+
+        # Eat grass if available
+        if self.model.grass:
+            cell_contents = self.model.grid.get_cell_list_contents([self.pos])
+            grass_patches = [obj for obj in cell_contents if isinstance(obj, GrassPatch)]
+            if grass_patches and grass_patches[0].fully_grown:
+                grass_patches[0].fully_grown = False
+                self.energy += self.model.sheep_gain_from_food
+
+        # Reproduce
+        if self.random.random() < self.model.sheep_reproduce:
+            offspring_energy = self.energy // 2
+            self.energy -= offspring_energy
+            lamb = Sheep(self.model.next_id(), self.model, energy=offspring_energy)
+            self.model.grid.place_agent(lamb, self.pos)
+            self.model.schedule.add(lamb)
+
+        # Lose energy and possibly die
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+
+
+class Wolf(Agent):
+    """Wolves that move, hunt sheep, reproduce, and die."""
+    def __init__(self, unique_id, model, energy=None):
+        super().__init__(unique_id, model)
+        self.energy = energy if energy is not None else 2 * model.wolf_gain_from_food
+
+    def step(self):
+        # Move randomly
+        possible_steps = self.model.grid.get_neighborhood(
+            self.pos, moore=True, include_center=False
+        )
+        new_pos = self.random.choice(possible_steps)
+        self.model.grid.move_agent(self, new_pos)
+
+        # Hunt sheep if present
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])
+        sheep = [obj for obj in cellmates if isinstance(obj, Sheep)]
+        if sheep:
+            prey = self.random.choice(sheep)
+            self.energy += self.model.wolf_gain_from_food
+            self.model.grid.remove_agent(prey)
+            self.model.schedule.remove(prey)
+
+        # Reproduce
+        if self.random.random() < self.model.wolf_reproduce:
+            offspring_energy = self.energy // 2
+            self.energy -= offspring_energy
+            pup = Wolf(self.model.next_id(), self.model, energy=offspring_energy)
+            self.model.grid.place_agent(pup, self.pos)
+            self.model.schedule.add(pup)
+
+        # Lose energy and possibly die
+        self.energy -= 1
+        if self.energy <= 0:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+
+
+class GrassPatch(Agent):
+    """A patch of grass that regrows after a countdown."""
+    def __init__(self, unique_id, model, fully_grown, countdown):
+        super().__init__(unique_id, model)
+        self.fully_grown = fully_grown
+        self.countdown = countdown
+
+    def step(self):
+        if not self.fully_grown:
+            self.countdown -= 1
+            if self.countdown <= 0:
+                self.fully_grown = True
+                self.countdown = self.model.grass_regrowth_time
+
+
+# ----------------------------
+# MODEL CLASS
+# ----------------------------
+
+class WolfSheepPredation(Model):
+    """Wolf–Sheep Predation Model with optional grass dynamics."""
+
+    def __init__(
+        self,
+        width=20,
+        height=20,
+        initial_sheep=100,
+        initial_wolves=25,
+        sheep_reproduce=0.04,
+        wolf_reproduce=0.05,
+        wolf_gain_from_food=20,
+        sheep_gain_from_food=4,
+        grass=True,
+        grass_regrowth_time=20,
+        seed=None,
+    ):
+        super().__init__(seed=seed)
+        self.width = width
+        self.height = height
+        self.initial_sheep = initial_sheep
+        self.initial_wolves = initial_wolves
+        self.sheep_reproduce = sheep_reproduce
+        self.wolf_reproduce = wolf_reproduce
+        self.wolf_gain_from_food = wolf_gain_from_food
+        self.sheep_gain_from_food = sheep_gain_from_food
+        self.grass = grass
+        self.grass_regrowth_time = grass_regrowth_time
+
+        self.schedule = RandomActivation(self)
+        self.grid = MultiGrid(width, height, torus=True)
+        self.running = True
+
+        # Add sheep
+        for _ in range(self.initial_sheep):
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
+            sheep = Sheep(self.next_id(), self)
+            self.grid.place_agent(sheep, (x, y))
+            self.schedule.add(sheep)
+
+        # Add wolves
+        for _ in range(self.initial_wolves):
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
+            wolf = Wolf(self.next_id(), self)
+            self.grid.place_agent(wolf, (x, y))
+            self.schedule.add(wolf)
+
+        # Add grass patches
+        if self.grass:
+            for x in range(self.width):
+                for y in range(self.height):
+                    fully_grown = self.random.choice([True, False])
+                    countdown = (
+                        0 if fully_grown else self.random.randrange(self.grass_regrowth_time)
+                    )
+                    patch = GrassPatch(self.next_id(), self, fully_grown, countdown)
+                    self.grid.place_agent(patch, (x, y))
+                    self.schedule.add(patch)
+
+        # Data collector
+        self.datacollector = DataCollector(
+            model_reporters={
+                "Wolves": lambda m: sum(isinstance(a, Wolf) for a in m.schedule.agents),
+                "Sheep": lambda m: sum(isinstance(a, Sheep) for a in m.schedule.agents),
+                "Grass": lambda m: sum(
+                    1 for a in m.schedule.agents if isinstance(a, GrassPatch) and a.fully_grown
+                ),
+            }
+        )
+
+    def step(self):
+        self.datacollector.collect(self)
+        self.schedule.step()
+
+
+# ----------------------------
+# RUN SIMULATION & PLOT
+# ----------------------------
+
+params = {
+    "width": 20,
+    "height": 20,
+    "initial_sheep": 100,
+    "initial_wolves": 25,
+    "sheep_reproduce": 0.04,
+    "wolf_reproduce": 0.05,
+    "wolf_gain_from_food": 20,
+    "sheep_gain_from_food": 4,
+    "grass": True,
+    "grass_regrowth_time": 20,
+}
+
+model = WolfSheepPredation(**params)
+for _ in range(200):
+    model.step()
+
+# Plot
+data = model.datacollector.get_model_vars_dataframe()
+plt.figure(figsize=(10, 6))
+plt.plot(data["Wolves"], label="Wolves", color="red")
+plt.plot(data["Sheep"], label="Sheep", color="blue")
+plt.plot(data["Grass"], label="Grass (Fully Grown)", color="green", alpha=0.6)
+plt.xlabel("Steps")
+plt.ylabel("Population")
+plt.title("Wolf–Sheep Predation Dynamics")
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+

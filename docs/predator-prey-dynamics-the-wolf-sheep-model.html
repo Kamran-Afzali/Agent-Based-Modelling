@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 11 Predator-Prey Dynamics: The Wolf-Sheep Model | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 11 Predator-Prey Dynamics: The Wolf-Sheep Model | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 11 Predator-Prey Dynamics: The Wolf-Sheep Model | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 11 Predator-Prey Dynamics: The Wolf-Sheep Model | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-11-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="forest-fire-dynamics-modeling-ii.html"/>
+<link rel="next" href="section.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html"><i class="fa fa-check"></i><b>4</b> Beyond Random: When Agents Learn to Navigate Their World</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm"><i class="fa fa-check"></i><b>4.1</b> From Random to Rational: The Learning Paradigm</a></li>
+<li class="chapter" data-level="4.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards"><i class="fa fa-check"></i><b>4.2</b> Environmental Complexity: Resources and Hazards</a></li>
+<li class="chapter" data-level="4.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior"><i class="fa fa-check"></i><b>4.3</b> The Architecture of Adaptive Behavior</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma"><i class="fa fa-check"></i><b>4.3.1</b> The Exploration-Exploitation Dilemma</a></li>
+<li class="chapter" data-level="4.3.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making"><i class="fa fa-check"></i><b>4.3.2</b> Adaptive Decision Making</a></li>
+<li class="chapter" data-level="4.3.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience"><i class="fa fa-check"></i><b>4.3.3</b> Learning Through Experience</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity"><i class="fa fa-check"></i><b>4.4</b> Environmental Architecture and Complexity</a></li>
+<li class="chapter" data-level="4.5" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis"><i class="fa fa-check"></i><b>4.5</b> Comprehensive Data Collection and Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation"><i class="fa fa-check"></i><b>4.6</b> The Complete Learning Walker Implementation</a></li>
+<li class="chapter" data-level="4.7" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals"><i class="fa fa-check"></i><b>4.7</b> Emergent Intelligence: What the Data Reveals</a></li>
+<li class="chapter" data-level="4.8" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections"><i class="fa fa-check"></i><b>4.8</b> Research Implications and Real-World Connections</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions"><i class="fa fa-check"></i><b>4.8.1</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance"><i class="fa fa-check"></i><b>4.9</b> Computational Insights and Performance</a></li>
+<li class="chapter" data-level="4.10" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property"><i class="fa fa-check"></i><b>4.10</b> Conclusion: Intelligence as Emergent Property</a></li>
+<li class="chapter" data-level="4.11" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2"><i class="fa fa-check"></i><b>4.11</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html"><i class="fa fa-check"></i><b>5</b> From Random Walks to Social Segregation: The Schelling Model</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-mechanics-of-social-preference"><i class="fa fa-check"></i><b>5.1</b> The Mechanics of Social Preference</a></li>
+<li class="chapter" data-level="5.2" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#implementation-architecture-and-design-decisions"><i class="fa fa-check"></i><b>5.2</b> Implementation Architecture and Design Decisions</a></li>
+<li class="chapter" data-level="5.3" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-emergence-of-segregated-patterns"><i class="fa fa-check"></i><b>5.3</b> The Emergence of Segregated Patterns</a></li>
+<li class="chapter" data-level="5.4" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#quantifying-segregation-dynamics"><i class="fa fa-check"></i><b>5.4</b> Quantifying Segregation Dynamics</a></li>
+<li class="chapter" data-level="5.5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#extensions-and-variations"><i class="fa fa-check"></i><b>5.5</b> Extensions and Variations</a></li>
+<li class="chapter" data-level="5.6" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#policy-implications-and-interventions"><i class="fa fa-check"></i><b>5.6</b> Policy Implications and Interventions</a></li>
+<li class="chapter" data-level="5.7" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#computational-considerations-and-future-directions"><i class="fa fa-check"></i><b>5.7</b> Computational Considerations and Future Directions</a></li>
+<li class="chapter" data-level="5.8" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#connecting-theory-and-reality"><i class="fa fa-check"></i><b>5.8</b> Connecting Theory and Reality</a></li>
+<li class="chapter" data-level="5.9" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#emergence-and-individual-responsibility"><i class="fa fa-check"></i><b>5.9</b> Emergence and Individual Responsibility</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html"><i class="fa fa-check"></i><b>6</b> An Economic Extension of the Schelling Segregation Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#introduction-the-missing-economic-dimension"><i class="fa fa-check"></i><b>6.1</b> Introduction: The Missing Economic Dimension</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#redefining-agents-in-economic-terms"><i class="fa fa-check"></i><b>6.1.1</b> Redefining Agents in Economic Terms</a></li>
+<li class="chapter" data-level="6.1.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#emergent-dynamics-when-constraints-reshape-preferences"><i class="fa fa-check"></i><b>6.1.2</b> Emergent Dynamics: When Constraints Reshape Preferences</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#research-applications-from-theory-to-policy"><i class="fa fa-check"></i><b>6.2</b> Research Applications: From Theory to Policy</a></li>
+<li class="chapter" data-level="6.3" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#methodological-innovations-and-extensions"><i class="fa fa-check"></i><b>6.3</b> Methodological Innovations and Extensions</a></li>
+<li class="chapter" data-level="6.4" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#key-findings-the-economic-reality-of-social-sorting"><i class="fa fa-check"></i><b>6.4</b> Key Findings: The Economic Reality of Social Sorting</a></li>
+<li class="chapter" data-level="6.5" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#conclusion"><i class="fa fa-check"></i><b>6.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><i class="fa fa-check"></i><b>7</b> Space Matters: Grids, Neighborhoods, and Spatial Dynamics</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#the-architecture-of-space-in-agent-based-models"><i class="fa fa-check"></i><b>7.1</b> The Architecture of Space in Agent-Based Models</a></li>
+<li class="chapter" data-level="7.2" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#conways-game-of-life-emergence-from-simplicity"><i class="fa fa-check"></i><b>7.2</b> Conway’s Game of Life: Emergence from Simplicity</a></li>
+<li class="chapter" data-level="7.3" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#patterns-structures-and-emergent-behaviors"><i class="fa fa-check"></i><b>7.3</b> Patterns, Structures, and Emergent Behaviors</a></li>
+<li class="chapter" data-level="7.4" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#boundary-conditions-and-spatial-topology"><i class="fa fa-check"></i><b>7.4</b> Boundary Conditions and Spatial Topology</a></li>
+<li class="chapter" data-level="7.5" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#extending-the-framework-custom-rules-and-variations"><i class="fa fa-check"></i><b>7.5</b> Extending the Framework: Custom Rules and Variations</a></li>
+<li class="chapter" data-level="7.6" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#computational-complexity-and-performance-considerations"><i class="fa fa-check"></i><b>7.6</b> Computational Complexity and Performance Considerations</a></li>
+<li class="chapter" data-level="7.7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#connections-to-complex-systems-theory"><i class="fa fa-check"></i><b>7.7</b> Connections to Complex Systems Theory</a></li>
+<li class="chapter" data-level="7.8" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#spatial-dynamics-and-future-directions"><i class="fa fa-check"></i><b>7.8</b> Spatial Dynamics and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><i class="fa fa-check"></i><b>8</b> Beyond Binary: Multi-State Cellular Automata and Emergent Ecosystems</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#mathematical-foundations-of-multi-state-systems"><i class="fa fa-check"></i><b>8.1</b> Mathematical Foundations of Multi-State Systems</a></li>
+<li class="chapter" data-level="8.2" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#implementation-architecture"><i class="fa fa-check"></i><b>8.2</b> Implementation Architecture</a></li>
+<li class="chapter" data-level="8.3" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#cyclic-dynamics-and-spatial-patterns"><i class="fa fa-check"></i><b>8.3</b> Cyclic Dynamics and Spatial Patterns</a></li>
+<li class="chapter" data-level="8.4" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#parameter-sensitivity-and-system-stability"><i class="fa fa-check"></i><b>8.4</b> Parameter Sensitivity and System Stability</a></li>
+<li class="chapter" data-level="8.5" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#complete-implementation-and-execution"><i class="fa fa-check"></i><b>8.5</b> Complete Implementation and Execution</a></li>
+<li class="chapter" data-level="8.6" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#extensions-and-future-directions-1"><i class="fa fa-check"></i><b>8.6</b> Extensions and Future Directions</a></li>
+<li class="chapter" data-level="8.7" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#connecting-theory-to-reality"><i class="fa fa-check"></i><b>8.7</b> Connecting Theory to Reality</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html"><i class="fa fa-check"></i><b>9</b> Forest Fire Dynamics Modeling I</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#introduction-when-simple-rules-create-complex-patterns"><i class="fa fa-check"></i><b>9.1</b> Introduction: When Simple Rules Create Complex Patterns</a></li>
+<li class="chapter" data-level="9.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-forest-fire-model-four-states-infinite-possibilities"><i class="fa fa-check"></i><b>9.2</b> The Forest Fire Model: Four States, Infinite Possibilities</a></li>
+<li class="chapter" data-level="9.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#two-phase-evolution-separating-growth-from-fire"><i class="fa fa-check"></i><b>9.3</b> Two-Phase Evolution: Separating Growth from Fire</a></li>
+<li class="chapter" data-level="9.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#building-the-complete-model"><i class="fa fa-check"></i><b>9.4</b> Building the Complete Model</a></li>
+<li class="chapter" data-level="9.5" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#emergent-dynamics-self-organized-criticality"><i class="fa fa-check"></i><b>9.5</b> Emergent Dynamics: Self-Organized Criticality</a></li>
+<li class="chapter" data-level="9.6" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-critical-fire-spread-probability"><i class="fa fa-check"></i><b>9.6</b> The Critical Fire Spread Probability</a></li>
+<li class="chapter" data-level="9.7" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-patterns-forest-mosaics"><i class="fa fa-check"></i><b>9.7</b> Spatial Patterns: Forest Mosaics</a></li>
+<li class="chapter" data-level="9.8" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-oscillations-boom-and-bust-cycles"><i class="fa fa-check"></i><b>9.8</b> Temporal Oscillations: Boom and Bust Cycles</a></li>
+<li class="chapter" data-level="9.9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#equilibrium-and-stability"><i class="fa fa-check"></i><b>9.9</b> Equilibrium and Stability</a></li>
+<li class="chapter" data-level="9.10" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-from-theory-to-management"><i class="fa fa-check"></i><b>9.10</b> Applications: From Theory to Management</a>
+<ul>
+<li class="chapter" data-level="9.10.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#fuel-reduction-strategies"><i class="fa fa-check"></i><b>9.10.1</b> Fuel Reduction Strategies</a></li>
+<li class="chapter" data-level="9.10.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-scenarios"><i class="fa fa-check"></i><b>9.10.2</b> Climate Change Scenarios</a></li>
+<li class="chapter" data-level="9.10.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#firebreak-design"><i class="fa fa-check"></i><b>9.10.3</b> Firebreak Design</a></li>
+</ul></li>
+<li class="chapter" data-level="9.11" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-and-policy-implications"><i class="fa fa-check"></i><b>9.11</b> Applications and Policy Implications</a>
+<ul>
+<li class="chapter" data-level="9.11.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#forest-management-strategies"><i class="fa fa-check"></i><b>9.11.1</b> Forest Management Strategies</a></li>
+<li class="chapter" data-level="9.11.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-adaptation"><i class="fa fa-check"></i><b>9.11.2</b> Climate Change Adaptation</a></li>
+<li class="chapter" data-level="9.11.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conservation-planning"><i class="fa fa-check"></i><b>9.11.3</b> Conservation Planning</a></li>
+</ul></li>
+<li class="chapter" data-level="9.12" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#model-extensions-and-future-directions"><i class="fa fa-check"></i><b>9.12</b> Model Extensions and Future Directions</a>
+<ul>
+<li class="chapter" data-level="9.12.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-heterogeneity"><i class="fa fa-check"></i><b>9.12.1</b> Spatial Heterogeneity</a></li>
+<li class="chapter" data-level="9.12.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#multi-scale-dynamics"><i class="fa fa-check"></i><b>9.12.2</b> Multi-scale Dynamics</a></li>
+<li class="chapter" data-level="9.12.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#stochastic-fire-spread"><i class="fa fa-check"></i><b>9.12.3</b> Stochastic Fire Spread</a></li>
+</ul></li>
+<li class="chapter" data-level="9.13" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#limitations-and-model-assumptions"><i class="fa fa-check"></i><b>9.13</b> Limitations and Model Assumptions</a>
+<ul>
+<li class="chapter" data-level="9.13.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-resolution"><i class="fa fa-check"></i><b>9.13.1</b> Temporal Resolution</a></li>
+<li class="chapter" data-level="9.13.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-resolution"><i class="fa fa-check"></i><b>9.13.2</b> Spatial Resolution</a></li>
+<li class="chapter" data-level="9.13.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#deterministic-vs.-stochastic-elements"><i class="fa fa-check"></i><b>9.13.3</b> Deterministic vs. Stochastic Elements</a></li>
+<li class="chapter" data-level="9.13.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#human-dimensions"><i class="fa fa-check"></i><b>9.13.4</b> Human Dimensions</a></li>
+</ul></li>
+<li class="chapter" data-level="9.14" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conclusion-emergent-complexity-from-simple-rules"><i class="fa fa-check"></i><b>9.14</b> Conclusion: Emergent Complexity from Simple Rules</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html"><i class="fa fa-check"></i><b>10</b> Forest Fire Dynamics Modeling II</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#introduction-the-complex-dynamics-of-fire-suppression"><i class="fa fa-check"></i><b>10.1</b> Introduction: The Complex Dynamics of Fire Suppression</a></li>
+<li class="chapter" data-level="10.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#mathematical-framework-multi-agent-fire-suppression-dynamics"><i class="fa fa-check"></i><b>10.2</b> Mathematical Framework: Multi-Agent Fire-Suppression Dynamics</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#enhanced-state-space-definition"><i class="fa fa-check"></i><b>10.2.1</b> Enhanced State Space Definition</a></li>
+<li class="chapter" data-level="10.2.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-agent-dynamics"><i class="fa fa-check"></i><b>10.2.2</b> Firefighter Agent Dynamics</a></li>
+<li class="chapter" data-level="10.2.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#modified-fire-propagation-with-suppression"><i class="fa fa-check"></i><b>10.2.3</b> Modified Fire Propagation with Suppression</a></li>
+<li class="chapter" data-level="10.2.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-behavioral-rules"><i class="fa fa-check"></i><b>10.2.4</b> Firefighter Behavioral Rules</a></li>
+<li class="chapter" data-level="10.2.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-effects-on-fire-dynamics"><i class="fa fa-check"></i><b>10.2.5</b> Infrastructure Effects on Fire Dynamics</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-architecture-comparative-strategy-frameworks"><i class="fa fa-check"></i><b>10.3</b> Policy Architecture: Comparative Strategy Frameworks</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#reactive-suppression-policy"><i class="fa fa-check"></i><b>10.3.1</b> Reactive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#preventive-suppression-policy"><i class="fa fa-check"></i><b>10.3.2</b> Preventive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#aggressive-suppression-policy"><i class="fa fa-check"></i><b>10.3.3</b> Aggressive Suppression Policy</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#implementation-architecture-multi-phase-staged-activation"><i class="fa fa-check"></i><b>10.4</b> Implementation Architecture: Multi-Phase Staged Activation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#staged-temporal-dynamics"><i class="fa fa-check"></i><b>10.4.1</b> Staged Temporal Dynamics</a></li>
+<li class="chapter" data-level="10.4.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#multi-agent-coordination-mechanisms"><i class="fa fa-check"></i><b>10.4.2</b> Multi-Agent Coordination Mechanisms</a></li>
+<li class="chapter" data-level="10.4.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#state-machine-implementation"><i class="fa fa-check"></i><b>10.4.3</b> State Machine Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#emergent-dynamics-resource-allocation-and-spatial-coverage"><i class="fa fa-check"></i><b>10.5</b> Emergent Dynamics: Resource Allocation and Spatial Coverage</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#spatial-response-patterns"><i class="fa fa-check"></i><b>10.5.1</b> Spatial Response Patterns</a></li>
+<li class="chapter" data-level="10.5.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-resource-utilization"><i class="fa fa-check"></i><b>10.5.2</b> Temporal Resource Utilization</a></li>
+<li class="chapter" data-level="10.5.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#fire-size-distribution-effects"><i class="fa fa-check"></i><b>10.5.3</b> Fire Size Distribution Effects</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#performance-metrics-multi-objective-policy-evaluation"><i class="fa fa-check"></i><b>10.6</b> Performance Metrics: Multi-Objective Policy Evaluation</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#suppression-effectiveness-measures"><i class="fa fa-check"></i><b>10.6.1</b> Suppression Effectiveness Measures</a></li>
+<li class="chapter" data-level="10.6.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-efficiency-indicators"><i class="fa fa-check"></i><b>10.6.2</b> Resource Efficiency Indicators</a></li>
+<li class="chapter" data-level="10.6.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#economic-cost-considerations"><i class="fa fa-check"></i><b>10.6.3</b> Economic Cost Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="10.7" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#simulation-results-comparative-policy-analysis"><i class="fa fa-check"></i><b>10.7</b> Simulation Results: Comparative Policy Analysis</a>
+<ul>
+<li class="chapter" data-level="10.7.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#burned-area-performance"><i class="fa fa-check"></i><b>10.7.1</b> Burned Area Performance</a></li>
+<li class="chapter" data-level="10.7.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-dynamics-comparison"><i class="fa fa-check"></i><b>10.7.2</b> Temporal Dynamics Comparison</a></li>
+<li class="chapter" data-level="10.7.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-utilization-trade-offs"><i class="fa fa-check"></i><b>10.7.3</b> Resource Utilization Trade-offs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.8" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-implications-strategic-fire-management"><i class="fa fa-check"></i><b>10.8</b> Policy Implications: Strategic Fire Management</a>
+<ul>
+<li class="chapter" data-level="10.8.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#cost-benefit-optimization"><i class="fa fa-check"></i><b>10.8.1</b> Cost-Benefit Optimization</a></li>
+<li class="chapter" data-level="10.8.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-investment-strategies"><i class="fa fa-check"></i><b>10.8.2</b> Infrastructure Investment Strategies</a></li>
+<li class="chapter" data-level="10.8.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#adaptive-management-frameworks"><i class="fa fa-check"></i><b>10.8.3</b> Adaptive Management Frameworks</a></li>
+</ul></li>
+<li class="chapter" data-level="10.9" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#model-extensions-and-future-directions-1"><i class="fa fa-check"></i><b>10.9</b> Model Extensions and Future Directions</a></li>
+<li class="chapter" data-level="10.10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#limitations-and-critical-assessment"><i class="fa fa-check"></i><b>10.10</b> Limitations and Critical Assessment</a></li>
+<li class="chapter" data-level="10.11" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#conclusion-1"><i class="fa fa-check"></i><b>10.11</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html"><i class="fa fa-check"></i><b>11</b> Predator-Prey Dynamics: The Wolf-Sheep Model</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#the-mathematical-foundation"><i class="fa fa-check"></i><b>11.1</b> The Mathematical Foundation</a></li>
+<li class="chapter" data-level="11.2" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#agent-architecture-and-behavioral-rules"><i class="fa fa-check"></i><b>11.2</b> Agent Architecture and Behavioral Rules</a></li>
+<li class="chapter" data-level="11.3" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#model-initialization-and-parameter-space"><i class="fa fa-check"></i><b>11.3</b> Model Initialization and Parameter Space</a></li>
+<li class="chapter" data-level="11.4" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#data-collection-and-population-tracking"><i class="fa fa-check"></i><b>11.4</b> Data Collection and Population Tracking</a></li>
+<li class="chapter" data-level="11.5" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#emergent-population-dynamics"><i class="fa fa-check"></i><b>11.5</b> Emergent Population Dynamics</a></li>
+<li class="chapter" data-level="11.6" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#spatial-patterns-and-local-dynamics"><i class="fa fa-check"></i><b>11.6</b> Spatial Patterns and Local Dynamics</a></li>
+<li class="chapter" data-level="11.7" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#parameter-sensitivity-and-system-stability-1"><i class="fa fa-check"></i><b>11.7</b> Parameter Sensitivity and System Stability</a></li>
+<li class="chapter" data-level="11.8" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#extensions-and-ecological-complexity"><i class="fa fa-check"></i><b>11.8</b> Extensions and Ecological Complexity</a></li>
+<li class="chapter" data-level="11.9" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#connections-to-conservation-and-management"><i class="fa fa-check"></i><b>11.9</b> Connections to Conservation and Management</a></li>
+<li class="chapter" data-level="11.10" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#computational-and-theoretical-reflections"><i class="fa fa-check"></i><b>11.10</b> Computational and Theoretical Reflections</a></li>
+<li class="chapter" data-level="11.11" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#from-individual-decisions-to-collective-patterns"><i class="fa fa-check"></i><b>11.11</b> From Individual Decisions to Collective Patterns</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>12</b> —————————-</a></li>
+<li class="chapter" data-level="13" data-path="agent-classes.html"><a href="agent-classes.html"><i class="fa fa-check"></i><b>13</b> AGENT CLASSES</a></li>
+<li class="chapter" data-level="14" data-path="section-1.html"><a href="section-1.html"><i class="fa fa-check"></i><b>14</b> —————————-</a></li>
+<li class="chapter" data-level="15" data-path="section-2.html"><a href="section-2.html"><i class="fa fa-check"></i><b>15</b> —————————-</a></li>
+<li class="chapter" data-level="16" data-path="model-class.html"><a href="model-class.html"><i class="fa fa-check"></i><b>16</b> MODEL CLASS</a></li>
+<li class="chapter" data-level="17" data-path="section-3.html"><a href="section-3.html"><i class="fa fa-check"></i><b>17</b> —————————-</a></li>
+<li class="chapter" data-level="18" data-path="section-4.html"><a href="section-4.html"><i class="fa fa-check"></i><b>18</b> —————————-</a></li>
+<li class="chapter" data-level="19" data-path="run-simulation-plot.html"><a href="run-simulation-plot.html"><i class="fa fa-check"></i><b>19</b> RUN SIMULATION &amp; PLOT</a></li>
+<li class="chapter" data-level="20" data-path="section-5.html"><a href="section-5.html"><i class="fa fa-check"></i><b>20</b> —————————-</a></li>
+<li class="chapter" data-level="21" data-path="plot.html"><a href="plot.html"><i class="fa fa-check"></i><b>21</b> Plot</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="predator-prey-dynamics-the-wolf-sheep-model" class="section level1 hasAnchor" number="11">
+<h1><span class="header-section-number">Chapter 11</span> Predator-Prey Dynamics: The Wolf-Sheep Model<a href="predator-prey-dynamics-the-wolf-sheep-model.html#predator-prey-dynamics-the-wolf-sheep-model" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Our journey through agent-based modeling has taken us from the aimless wandering of random walkers to the preference-driven relocations of the Schelling segregation model. Each step has introduced new layers of complexity: first adding purposeful behavior, then incorporating social preferences and feedback loops. Now we venture into ecological territory, where agents don’t merely move or seek compatible neighborhoods—they interact directly with one another through predation, competition, and resource consumption. The wolf-sheep predation model represents a leap into multi-species dynamics where survival, reproduction, and death create oscillating population patterns that have captivated ecologists and mathematicians for over a century.</p>
+<p>The predator-prey relationship stands among the most fundamental interactions in ecology. A classic question animates this field: why don’t predators simply eat all their prey and then starve, driving both species to extinction? Or conversely, why don’t prey populations explode when predators decline? The answers lie in the intricate feedback mechanisms that couple predator and prey populations, creating cycles of abundance and scarcity that can persist indefinitely. Our Mesa implementation captures these dynamics through individual agents making simple decisions about movement, feeding, and reproduction, allowing us to observe how population-level patterns emerge from individual-level behaviors.</p>
+<div id="the-mathematical-foundation" class="section level2 hasAnchor" number="11.1">
+<h2><span class="header-section-number">11.1</span> The Mathematical Foundation<a href="predator-prey-dynamics-the-wolf-sheep-model.html#the-mathematical-foundation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The conceptual ancestor of our agent-based wolf-sheep model traces back to the Lotka-Volterra equations, a pair of differential equations that describe predator-prey dynamics in continuous time. For prey population x and predator population y, these equations take the form:</p>
+<p>dx/dt = αx - βxy</p>
+<p>dy/dt = δβxy - γy</p>
+<p>Here α represents the prey’s intrinsic growth rate, β captures the predation rate, δ converts consumed prey into predator offspring, and γ denotes the predator death rate. These equations reveal the fundamental coupling between populations: prey growth depends negatively on predator abundance, while predator growth depends positively on prey availability. The nonlinear term βxy—the product of both populations—creates the interaction that generates cyclical dynamics.</p>
+<p>The Lotka-Volterra framework predicts oscillations in population sizes. As prey become abundant, predators find food plentiful and their population grows. This growing predator population increasingly depletes prey numbers, eventually reducing prey to scarcity. With food limited, predators begin starving, their population declines, relieving predation pressure on prey. The cycle repeats, creating periodic oscillations in both populations with predators lagging behind prey—a pattern observed in real ecosystems from snowshoe hares and lynx in Canada to plankton and fish in marine environments.</p>
+<p>Our agent-based implementation differs fundamentally from these differential equations by discretizing space, time, and individuals. Rather than tracking continuous population densities, we simulate individual wolves and sheep making discrete decisions on a gridded landscape. This discretization introduces stochasticity—random variation in individual fates—and spatial structure that can profoundly affect population dynamics. The model represents what we might call spatially-explicit, individual-based predator-prey dynamics.</p>
+</div>
+<div id="agent-architecture-and-behavioral-rules" class="section level2 hasAnchor" number="11.2">
+<h2><span class="header-section-number">11.2</span> Agent Architecture and Behavioral Rules<a href="predator-prey-dynamics-the-wolf-sheep-model.html#agent-architecture-and-behavioral-rules" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The implementation defines three agent classes representing the ecological community: sheep (prey), wolves (predators), and grass patches (resources). Each agent class encapsulates specific behaviors that together generate system-level dynamics.</p>
+<p>Sheep agents embody the classic prey species, maintaining an energy reserve that governs survival and reproduction:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb82-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-1" tabindex="-1"></a><span class="kw">class</span> Sheep(Agent):</span>
+<span id="cb82-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, energy<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb82-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb82-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-4" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">=</span> energy <span class="cf">if</span> energy <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="dv">2</span> <span class="op">*</span> model.sheep_gain_from_food</span>
+<span id="cb82-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-5" tabindex="-1"></a></span>
+<span id="cb82-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-6" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb82-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-7" tabindex="-1"></a>        <span class="co"># Move randomly</span></span>
+<span id="cb82-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-8" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb82-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-9" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb82-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-10" tabindex="-1"></a>        )</span>
+<span id="cb82-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-11" tabindex="-1"></a>        new_pos <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb82-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-12" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_pos)</span>
+<span id="cb82-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-13" tabindex="-1"></a></span>
+<span id="cb82-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-14" tabindex="-1"></a>        <span class="co"># Eat grass if available</span></span>
+<span id="cb82-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-15" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.model.grass:</span>
+<span id="cb82-16"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-16" tabindex="-1"></a>            cell_contents <span class="op">=</span> <span class="va">self</span>.model.grid.get_cell_list_contents([<span class="va">self</span>.pos])</span>
+<span id="cb82-17"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-17" tabindex="-1"></a>            grass_patches <span class="op">=</span> [obj <span class="cf">for</span> obj <span class="kw">in</span> cell_contents <span class="cf">if</span> <span class="bu">isinstance</span>(obj, GrassPatch)]</span>
+<span id="cb82-18"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-18" tabindex="-1"></a>            <span class="cf">if</span> grass_patches <span class="kw">and</span> grass_patches[<span class="dv">0</span>].fully_grown:</span>
+<span id="cb82-19"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-19" tabindex="-1"></a>                grass_patches[<span class="dv">0</span>].fully_grown <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb82-20"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-20" tabindex="-1"></a>                <span class="va">self</span>.energy <span class="op">+=</span> <span class="va">self</span>.model.sheep_gain_from_food</span>
+<span id="cb82-21"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-21" tabindex="-1"></a></span>
+<span id="cb82-22"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-22" tabindex="-1"></a>        <span class="co"># Reproduce</span></span>
+<span id="cb82-23"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-23" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.sheep_reproduce:</span>
+<span id="cb82-24"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-24" tabindex="-1"></a>            offspring_energy <span class="op">=</span> <span class="va">self</span>.energy <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb82-25"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-25" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">-=</span> offspring_energy</span>
+<span id="cb82-26"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-26" tabindex="-1"></a>            lamb <span class="op">=</span> Sheep(<span class="va">self</span>.model.next_id(), <span class="va">self</span>.model, energy<span class="op">=</span>offspring_energy)</span>
+<span id="cb82-27"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-27" tabindex="-1"></a>            <span class="va">self</span>.model.grid.place_agent(lamb, <span class="va">self</span>.pos)</span>
+<span id="cb82-28"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-28" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.add(lamb)</span>
+<span id="cb82-29"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-29" tabindex="-1"></a></span>
+<span id="cb82-30"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-30" tabindex="-1"></a>        <span class="co"># Lose energy and possibly die</span></span>
+<span id="cb82-31"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-31" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb82-32"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-32" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.energy <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb82-33"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-33" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(<span class="va">self</span>)</span>
+<span id="cb82-34"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb82-34" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(<span class="va">self</span>)</span></code></pre></div>
+<p>Each sheep begins with an energy endowment twice the grass feeding value, providing initial viability. At each time step, sheep execute a fixed behavioral sequence: move randomly to a neighboring cell, consume grass if present and fully grown, potentially reproduce, then expend one energy unit. This final energy cost represents the metabolic expense of simply existing—the energetic price of life itself.</p>
+<p>The reproduction mechanism demonstrates a key principle in population modeling. Rather than deterministic reproduction at fixed intervals, sheep reproduce probabilistically with rate parameter sheep_reproduce. When reproduction occurs, the parent splits its energy equally with offspring, implementing an energetic trade-off between reproduction and survival. This energy-sharing mechanism prevents unbounded population growth—reproducing when energy runs low risks both parent and offspring death.</p>
+<p>Wolf agents mirror sheep structure while implementing predation rather than herbivory:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb83-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-1" tabindex="-1"></a><span class="kw">class</span> Wolf(Agent):</span>
+<span id="cb83-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, energy<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb83-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb83-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-4" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">=</span> energy <span class="cf">if</span> energy <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="dv">2</span> <span class="op">*</span> model.wolf_gain_from_food</span>
+<span id="cb83-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-5" tabindex="-1"></a></span>
+<span id="cb83-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-6" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb83-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-7" tabindex="-1"></a>        <span class="co"># Move randomly</span></span>
+<span id="cb83-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-8" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb83-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-9" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb83-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-10" tabindex="-1"></a>        )</span>
+<span id="cb83-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-11" tabindex="-1"></a>        new_pos <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb83-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-12" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_pos)</span>
+<span id="cb83-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-13" tabindex="-1"></a></span>
+<span id="cb83-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-14" tabindex="-1"></a>        <span class="co"># Hunt sheep if present</span></span>
+<span id="cb83-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-15" tabindex="-1"></a>        cellmates <span class="op">=</span> <span class="va">self</span>.model.grid.get_cell_list_contents([<span class="va">self</span>.pos])</span>
+<span id="cb83-16"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-16" tabindex="-1"></a>        sheep <span class="op">=</span> [obj <span class="cf">for</span> obj <span class="kw">in</span> cellmates <span class="cf">if</span> <span class="bu">isinstance</span>(obj, Sheep)]</span>
+<span id="cb83-17"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-17" tabindex="-1"></a>        <span class="cf">if</span> sheep:</span>
+<span id="cb83-18"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-18" tabindex="-1"></a>            prey <span class="op">=</span> <span class="va">self</span>.random.choice(sheep)</span>
+<span id="cb83-19"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-19" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">+=</span> <span class="va">self</span>.model.wolf_gain_from_food</span>
+<span id="cb83-20"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-20" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(prey)</span>
+<span id="cb83-21"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-21" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(prey)</span>
+<span id="cb83-22"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-22" tabindex="-1"></a></span>
+<span id="cb83-23"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-23" tabindex="-1"></a>        <span class="co"># Reproduce</span></span>
+<span id="cb83-24"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-24" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.wolf_reproduce:</span>
+<span id="cb83-25"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-25" tabindex="-1"></a>            offspring_energy <span class="op">=</span> <span class="va">self</span>.energy <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb83-26"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-26" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">-=</span> offspring_energy</span>
+<span id="cb83-27"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-27" tabindex="-1"></a>            pup <span class="op">=</span> Wolf(<span class="va">self</span>.model.next_id(), <span class="va">self</span>.model, energy<span class="op">=</span>offspring_energy)</span>
+<span id="cb83-28"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-28" tabindex="-1"></a>            <span class="va">self</span>.model.grid.place_agent(pup, <span class="va">self</span>.pos)</span>
+<span id="cb83-29"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-29" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.add(pup)</span>
+<span id="cb83-30"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-30" tabindex="-1"></a></span>
+<span id="cb83-31"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-31" tabindex="-1"></a>        <span class="co"># Lose energy and possibly die</span></span>
+<span id="cb83-32"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-32" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb83-33"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-33" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.energy <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb83-34"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-34" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(<span class="va">self</span>)</span>
+<span id="cb83-35"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb83-35" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(<span class="va">self</span>)</span></code></pre></div>
+<p>Wolves follow the same movement-feeding-reproduction-mortality sequence as sheep, but feed on sheep rather than grass. When a wolf occupies a cell containing sheep, it randomly selects one victim, gains energy, and removes the prey from the simulation. This predation mechanism couples wolf and sheep populations through direct interaction—wolf survival depends on sheep availability.</p>
+<p>The grass patch agents introduce resource dynamics that can stabilize or destabilize predator-prey cycles:</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb84-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-1" tabindex="-1"></a><span class="kw">class</span> GrassPatch(Agent):</span>
+<span id="cb84-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, fully_grown, countdown):</span>
+<span id="cb84-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb84-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-4" tabindex="-1"></a>        <span class="va">self</span>.fully_grown <span class="op">=</span> fully_grown</span>
+<span id="cb84-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-5" tabindex="-1"></a>        <span class="va">self</span>.countdown <span class="op">=</span> countdown</span>
+<span id="cb84-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-6" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-7" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb84-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-8" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.fully_grown:</span>
+<span id="cb84-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-9" tabindex="-1"></a>            <span class="va">self</span>.countdown <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb84-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-10" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.countdown <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb84-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-11" tabindex="-1"></a>                <span class="va">self</span>.fully_grown <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb84-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb84-12" tabindex="-1"></a>                <span class="va">self</span>.countdown <span class="op">=</span> <span class="va">self</span>.model.grass_regrowth_time</span></code></pre></div>
+<p>Each grid cell contains a grass patch that alternates between fully grown (edible) and regrowing (inedible) states. When consumed by sheep, grass enters a countdown period before becoming available again. This regrowth delay prevents instantaneous resource renewal, creating resource scarcity that limits prey population growth. The model can run with or without grass dynamics—without grass, sheep reproduce without resource constraints, simplifying the system to pure predator-prey interactions.</p>
+</div>
+<div id="model-initialization-and-parameter-space" class="section level2 hasAnchor" number="11.3">
+<h2><span class="header-section-number">11.3</span> Model Initialization and Parameter Space<a href="predator-prey-dynamics-the-wolf-sheep-model.html#model-initialization-and-parameter-space" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The <code>WolfSheepPredation</code> model class orchestrates the three-species system through careful initialization and data collection:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb85-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-1" tabindex="-1"></a><span class="kw">class</span> WolfSheepPredation(Model):</span>
+<span id="cb85-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb85-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb85-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-4" tabindex="-1"></a>        width<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb85-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-5" tabindex="-1"></a>        height<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb85-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-6" tabindex="-1"></a>        initial_sheep<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb85-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-7" tabindex="-1"></a>        initial_wolves<span class="op">=</span><span class="dv">25</span>,</span>
+<span id="cb85-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-8" tabindex="-1"></a>        sheep_reproduce<span class="op">=</span><span class="fl">0.04</span>,</span>
+<span id="cb85-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-9" tabindex="-1"></a>        wolf_reproduce<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb85-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-10" tabindex="-1"></a>        wolf_gain_from_food<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb85-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-11" tabindex="-1"></a>        sheep_gain_from_food<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb85-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-12" tabindex="-1"></a>        grass<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb85-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-13" tabindex="-1"></a>        grass_regrowth_time<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb85-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-14" tabindex="-1"></a>        seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb85-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-15" tabindex="-1"></a>    ):</span>
+<span id="cb85-16"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-16" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb85-17"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-17" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb85-18"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-18" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb85-19"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-19" tabindex="-1"></a>        <span class="va">self</span>.initial_sheep <span class="op">=</span> initial_sheep</span>
+<span id="cb85-20"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-20" tabindex="-1"></a>        <span class="va">self</span>.initial_wolves <span class="op">=</span> initial_wolves</span>
+<span id="cb85-21"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-21" tabindex="-1"></a>        <span class="va">self</span>.sheep_reproduce <span class="op">=</span> sheep_reproduce</span>
+<span id="cb85-22"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-22" tabindex="-1"></a>        <span class="va">self</span>.wolf_reproduce <span class="op">=</span> wolf_reproduce</span>
+<span id="cb85-23"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-23" tabindex="-1"></a>        <span class="va">self</span>.wolf_gain_from_food <span class="op">=</span> wolf_gain_from_food</span>
+<span id="cb85-24"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-24" tabindex="-1"></a>        <span class="va">self</span>.sheep_gain_from_food <span class="op">=</span> sheep_gain_from_food</span>
+<span id="cb85-25"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-25" tabindex="-1"></a>        <span class="va">self</span>.grass <span class="op">=</span> grass</span>
+<span id="cb85-26"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-26" tabindex="-1"></a>        <span class="va">self</span>.grass_regrowth_time <span class="op">=</span> grass_regrowth_time</span>
+<span id="cb85-27"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-27" tabindex="-1"></a></span>
+<span id="cb85-28"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-28" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb85-29"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-29" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb85-30"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb85-30" tabindex="-1"></a>        <span class="va">self</span>.running <span class="op">=</span> <span class="va">True</span></span></code></pre></div>
+<p>The parameter set reveals the model’s dimensional structure. A 20×20 grid provides 400 spatial locations, initially populated by 100 sheep and 25 wolves—a 4:1 prey-predator ratio common in natural systems. The reproduction probabilities (0.04 for sheep, 0.05 for wolves) define per-timestep birth rates, while energy gains (20 for wolves, 4 for sheep) determine how much feeding extends survival. The grass regrowth time of 20 timesteps creates resource renewal dynamics.</p>
+<p>These parameters don’t exist in isolation—they interact to determine system stability. Consider the relationship between wolf energy gain and sheep reproduction rate. If wolves gain substantial energy per kill (high wolf_gain_from_food) while sheep reproduce slowly (low sheep_reproduce), wolves may drive sheep extinct. Conversely, rapid sheep reproduction combined with low wolf energy gains might allow sheep to overwhelm the system. Finding parameter combinations that sustain both populations requires careful balance or extensive parameter exploration.</p>
+<p>The initialization process places agents randomly across the grid:</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb86-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-1" tabindex="-1"></a><span class="co"># Add sheep</span></span>
+<span id="cb86-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-2" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.initial_sheep):</span>
+<span id="cb86-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-3" tabindex="-1"></a>    x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb86-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-4" tabindex="-1"></a>    y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb86-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-5" tabindex="-1"></a>    sheep <span class="op">=</span> Sheep(<span class="va">self</span>.next_id(), <span class="va">self</span>)</span>
+<span id="cb86-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-6" tabindex="-1"></a>    <span class="va">self</span>.grid.place_agent(sheep, (x, y))</span>
+<span id="cb86-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-7" tabindex="-1"></a>    <span class="va">self</span>.schedule.add(sheep)</span>
+<span id="cb86-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-8" tabindex="-1"></a></span>
+<span id="cb86-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-9" tabindex="-1"></a><span class="co"># Add wolves</span></span>
+<span id="cb86-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-10" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.initial_wolves):</span>
+<span id="cb86-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-11" tabindex="-1"></a>    x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb86-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-12" tabindex="-1"></a>    y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb86-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-13" tabindex="-1"></a>    wolf <span class="op">=</span> Wolf(<span class="va">self</span>.next_id(), <span class="va">self</span>)</span>
+<span id="cb86-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-14" tabindex="-1"></a>    <span class="va">self</span>.grid.place_agent(wolf, (x, y))</span>
+<span id="cb86-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb86-15" tabindex="-1"></a>    <span class="va">self</span>.schedule.add(wolf)</span></code></pre></div>
+<p>This random placement creates spatial heterogeneity in initial predator-prey encounters. Some sheep might find themselves immediately adjacent to wolves, facing quick predation, while others occupy safe regions distant from predators. This spatial variation introduces stochasticity beyond the probabilistic reproduction and movement—even identical parameter sets generate different trajectories due to initial spatial configuration.</p>
+<p>Grass patches receive special treatment, creating a complete spatial coverage:</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb87-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-1" tabindex="-1"></a><span class="cf">if</span> <span class="va">self</span>.grass:</span>
+<span id="cb87-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-2" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
+<span id="cb87-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-3" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height):</span>
+<span id="cb87-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-4" tabindex="-1"></a>            fully_grown <span class="op">=</span> <span class="va">self</span>.random.choice([<span class="va">True</span>, <span class="va">False</span>])</span>
+<span id="cb87-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-5" tabindex="-1"></a>            countdown <span class="op">=</span> (</span>
+<span id="cb87-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-6" tabindex="-1"></a>                <span class="dv">0</span> <span class="cf">if</span> fully_grown <span class="cf">else</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.grass_regrowth_time)</span>
+<span id="cb87-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-7" tabindex="-1"></a>            )</span>
+<span id="cb87-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-8" tabindex="-1"></a>            patch <span class="op">=</span> GrassPatch(<span class="va">self</span>.next_id(), <span class="va">self</span>, fully_grown, countdown)</span>
+<span id="cb87-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-9" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(patch, (x, y))</span>
+<span id="cb87-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb87-10" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(patch)</span></code></pre></div>
+<p>Every grid cell receives a grass patch, each initialized randomly as either fully grown or in various stages of regrowth. This heterogeneous initialization prevents synchronized grass dynamics where all patches regrow simultaneously—a scenario that would create artificial resource pulses.</p>
+</div>
+<div id="data-collection-and-population-tracking" class="section level2 hasAnchor" number="11.4">
+<h2><span class="header-section-number">11.4</span> Data Collection and Population Tracking<a href="predator-prey-dynamics-the-wolf-sheep-model.html#data-collection-and-population-tracking" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model employs Mesa’s <code>DataCollector</code> to track population sizes through time:</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb88-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-1" tabindex="-1"></a><span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb88-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-2" tabindex="-1"></a>    model_reporters<span class="op">=</span>{</span>
+<span id="cb88-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-3" tabindex="-1"></a>        <span class="st">&quot;Wolves&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="bu">isinstance</span>(a, Wolf) <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents),</span>
+<span id="cb88-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-4" tabindex="-1"></a>        <span class="st">&quot;Sheep&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="bu">isinstance</span>(a, Sheep) <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents),</span>
+<span id="cb88-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-5" tabindex="-1"></a>        <span class="st">&quot;Grass&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(</span>
+<span id="cb88-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-6" tabindex="-1"></a>            <span class="dv">1</span> <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents <span class="cf">if</span> <span class="bu">isinstance</span>(a, GrassPatch) <span class="kw">and</span> a.fully_grown</span>
+<span id="cb88-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-7" tabindex="-1"></a>        ),</span>
+<span id="cb88-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-8" tabindex="-1"></a>    }</span>
+<span id="cb88-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb88-9" tabindex="-1"></a>)</span></code></pre></div>
+<p>At each timestep, the collector counts agents of each type, creating time series of population dynamics. The wolf and sheep counts simply sum agents matching each class, while grass counts only fully grown patches—the resource actually available to sheep. This distinction matters because total grass patches remain constant (one per cell) while available grass fluctuates as sheep consume and patches regrow.</p>
+</div>
+<div id="emergent-population-dynamics" class="section level2 hasAnchor" number="11.5">
+<h2><span class="header-section-number">11.5</span> Emergent Population Dynamics<a href="predator-prey-dynamics-the-wolf-sheep-model.html#emergent-population-dynamics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Running the model for 200 timesteps with standard parameters reveals characteristic predator-prey oscillations:</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb89-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-1" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb89-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-2" tabindex="-1"></a>    <span class="st">&quot;width&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb89-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-3" tabindex="-1"></a>    <span class="st">&quot;height&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb89-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-4" tabindex="-1"></a>    <span class="st">&quot;initial_sheep&quot;</span>: <span class="dv">100</span>,</span>
+<span id="cb89-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-5" tabindex="-1"></a>    <span class="st">&quot;initial_wolves&quot;</span>: <span class="dv">25</span>,</span>
+<span id="cb89-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-6" tabindex="-1"></a>    <span class="st">&quot;sheep_reproduce&quot;</span>: <span class="fl">0.04</span>,</span>
+<span id="cb89-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-7" tabindex="-1"></a>    <span class="st">&quot;wolf_reproduce&quot;</span>: <span class="fl">0.05</span>,</span>
+<span id="cb89-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-8" tabindex="-1"></a>    <span class="st">&quot;wolf_gain_from_food&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb89-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-9" tabindex="-1"></a>    <span class="st">&quot;sheep_gain_from_food&quot;</span>: <span class="dv">4</span>,</span>
+<span id="cb89-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-10" tabindex="-1"></a>    <span class="st">&quot;grass&quot;</span>: <span class="va">True</span>,</span>
+<span id="cb89-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-11" tabindex="-1"></a>    <span class="st">&quot;grass_regrowth_time&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb89-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-12" tabindex="-1"></a>}</span>
+<span id="cb89-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-13" tabindex="-1"></a></span>
+<span id="cb89-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-14" tabindex="-1"></a>model <span class="op">=</span> WolfSheepPredation(<span class="op">**</span>params)</span>
+<span id="cb89-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-15" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">200</span>):</span>
+<span id="cb89-16"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-16" tabindex="-1"></a>    model.step()</span>
+<span id="cb89-17"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-17" tabindex="-1"></a></span>
+<span id="cb89-18"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-18" tabindex="-1"></a>data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb89-19"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-19" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb89-20"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-20" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Wolves&quot;</span>], label<span class="op">=</span><span class="st">&quot;Wolves&quot;</span>, color<span class="op">=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb89-21"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-21" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Sheep&quot;</span>], label<span class="op">=</span><span class="st">&quot;Sheep&quot;</span>, color<span class="op">=</span><span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb89-22"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-22" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Grass&quot;</span>], label<span class="op">=</span><span class="st">&quot;Grass (Fully Grown)&quot;</span>, color<span class="op">=</span><span class="st">&quot;green&quot;</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb89-23"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-23" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Steps&quot;</span>)</span>
+<span id="cb89-24"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-24" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Population&quot;</span>)</span>
+<span id="cb89-25"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-25" tabindex="-1"></a>plt.title(<span class="st">&quot;Wolf–Sheep Predation Dynamics&quot;</span>)</span>
+<span id="cb89-26"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-26" tabindex="-1"></a>plt.legend()</span>
+<span id="cb89-27"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-27" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb89-28"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb89-28" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<p>The resulting dynamics typically show sheep populations rising initially as abundant grass supports reproduction. This sheep abundance attracts wolf predation, and wolf numbers increase with the plentiful food supply. Eventually, intensive predation reduces sheep below the level that can sustain the wolf population. Wolves begin starving, their population crashes, releasing predation pressure on sheep. The cycle repeats, though not with perfect periodicity—stochasticity in individual deaths and births creates irregular oscillations rather than smooth sine waves.</p>
+<p>The grass population introduces a third dynamic layer. When sheep proliferate, they heavily graze available grass, reducing the fully grown patches. This resource depletion can exacerbate sheep population crashes beyond what predation alone would cause—sheep starve even without wolves present. Conversely, when sheep numbers fall, grass recovers, preparing abundant resources for the next sheep expansion phase. This three-species system exhibits more complex dynamics than pure predator-prey models, with grass acting as a stabilizing or destabilizing force depending on parameter values.</p>
+<p>The phase space representation provides deeper insight into these dynamics. Plotting wolf population against sheep population at each timestep traces trajectories through state space. The Lotka-Volterra equations predict closed orbits—trajectories that cycle repeatedly through the same states. Our agent-based model produces more complex patterns: trajectories spiral inward toward stable equilibria, spiral outward toward extinction, or follow irregular paths reflecting stochastic fluctuations. This divergence from classic theory stems from spatial structure, discrete individuals, and random events—factors absent from deterministic differential equations.</p>
+</div>
+<div id="spatial-patterns-and-local-dynamics" class="section level2 hasAnchor" number="11.6">
+<h2><span class="header-section-number">11.6</span> Spatial Patterns and Local Dynamics<a href="predator-prey-dynamics-the-wolf-sheep-model.html#spatial-patterns-and-local-dynamics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Unlike the Lotka-Volterra framework assuming well-mixed populations, our spatially-explicit model generates spatial patterns invisible in mean-field equations. Wolves and sheep don’t interact randomly across the entire landscape—they interact only with immediate neighbors. This locality creates spatial segregation where wolves concentrate in sheep-rich areas while leaving sheep-sparse regions as temporary refugia.</p>
+<p>The resulting spatial dynamics resemble a shifting mosaic. High-density sheep patches attract wolves, which then deplete those patches, creating local extinctions. Sheep in distant patches continue thriving, eventually recolonizing depleted areas once wolves move on. This spatial heterogeneity can stabilize populations that would otherwise cycle to extinction—some fraction of sheep always survives in refugia, preventing total prey loss.</p>
+<p>Mathematical ecologists have extensively studied spatial predator-prey models, revealing phenomena like traveling waves where predator-prey fronts sweep across landscapes, or spiral patterns where predator and prey populations rotate spatially. Our grid-based model can exhibit simplified versions of these patterns, particularly when the grid size increases beyond 20×20. Larger landscapes allow spatial pattern formation at scales impossible in small arenas where agents quickly encounter all neighbors.</p>
+</div>
+<div id="parameter-sensitivity-and-system-stability-1" class="section level2 hasAnchor" number="11.7">
+<h2><span class="header-section-number">11.7</span> Parameter Sensitivity and System Stability<a href="predator-prey-dynamics-the-wolf-sheep-model.html#parameter-sensitivity-and-system-stability-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model’s behavior depends critically on parameter values, and exploring this parameter space reveals conditions for population persistence versus extinction. Consider the reproduction rates: increasing sheep_reproduce allows faster prey recovery after predation events, potentially stabilizing the system. However, excessive reproduction might cause sheep to overconsume grass, creating resource-driven crashes independent of predation.</p>
+<p>Similarly, wolf reproduction rates determine predator response speed to prey abundance. Low wolf_reproduce prevents predators from tracking prey oscillations, leading to predator extinction. High wolf_reproduce might enable wolves to overexploit sheep, driving both populations extinct—the classic overexploitation scenario.</p>
+<p>The energy parameters create another critical relationship. The ratio wolf_gain_from_food / sheep_gain_from_food determines energy transfer efficiency between trophic levels. Ecological theory predicts approximately 10% energy transfer between trophic levels, suggesting this ratio should be roughly 10:1. Our default parameters use 20:4, yielding a 5:1 ratio—more efficient than typical ecosystems. Adjusting this ratio toward more realistic values would strengthen sheep populations relative to wolves.</p>
+<p>Systematic parameter exploration through simulation experiments could map the viable parameter space—combinations sustaining both populations—versus extinction regions where one or both species disappear. Such explorations parallel empirical ecology’s search for conditions enabling predator-prey coexistence in natural systems.</p>
+</div>
+<div id="extensions-and-ecological-complexity" class="section level2 hasAnchor" number="11.8">
+<h2><span class="header-section-number">11.8</span> Extensions and Ecological Complexity<a href="predator-prey-dynamics-the-wolf-sheep-model.html#extensions-and-ecological-complexity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The basic wolf-sheep model admits numerous extensions incorporating additional ecological realism. Age structure could differentiate juveniles from adults, with reproduction restricted to adults and vulnerability to predation varying by age. This demographic complexity often stabilizes population dynamics by creating time delays between birth and reproductive maturity.</p>
+<p>Multiple prey or predator species introduce competitive and complementary interactions. Two prey species might compete for grass while both suffering wolf predation, raising questions about coexistence conditions and competitive exclusion. Alternative prey can stabilize predator populations by providing food during primary prey scarcity, preventing predator crashes that would otherwise occur.</p>
+<p>Behavioral complexity offers another extension avenue. Rather than random movement, agents could employ directed search strategies, moving toward food sources or away from predators. Learning mechanisms might allow agents to remember successful foraging locations or dangerous areas. These cognitive enhancements would transform simple reflex behaviors into adaptive strategies, potentially generating novel population dynamics.</p>
+<p>Environmental heterogeneity introduces spatial variation in resource quality or predation risk. Some grid cells might grow grass faster than others, creating productive patches that attract herbivores. Terrain features could provide hiding spots reducing predation risk, essentially creating spatial structure in parameter values rather than homogeneous landscapes.</p>
+<p>Evolutionary dynamics represent perhaps the most profound extension. Rather than fixed reproduction rates, these parameters could evolve through natural selection. Sheep with higher reproduction rates produce more offspring but deplete energy faster, creating a life-history trade-off. Wolves with higher energy efficiency survive longer but might reproduce more slowly. Allowing these traits to evolve could generate evolutionary arms races between predator and prey, producing dynamics operating on longer timescales than ecological population cycles.</p>
+</div>
+<div id="connections-to-conservation-and-management" class="section level2 hasAnchor" number="11.9">
+<h2><span class="header-section-number">11.9</span> Connections to Conservation and Management<a href="predator-prey-dynamics-the-wolf-sheep-model.html#connections-to-conservation-and-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Beyond theoretical interest, predator-prey models inform practical conservation and wildlife management decisions. Reintroducing wolves to Yellowstone National Park in the 1990s created a natural experiment in predator-prey dynamics. Wolves reduced elk populations, which allowed vegetation recovery in riparian areas, demonstrating trophic cascades where predator effects ripple through ecosystems.</p>
+<p>Our model could be adapted to explore reintroduction scenarios: what initial wolf populations sustain themselves without driving prey extinct? How do spatial configurations of protected areas affect predator-prey persistence? Can corridors connecting habitat patches stabilize regional populations even when local populations fluctuate dramatically?</p>
+<p>Fisheries management faces similar questions regarding harvest rates and population stability. Commercial fishing essentially acts as predation on fish stocks, and overfishing can collapse populations, sometimes irreversibly. Agent-based models incorporating fishing pressure alongside natural predation could inform sustainable harvest policies, identifying safe exploitation levels that maintain viable populations.</p>
+<p>Climate change introduces another management challenge by altering resource availability, reproduction rates, and species interactions. Rising temperatures might increase grass growth rates while stressing heat-sensitive species. Such environmental changes shift the parameter values our model takes as fixed, potentially destabilizing previously viable populations. Exploring parameter shifts in simulation could anticipate climate-driven population changes before they occur in nature.</p>
+</div>
+<div id="computational-and-theoretical-reflections" class="section level2 hasAnchor" number="11.10">
+<h2><span class="header-section-number">11.10</span> Computational and Theoretical Reflections<a href="predator-prey-dynamics-the-wolf-sheep-model.html#computational-and-theoretical-reflections" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The wolf-sheep model demonstrates agent-based modeling’s power to bridge individual behaviors and population dynamics. Traditional population models treat populations as continuous quantities governed by differential equations—an approach that succeeds when populations are large and well-mixed but struggles with small populations, spatial structure, or discrete events. Agent-based models naturally incorporate these features by explicitly representing individuals and their interactions.</p>
+<p>This individual-level representation comes at computational cost. Simulating 125 agents (100 sheep + 25 wolves) over 200 timesteps requires tracking thousands of agent states and executing behavioral rules for each agent at each timestep. Scaling to realistic landscape sizes with thousands of agents demands computational resources unavailable for differential equation models solvable with pencil and paper.</p>
+<p>Yet this computational expense buys flexibility and realism. Adding new behaviors—directed movement, learning, age structure—requires minimal code changes, simply extending existing agent classes with new methods or attributes. Contrast this with modifying differential equations, which often demands deriving entirely new mathematical formulations. Agent-based approaches trade mathematical elegance for computational practicality and conceptual clarity.</p>
+<p>The stochasticity inherent in agent-based models also deserves reflection. Unlike deterministic differential equations producing identical outcomes from identical initial conditions, our model generates different trajectories each run due to random movement, reproduction, and feeding events. This variability mirrors real population dynamics, where chance events—random mutations, weather fluctuations, individual encounters—create unpredictable variation around average trends.</p>
+<p>Understanding model behavior therefore requires running multiple replications with different random seeds, generating distributions of outcomes rather than single predictions. This statistical approach to model analysis parallels empirical ecology’s use of statistical inference from noisy field data. The model becomes a tool for exploring possibility spaces and probability distributions rather than making precise point predictions.</p>
+</div>
+<div id="from-individual-decisions-to-collective-patterns" class="section level2 hasAnchor" number="11.11">
+<h2><span class="header-section-number">11.11</span> From Individual Decisions to Collective Patterns<a href="predator-prey-dynamics-the-wolf-sheep-model.html#from-individual-decisions-to-collective-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The progression from random walks through Schelling segregation to predator-prey dynamics illustrates a fundamental theme in complex systems: how individual-level rules generate collective patterns irreducible to those rules. Our random walker followed one rule and generated unpredictable paths. Schelling agents followed one rule and generated surprising segregation. Wolf and sheep agents follow a handful of rules and generate oscillating populations, spatial patterns, and potential extinctions or equilibria.</p>
+<p>None of these emergent patterns appears explicitly in the agent rules. Nowhere do we program “generate population cycles” or “create spatial segregation.” These system-level phenomena emerge from interaction networks—agents affecting other agents through spatial proximity, resource competition, and predation. This emergence represents the core insight of agent-based modeling: complex outcomes need not require complex rules, merely interacting simple components.</p>
+<p>This insight extends far beyond ecology or social science into any domain featuring interacting autonomous entities: economies with trading agents, immune systems with competing pathogens and defenders, neural networks with interconnected neurons, traffic with independent drivers. In each case, agent-based models provide frameworks for exploring how microscopic rules generate macroscopic patterns, bridging scales from individual to collective, from neuron to brain, from wolf to ecosystem.</p>
+<p>```# Install Mesa if not already installed
+!pip install -q mesa</p>
+<p>import random
+import matplotlib.pyplot as plt
+from mesa import Agent, Model
+from mesa.space import MultiGrid
+from mesa.time import RandomActivation
+from mesa.datacollection import DataCollector</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="forest-fire-dynamics-modeling-ii.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="section.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/10-Predator.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/10-Predator.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
