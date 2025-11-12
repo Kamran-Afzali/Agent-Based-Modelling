@@ -165,13 +165,3 @@ extensions-and-ecological-complexity
 connections-to-conservation-and-management
 computational-and-theoretical-reflections
 from-individual-decisions-to-collective-patterns
-section
-agent-classes
-section-1
-section-2
-model-class
-section-3
-section-4
-run-simulation-plot
-section-5
-plot

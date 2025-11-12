@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-11-11" />
+<meta name="date" content="2025-11-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="forest-fire-dynamics-modeling-ii.html"/>
-<link rel="next" href="section.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -369,16 +369,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.10" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#computational-and-theoretical-reflections"><i class="fa fa-check"></i><b>11.10</b> Computational and Theoretical Reflections</a></li>
 <li class="chapter" data-level="11.11" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#from-individual-decisions-to-collective-patterns"><i class="fa fa-check"></i><b>11.11</b> From Individual Decisions to Collective Patterns</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>12</b> —————————-</a></li>
-<li class="chapter" data-level="13" data-path="agent-classes.html"><a href="agent-classes.html"><i class="fa fa-check"></i><b>13</b> AGENT CLASSES</a></li>
-<li class="chapter" data-level="14" data-path="section-1.html"><a href="section-1.html"><i class="fa fa-check"></i><b>14</b> —————————-</a></li>
-<li class="chapter" data-level="15" data-path="section-2.html"><a href="section-2.html"><i class="fa fa-check"></i><b>15</b> —————————-</a></li>
-<li class="chapter" data-level="16" data-path="model-class.html"><a href="model-class.html"><i class="fa fa-check"></i><b>16</b> MODEL CLASS</a></li>
-<li class="chapter" data-level="17" data-path="section-3.html"><a href="section-3.html"><i class="fa fa-check"></i><b>17</b> —————————-</a></li>
-<li class="chapter" data-level="18" data-path="section-4.html"><a href="section-4.html"><i class="fa fa-check"></i><b>18</b> —————————-</a></li>
-<li class="chapter" data-level="19" data-path="run-simulation-plot.html"><a href="run-simulation-plot.html"><i class="fa fa-check"></i><b>19</b> RUN SIMULATION &amp; PLOT</a></li>
-<li class="chapter" data-level="20" data-path="section-5.html"><a href="section-5.html"><i class="fa fa-check"></i><b>20</b> —————————-</a></li>
-<li class="chapter" data-level="21" data-path="plot.html"><a href="plot.html"><i class="fa fa-check"></i><b>21</b> Plot</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -658,14 +648,224 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The progression from random walks through Schelling segregation to predator-prey dynamics illustrates a fundamental theme in complex systems: how individual-level rules generate collective patterns irreducible to those rules. Our random walker followed one rule and generated unpredictable paths. Schelling agents followed one rule and generated surprising segregation. Wolf and sheep agents follow a handful of rules and generate oscillating populations, spatial patterns, and potential extinctions or equilibria.</p>
 <p>None of these emergent patterns appears explicitly in the agent rules. Nowhere do we program “generate population cycles” or “create spatial segregation.” These system-level phenomena emerge from interaction networks—agents affecting other agents through spatial proximity, resource competition, and predation. This emergence represents the core insight of agent-based modeling: complex outcomes need not require complex rules, merely interacting simple components.</p>
 <p>This insight extends far beyond ecology or social science into any domain featuring interacting autonomous entities: economies with trading agents, immune systems with competing pathogens and defenders, neural networks with interconnected neurons, traffic with independent drivers. In each case, agent-based models provide frameworks for exploring how microscopic rules generate macroscopic patterns, bridging scales from individual to collective, from neuron to brain, from wolf to ecosystem.</p>
-<p>```# Install Mesa if not already installed
-!pip install -q mesa</p>
-<p>import random
-import matplotlib.pyplot as plt
-from mesa import Agent, Model
-from mesa.space import MultiGrid
-from mesa.time import RandomActivation
-from mesa.datacollection import DataCollector</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb90-1"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-1" tabindex="-1"></a></span>
+<span id="cb90-2"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-2" tabindex="-1"></a><span class="co"># Install Mesa if not already installed</span></span>
+<span id="cb90-3"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-3" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>q mesa</span>
+<span id="cb90-4"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-4" tabindex="-1"></a></span>
+<span id="cb90-5"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-5" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb90-6"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-6" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb90-7"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-7" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb90-8"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-8" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> MultiGrid</span>
+<span id="cb90-9"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-9" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
+<span id="cb90-10"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-10" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb90-11"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-11" tabindex="-1"></a></span>
+<span id="cb90-12"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-12" tabindex="-1"></a></span>
+<span id="cb90-13"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-13" tabindex="-1"></a></span>
+<span id="cb90-14"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-14" tabindex="-1"></a><span class="kw">class</span> Sheep(Agent):</span>
+<span id="cb90-15"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-15" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Sheep that move, eat grass, reproduce, and die.&quot;&quot;&quot;</span></span>
+<span id="cb90-16"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-16" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, energy<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb90-17"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-17" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb90-18"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-18" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">=</span> energy <span class="cf">if</span> energy <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="dv">2</span> <span class="op">*</span> model.sheep_gain_from_food</span>
+<span id="cb90-19"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-19" tabindex="-1"></a></span>
+<span id="cb90-20"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-20" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb90-21"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-21" tabindex="-1"></a>        <span class="co"># Move randomly</span></span>
+<span id="cb90-22"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-22" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb90-23"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-23" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb90-24"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-24" tabindex="-1"></a>        )</span>
+<span id="cb90-25"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-25" tabindex="-1"></a>        new_pos <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb90-26"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-26" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_pos)</span>
+<span id="cb90-27"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-27" tabindex="-1"></a></span>
+<span id="cb90-28"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-28" tabindex="-1"></a>        <span class="co"># Eat grass if available</span></span>
+<span id="cb90-29"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-29" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.model.grass:</span>
+<span id="cb90-30"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-30" tabindex="-1"></a>            cell_contents <span class="op">=</span> <span class="va">self</span>.model.grid.get_cell_list_contents([<span class="va">self</span>.pos])</span>
+<span id="cb90-31"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-31" tabindex="-1"></a>            grass_patches <span class="op">=</span> [obj <span class="cf">for</span> obj <span class="kw">in</span> cell_contents <span class="cf">if</span> <span class="bu">isinstance</span>(obj, GrassPatch)]</span>
+<span id="cb90-32"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-32" tabindex="-1"></a>            <span class="cf">if</span> grass_patches <span class="kw">and</span> grass_patches[<span class="dv">0</span>].fully_grown:</span>
+<span id="cb90-33"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-33" tabindex="-1"></a>                grass_patches[<span class="dv">0</span>].fully_grown <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb90-34"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-34" tabindex="-1"></a>                <span class="va">self</span>.energy <span class="op">+=</span> <span class="va">self</span>.model.sheep_gain_from_food</span>
+<span id="cb90-35"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-35" tabindex="-1"></a></span>
+<span id="cb90-36"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-36" tabindex="-1"></a>        <span class="co"># Reproduce</span></span>
+<span id="cb90-37"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-37" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.sheep_reproduce:</span>
+<span id="cb90-38"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-38" tabindex="-1"></a>            offspring_energy <span class="op">=</span> <span class="va">self</span>.energy <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb90-39"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-39" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">-=</span> offspring_energy</span>
+<span id="cb90-40"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-40" tabindex="-1"></a>            lamb <span class="op">=</span> Sheep(<span class="va">self</span>.model.next_id(), <span class="va">self</span>.model, energy<span class="op">=</span>offspring_energy)</span>
+<span id="cb90-41"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-41" tabindex="-1"></a>            <span class="va">self</span>.model.grid.place_agent(lamb, <span class="va">self</span>.pos)</span>
+<span id="cb90-42"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-42" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.add(lamb)</span>
+<span id="cb90-43"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-43" tabindex="-1"></a></span>
+<span id="cb90-44"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-44" tabindex="-1"></a>        <span class="co"># Lose energy and possibly die</span></span>
+<span id="cb90-45"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-45" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb90-46"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-46" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.energy <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb90-47"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-47" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(<span class="va">self</span>)</span>
+<span id="cb90-48"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-48" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(<span class="va">self</span>)</span>
+<span id="cb90-49"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-49" tabindex="-1"></a></span>
+<span id="cb90-50"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-50" tabindex="-1"></a></span>
+<span id="cb90-51"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-51" tabindex="-1"></a><span class="kw">class</span> Wolf(Agent):</span>
+<span id="cb90-52"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-52" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Wolves that move, hunt sheep, reproduce, and die.&quot;&quot;&quot;</span></span>
+<span id="cb90-53"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-53" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, energy<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb90-54"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-54" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb90-55"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-55" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">=</span> energy <span class="cf">if</span> energy <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="dv">2</span> <span class="op">*</span> model.wolf_gain_from_food</span>
+<span id="cb90-56"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-56" tabindex="-1"></a></span>
+<span id="cb90-57"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-57" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb90-58"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-58" tabindex="-1"></a>        <span class="co"># Move randomly</span></span>
+<span id="cb90-59"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-59" tabindex="-1"></a>        possible_steps <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighborhood(</span>
+<span id="cb90-60"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-60" tabindex="-1"></a>            <span class="va">self</span>.pos, moore<span class="op">=</span><span class="va">True</span>, include_center<span class="op">=</span><span class="va">False</span></span>
+<span id="cb90-61"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-61" tabindex="-1"></a>        )</span>
+<span id="cb90-62"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-62" tabindex="-1"></a>        new_pos <span class="op">=</span> <span class="va">self</span>.random.choice(possible_steps)</span>
+<span id="cb90-63"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-63" tabindex="-1"></a>        <span class="va">self</span>.model.grid.move_agent(<span class="va">self</span>, new_pos)</span>
+<span id="cb90-64"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-64" tabindex="-1"></a></span>
+<span id="cb90-65"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-65" tabindex="-1"></a>        <span class="co"># Hunt sheep if present</span></span>
+<span id="cb90-66"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-66" tabindex="-1"></a>        cellmates <span class="op">=</span> <span class="va">self</span>.model.grid.get_cell_list_contents([<span class="va">self</span>.pos])</span>
+<span id="cb90-67"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-67" tabindex="-1"></a>        sheep <span class="op">=</span> [obj <span class="cf">for</span> obj <span class="kw">in</span> cellmates <span class="cf">if</span> <span class="bu">isinstance</span>(obj, Sheep)]</span>
+<span id="cb90-68"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-68" tabindex="-1"></a>        <span class="cf">if</span> sheep:</span>
+<span id="cb90-69"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-69" tabindex="-1"></a>            prey <span class="op">=</span> <span class="va">self</span>.random.choice(sheep)</span>
+<span id="cb90-70"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-70" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">+=</span> <span class="va">self</span>.model.wolf_gain_from_food</span>
+<span id="cb90-71"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-71" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(prey)</span>
+<span id="cb90-72"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-72" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(prey)</span>
+<span id="cb90-73"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-73" tabindex="-1"></a></span>
+<span id="cb90-74"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-74" tabindex="-1"></a>        <span class="co"># Reproduce</span></span>
+<span id="cb90-75"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-75" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.random.random() <span class="op">&lt;</span> <span class="va">self</span>.model.wolf_reproduce:</span>
+<span id="cb90-76"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-76" tabindex="-1"></a>            offspring_energy <span class="op">=</span> <span class="va">self</span>.energy <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb90-77"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-77" tabindex="-1"></a>            <span class="va">self</span>.energy <span class="op">-=</span> offspring_energy</span>
+<span id="cb90-78"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-78" tabindex="-1"></a>            pup <span class="op">=</span> Wolf(<span class="va">self</span>.model.next_id(), <span class="va">self</span>.model, energy<span class="op">=</span>offspring_energy)</span>
+<span id="cb90-79"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-79" tabindex="-1"></a>            <span class="va">self</span>.model.grid.place_agent(pup, <span class="va">self</span>.pos)</span>
+<span id="cb90-80"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-80" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.add(pup)</span>
+<span id="cb90-81"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-81" tabindex="-1"></a></span>
+<span id="cb90-82"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-82" tabindex="-1"></a>        <span class="co"># Lose energy and possibly die</span></span>
+<span id="cb90-83"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-83" tabindex="-1"></a>        <span class="va">self</span>.energy <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb90-84"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-84" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.energy <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb90-85"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-85" tabindex="-1"></a>            <span class="va">self</span>.model.grid.remove_agent(<span class="va">self</span>)</span>
+<span id="cb90-86"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-86" tabindex="-1"></a>            <span class="va">self</span>.model.schedule.remove(<span class="va">self</span>)</span>
+<span id="cb90-87"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-87" tabindex="-1"></a></span>
+<span id="cb90-88"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-88" tabindex="-1"></a></span>
+<span id="cb90-89"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-89" tabindex="-1"></a><span class="kw">class</span> GrassPatch(Agent):</span>
+<span id="cb90-90"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-90" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A patch of grass that regrows after a countdown.&quot;&quot;&quot;</span></span>
+<span id="cb90-91"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-91" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, fully_grown, countdown):</span>
+<span id="cb90-92"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-92" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id, model)</span>
+<span id="cb90-93"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-93" tabindex="-1"></a>        <span class="va">self</span>.fully_grown <span class="op">=</span> fully_grown</span>
+<span id="cb90-94"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-94" tabindex="-1"></a>        <span class="va">self</span>.countdown <span class="op">=</span> countdown</span>
+<span id="cb90-95"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-95" tabindex="-1"></a></span>
+<span id="cb90-96"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-96" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb90-97"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-97" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.fully_grown:</span>
+<span id="cb90-98"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-98" tabindex="-1"></a>            <span class="va">self</span>.countdown <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb90-99"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-99" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.countdown <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb90-100"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-100" tabindex="-1"></a>                <span class="va">self</span>.fully_grown <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb90-101"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-101" tabindex="-1"></a>                <span class="va">self</span>.countdown <span class="op">=</span> <span class="va">self</span>.model.grass_regrowth_time</span>
+<span id="cb90-102"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-102" tabindex="-1"></a></span>
+<span id="cb90-103"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-103" tabindex="-1"></a></span>
+<span id="cb90-104"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-104" tabindex="-1"></a><span class="co"># ----------------------------</span></span>
+<span id="cb90-105"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-105" tabindex="-1"></a><span class="co"># MODEL CLASS</span></span>
+<span id="cb90-106"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-106" tabindex="-1"></a><span class="co"># ----------------------------</span></span>
+<span id="cb90-107"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-107" tabindex="-1"></a></span>
+<span id="cb90-108"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-108" tabindex="-1"></a><span class="kw">class</span> WolfSheepPredation(Model):</span>
+<span id="cb90-109"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-109" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Wolf–Sheep Predation Model with optional grass dynamics.&quot;&quot;&quot;</span></span>
+<span id="cb90-110"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-110" tabindex="-1"></a></span>
+<span id="cb90-111"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-111" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb90-112"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-112" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb90-113"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-113" tabindex="-1"></a>        width<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb90-114"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-114" tabindex="-1"></a>        height<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb90-115"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-115" tabindex="-1"></a>        initial_sheep<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb90-116"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-116" tabindex="-1"></a>        initial_wolves<span class="op">=</span><span class="dv">25</span>,</span>
+<span id="cb90-117"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-117" tabindex="-1"></a>        sheep_reproduce<span class="op">=</span><span class="fl">0.04</span>,</span>
+<span id="cb90-118"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-118" tabindex="-1"></a>        wolf_reproduce<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb90-119"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-119" tabindex="-1"></a>        wolf_gain_from_food<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb90-120"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-120" tabindex="-1"></a>        sheep_gain_from_food<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb90-121"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-121" tabindex="-1"></a>        grass<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb90-122"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-122" tabindex="-1"></a>        grass_regrowth_time<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb90-123"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-123" tabindex="-1"></a>        seed<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb90-124"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-124" tabindex="-1"></a>    ):</span>
+<span id="cb90-125"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-125" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb90-126"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-126" tabindex="-1"></a>        <span class="va">self</span>.width <span class="op">=</span> width</span>
+<span id="cb90-127"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-127" tabindex="-1"></a>        <span class="va">self</span>.height <span class="op">=</span> height</span>
+<span id="cb90-128"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-128" tabindex="-1"></a>        <span class="va">self</span>.initial_sheep <span class="op">=</span> initial_sheep</span>
+<span id="cb90-129"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-129" tabindex="-1"></a>        <span class="va">self</span>.initial_wolves <span class="op">=</span> initial_wolves</span>
+<span id="cb90-130"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-130" tabindex="-1"></a>        <span class="va">self</span>.sheep_reproduce <span class="op">=</span> sheep_reproduce</span>
+<span id="cb90-131"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-131" tabindex="-1"></a>        <span class="va">self</span>.wolf_reproduce <span class="op">=</span> wolf_reproduce</span>
+<span id="cb90-132"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-132" tabindex="-1"></a>        <span class="va">self</span>.wolf_gain_from_food <span class="op">=</span> wolf_gain_from_food</span>
+<span id="cb90-133"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-133" tabindex="-1"></a>        <span class="va">self</span>.sheep_gain_from_food <span class="op">=</span> sheep_gain_from_food</span>
+<span id="cb90-134"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-134" tabindex="-1"></a>        <span class="va">self</span>.grass <span class="op">=</span> grass</span>
+<span id="cb90-135"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-135" tabindex="-1"></a>        <span class="va">self</span>.grass_regrowth_time <span class="op">=</span> grass_regrowth_time</span>
+<span id="cb90-136"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-136" tabindex="-1"></a></span>
+<span id="cb90-137"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-137" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
+<span id="cb90-138"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-138" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> MultiGrid(width, height, torus<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb90-139"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-139" tabindex="-1"></a>        <span class="va">self</span>.running <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb90-140"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-140" tabindex="-1"></a></span>
+<span id="cb90-141"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-141" tabindex="-1"></a>        <span class="co"># Add sheep</span></span>
+<span id="cb90-142"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-142" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.initial_sheep):</span>
+<span id="cb90-143"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-143" tabindex="-1"></a>            x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb90-144"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-144" tabindex="-1"></a>            y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb90-145"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-145" tabindex="-1"></a>            sheep <span class="op">=</span> Sheep(<span class="va">self</span>.next_id(), <span class="va">self</span>)</span>
+<span id="cb90-146"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-146" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(sheep, (x, y))</span>
+<span id="cb90-147"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-147" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(sheep)</span>
+<span id="cb90-148"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-148" tabindex="-1"></a></span>
+<span id="cb90-149"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-149" tabindex="-1"></a>        <span class="co"># Add wolves</span></span>
+<span id="cb90-150"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-150" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.initial_wolves):</span>
+<span id="cb90-151"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-151" tabindex="-1"></a>            x <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.width)</span>
+<span id="cb90-152"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-152" tabindex="-1"></a>            y <span class="op">=</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.height)</span>
+<span id="cb90-153"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-153" tabindex="-1"></a>            wolf <span class="op">=</span> Wolf(<span class="va">self</span>.next_id(), <span class="va">self</span>)</span>
+<span id="cb90-154"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-154" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(wolf, (x, y))</span>
+<span id="cb90-155"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-155" tabindex="-1"></a>            <span class="va">self</span>.schedule.add(wolf)</span>
+<span id="cb90-156"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-156" tabindex="-1"></a></span>
+<span id="cb90-157"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-157" tabindex="-1"></a>        <span class="co"># Add grass patches</span></span>
+<span id="cb90-158"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-158" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.grass:</span>
+<span id="cb90-159"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-159" tabindex="-1"></a>            <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
+<span id="cb90-160"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-160" tabindex="-1"></a>                <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height):</span>
+<span id="cb90-161"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-161" tabindex="-1"></a>                    fully_grown <span class="op">=</span> <span class="va">self</span>.random.choice([<span class="va">True</span>, <span class="va">False</span>])</span>
+<span id="cb90-162"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-162" tabindex="-1"></a>                    countdown <span class="op">=</span> (</span>
+<span id="cb90-163"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-163" tabindex="-1"></a>                        <span class="dv">0</span> <span class="cf">if</span> fully_grown <span class="cf">else</span> <span class="va">self</span>.random.randrange(<span class="va">self</span>.grass_regrowth_time)</span>
+<span id="cb90-164"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-164" tabindex="-1"></a>                    )</span>
+<span id="cb90-165"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-165" tabindex="-1"></a>                    patch <span class="op">=</span> GrassPatch(<span class="va">self</span>.next_id(), <span class="va">self</span>, fully_grown, countdown)</span>
+<span id="cb90-166"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-166" tabindex="-1"></a>                    <span class="va">self</span>.grid.place_agent(patch, (x, y))</span>
+<span id="cb90-167"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-167" tabindex="-1"></a>                    <span class="va">self</span>.schedule.add(patch)</span>
+<span id="cb90-168"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-168" tabindex="-1"></a></span>
+<span id="cb90-169"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-169" tabindex="-1"></a>        <span class="co"># Data collector</span></span>
+<span id="cb90-170"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-170" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb90-171"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-171" tabindex="-1"></a>            model_reporters<span class="op">=</span>{</span>
+<span id="cb90-172"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-172" tabindex="-1"></a>                <span class="st">&quot;Wolves&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="bu">isinstance</span>(a, Wolf) <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents),</span>
+<span id="cb90-173"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-173" tabindex="-1"></a>                <span class="st">&quot;Sheep&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(<span class="bu">isinstance</span>(a, Sheep) <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents),</span>
+<span id="cb90-174"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-174" tabindex="-1"></a>                <span class="st">&quot;Grass&quot;</span>: <span class="kw">lambda</span> m: <span class="bu">sum</span>(</span>
+<span id="cb90-175"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-175" tabindex="-1"></a>                    <span class="dv">1</span> <span class="cf">for</span> a <span class="kw">in</span> m.schedule.agents <span class="cf">if</span> <span class="bu">isinstance</span>(a, GrassPatch) <span class="kw">and</span> a.fully_grown</span>
+<span id="cb90-176"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-176" tabindex="-1"></a>                ),</span>
+<span id="cb90-177"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-177" tabindex="-1"></a>            }</span>
+<span id="cb90-178"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-178" tabindex="-1"></a>        )</span>
+<span id="cb90-179"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-179" tabindex="-1"></a></span>
+<span id="cb90-180"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-180" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb90-181"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-181" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb90-182"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-182" tabindex="-1"></a>        <span class="va">self</span>.schedule.step()</span>
+<span id="cb90-183"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-183" tabindex="-1"></a></span>
+<span id="cb90-184"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-184" tabindex="-1"></a></span>
+<span id="cb90-185"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-185" tabindex="-1"></a><span class="co"># ----------------------------</span></span>
+<span id="cb90-186"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-186" tabindex="-1"></a><span class="co"># RUN SIMULATION &amp; PLOT</span></span>
+<span id="cb90-187"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-187" tabindex="-1"></a><span class="co"># ----------------------------</span></span>
+<span id="cb90-188"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-188" tabindex="-1"></a></span>
+<span id="cb90-189"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-189" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb90-190"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-190" tabindex="-1"></a>    <span class="st">&quot;width&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb90-191"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-191" tabindex="-1"></a>    <span class="st">&quot;height&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb90-192"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-192" tabindex="-1"></a>    <span class="st">&quot;initial_sheep&quot;</span>: <span class="dv">100</span>,</span>
+<span id="cb90-193"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-193" tabindex="-1"></a>    <span class="st">&quot;initial_wolves&quot;</span>: <span class="dv">25</span>,</span>
+<span id="cb90-194"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-194" tabindex="-1"></a>    <span class="st">&quot;sheep_reproduce&quot;</span>: <span class="fl">0.04</span>,</span>
+<span id="cb90-195"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-195" tabindex="-1"></a>    <span class="st">&quot;wolf_reproduce&quot;</span>: <span class="fl">0.05</span>,</span>
+<span id="cb90-196"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-196" tabindex="-1"></a>    <span class="st">&quot;wolf_gain_from_food&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb90-197"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-197" tabindex="-1"></a>    <span class="st">&quot;sheep_gain_from_food&quot;</span>: <span class="dv">4</span>,</span>
+<span id="cb90-198"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-198" tabindex="-1"></a>    <span class="st">&quot;grass&quot;</span>: <span class="va">True</span>,</span>
+<span id="cb90-199"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-199" tabindex="-1"></a>    <span class="st">&quot;grass_regrowth_time&quot;</span>: <span class="dv">20</span>,</span>
+<span id="cb90-200"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-200" tabindex="-1"></a>}</span>
+<span id="cb90-201"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-201" tabindex="-1"></a></span>
+<span id="cb90-202"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-202" tabindex="-1"></a>model <span class="op">=</span> WolfSheepPredation(<span class="op">**</span>params)</span>
+<span id="cb90-203"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-203" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">200</span>):</span>
+<span id="cb90-204"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-204" tabindex="-1"></a>    model.step()</span>
+<span id="cb90-205"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-205" tabindex="-1"></a></span>
+<span id="cb90-206"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-206" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb90-207"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-207" tabindex="-1"></a>data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb90-208"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-208" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb90-209"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-209" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Wolves&quot;</span>], label<span class="op">=</span><span class="st">&quot;Wolves&quot;</span>, color<span class="op">=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb90-210"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-210" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Sheep&quot;</span>], label<span class="op">=</span><span class="st">&quot;Sheep&quot;</span>, color<span class="op">=</span><span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb90-211"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-211" tabindex="-1"></a>plt.plot(data[<span class="st">&quot;Grass&quot;</span>], label<span class="op">=</span><span class="st">&quot;Grass (Fully Grown)&quot;</span>, color<span class="op">=</span><span class="st">&quot;green&quot;</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb90-212"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-212" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Steps&quot;</span>)</span>
+<span id="cb90-213"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-213" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Population&quot;</span>)</span>
+<span id="cb90-214"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-214" tabindex="-1"></a>plt.title(<span class="st">&quot;Wolf–Sheep Predation Dynamics&quot;</span>)</span>
+<span id="cb90-215"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-215" tabindex="-1"></a>plt.legend()</span>
+<span id="cb90-216"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-216" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb90-217"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#cb90-217" tabindex="-1"></a>plt.show()</span></code></pre></div>
+
 </div>
 </div>
             </section>
@@ -673,8 +873,8 @@ from mesa.datacollection import DataCollector</p>
           </div>
         </div>
       </div>
-<a href="forest-fire-dynamics-modeling-ii.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="section.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="forest-fire-dynamics-modeling-ii.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
