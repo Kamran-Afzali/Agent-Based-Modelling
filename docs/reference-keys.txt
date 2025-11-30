@@ -177,3 +177,15 @@ connections-to-econophysics-and-statistical-mechanics
 computational-considerations-and-simulation-design
 interpreting-results-and-avoiding-common-pitfalls
 from-simple-models-to-complex-realities
+the-boids-flocking-model
+the-mathematics-of-flocking
+implementation-in-continuous-space
+model-architecture-and-data-collection-1
+emergent-phenomena-and-pattern-formation
+variations-and-extensions
+computational-considerations
+biological-parallels-and-theoretical-insights
+from-local-rules-to-global-order
+practical-applications-and-future-directions
+conclusion-the-beauty-of-emergent-coordination
+complete-implementation
