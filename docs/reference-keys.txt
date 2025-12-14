@@ -189,3 +189,15 @@ from-local-rules-to-global-order
 practical-applications-and-future-directions
 conclusion-the-beauty-of-emergent-coordination
 complete-implementation
+modeling-disease-spread-the-sir-epidemic-framework
+the-mathematics-of-contagion
+building-the-epidemic-agents
+orchestrating-the-epidemic
+the-temporal-evolution-of-epidemics
+analyzing-epidemic-dynamics
+the-role-of-stochasticity
+extensions-and-variations-1
+public-health-implications
+computational-considerations-1
+limitations-and-future-directions
+from-individuals-to-populations
