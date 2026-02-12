@@ -201,3 +201,14 @@ public-health-implications
 computational-considerations-1
 limitations-and-future-directions
 from-individuals-to-populations
+opinion-dynamics-and-information-cascades
+the-mathematics-of-social-influence
+network-topology-and-social-structure
+influencers-and-opinion-leaders
+measuring-collective-opinion-states
+simulation-dynamics-and-emergent-patterns
+network-structure-and-opinion-outcomes
+parameter-sensitivity-and-control
+information-cascades-and-tipping-points
+implications-for-social-systems
+extensions-and-future-directions-2
