@@ -1,0 +1,596 @@
+# Strategic Interactions: The Evolution of Cooperation in the Prisoner's Dilemma
+
+In our exploration of agent-based models, we've witnessed how simple movement rules generate complex patterns in random walks, and how individual preferences for similarity cascade into striking residential segregation in the Schelling model. Now we venture into perhaps the most profound question in social science: how does cooperation emerge and persist among self-interested agents? The iterated prisoner's dilemma provides a powerful framework for examining this question, revealing how strategic interactions and evolutionary pressures shape collective behavior in ways that transcend individual rationality.
+
+The prisoner's dilemma represents one of game theory's most elegant paradoxes. Two players must simultaneously choose to cooperate or defect, knowing that mutual cooperation yields better outcomes than mutual defection, yet each individual has an incentive to defect regardless of the other's choice. This tension between individual and collective rationality pervades social life, from international relations and business competition to everyday social interactions. When we extend this one-shot game to repeated interactions and allow strategies to evolve based on performance, we create a dynamic system where cooperation can emerge, spread, and potentially dominate populations of initially diverse strategies.
+
+## The Mathematical Structure of Social Dilemmas
+
+The prisoner's dilemma derives its power from a specific ordering of payoffs. When player i chooses action a_i ∈ {C, D} and player j chooses a_j ∈ {C, D}, player i receives payoff π(a_i, a_j) according to the payoff matrix:
+
+```
+         j: C    j: D
+i: C     R, R    S, T
+i: D     T, S    P, P
+```
+
+The defining characteristic of the prisoner's dilemma requires T > R > P > S, where T represents the temptation payoff for defecting against a cooperator, R the reward for mutual cooperation, P the punishment for mutual defection, and S the sucker's payoff for cooperating with a defector. In our implementation, we use the canonical values T = 5, R = 3, P = 1, and S = 0, which clearly demonstrate the dilemma's structure:
+
+```python
+PAYOFF_MATRIX = {
+    "C": {"C": 3, "D": 0},
+    "D": {"C": 5, "D": 1},
+}
+```
+
+This payoff structure creates a dominant strategy in the one-shot game—defection yields higher payoffs regardless of the opponent's choice. Yet mutual defection produces worse outcomes than mutual cooperation, creating the social dilemma. The challenge becomes understanding how cooperation might emerge when agents interact repeatedly and strategies can evolve based on their success.
+
+## Strategic Diversity and Behavioral Rules
+
+Our model implements six distinct strategies that span the spectrum from unconditional cooperation to sophisticated conditional responses. The `Strategy` base class establishes the interface through which agents make decisions:
+
+```python
+class Strategy:
+    """Abstract base strategy."""
+    name = "Base"
+    def get_move(self, agent, opponent) -> str:
+        raise NotImplementedError
+    def reset(self):
+        pass
+```
+
+The simplest strategies ignore opponent behavior entirely. `AlwaysCooperate` unconditionally chooses cooperation, representing pure altruism or perhaps naivete, while `AlwaysDefect` unconditionally defects, embodying pure self-interest without regard for long-term consequences:
+
+```python
+class AlwaysCooperate(Strategy):
+    name = "AllC"
+    def get_move(self, agent, opponent): return "C"
+
+class AlwaysDefect(Strategy):
+    name = "AllD"
+    def get_move(self, agent, opponent): return "D"
+```
+
+More sophisticated strategies condition their behavior on opponent history. The celebrated `TitForTat` strategy begins by cooperating, then mirrors whatever the opponent did in their previous interaction. This creates a reciprocal dynamic—cooperation begets cooperation, while defection triggers retaliation:
+
+```python
+class TitForTat(Strategy):
+    name = "TFT"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        return opp_hist[-1] if opp_hist else "C"
+```
+
+The implementation maintains separate interaction histories for each opponent through the `opponent_history` dictionary, ensuring that an agent's response to opponent A doesn't get confused with their history against opponent B. This per-opponent tracking proves crucial for accurate strategy execution in multi-agent tournaments.
+
+`GrimTrigger` represents an unforgiving strategy that cooperates until the opponent defects even once, then defects permanently against that opponent. This creates a credible threat that can deter exploitation but risks permanent breakdown of cooperation from a single mistake:
+
+```python
+class GrimTrigger(Strategy):
+    name = "Grim"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        return "D" if "D" in opp_hist else "C"
+```
+
+`TitForTwoTats` offers a more forgiving variant, defecting only when the opponent has defected in both of their last two moves. This tolerance for occasional defection can sustain cooperation in noisy environments where mistakes occur:
+
+```python
+class TitForTwoTats(Strategy):
+    name = "TF2T"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        if len(opp_hist) < 2:
+            return "C"
+        return "D" if opp_hist[-1] == "D" and opp_hist[-2] == "D" else "C"
+```
+
+Finally, `RandomStrategy` provides a baseline by choosing randomly between cooperation and defection. Using the model's seeded random number generator ensures reproducibility:
+
+```python
+class RandomStrategy(Strategy):
+    name = "Random"
+    def get_move(self, agent, opponent):
+        return agent.model.rng.choice(["C", "D"])
+```
+
+## Agent Architecture and Interaction Mechanics
+
+The `PlayerAgent` class encapsulates the state and behavior of individual players in the tournament. Each agent maintains comprehensive records of their interactions, including total score, full game history, per-opponent move sequences, and aggregate statistics:
+
+```python
+class PlayerAgent(mesa.Agent):
+    def __init__(self, model, strategy_class):
+        super().__init__(model)
+        self.strategy       = strategy_class()
+        self.score          = 0
+        self.history        = []
+        self.opponent_history = defaultdict(list)
+        self.cooperation_count = 0
+        self.rounds_played     = 0
+```
+
+The interaction mechanism requires careful design to avoid double-counting and ensure symmetric information. When agent i plays against agent j, only agent i updates their state during that interaction. Agent j will update their own state when their `step()` method executes and they select an opponent. This one-sided update eliminates asymmetries that could arise from processing the same interaction twice:
+
+```python
+def play_game(self, opponent):
+    my_move  = self.strategy.get_move(self, opponent)
+    opp_move = opponent.strategy.get_move(opponent, self)
+
+    payoff   = PAYOFF_MATRIX[my_move][opp_move]
+    self.score += payoff
+
+    self.history.append((my_move, opp_move))
+    self.opponent_history[opponent.unique_id].append(opp_move)
+
+    if my_move == "C":
+        self.cooperation_count += 1
+    self.rounds_played += 1
+```
+
+The agent's step method implements random matching—each agent selects a random opponent from the population and plays one round. This ensures broad exposure across different strategies rather than agents getting locked into repeated interactions with the same partners:
+
+```python
+def step(self):
+    partners = [a for a in self.model.agents if a is not self]
+    opponent = self.model.rng.choice(partners)
+    self.play_game(opponent)
+```
+
+The cooperation rate emerges as a derived property, computed from the agent's accumulated cooperation count and total rounds played:
+
+```python
+@property
+def cooperation_rate(self):
+    return self.cooperation_count / self.rounds_played if self.rounds_played else 0.0
+```
+
+## Evolutionary Dynamics and Strategy Selection
+
+The model implements evolutionary strategy selection through a simple but effective mechanism. After each generation of repeated interactions, the bottom-performing half of the population adopts strategies from the top-performing half. This creates selection pressure favoring strategies that accumulate higher payoffs:
+
+```python
+def evolve(self):
+    agents       = list(self.agents)
+    scores       = [a.score for a in agents]
+    median_score = np.median(scores)
+
+    low_agents  = [a for a in agents if a.score <  median_score]
+    high_agents = [a for a in agents if a.score >= median_score]
+
+    for agent in low_agents:
+        role_model     = self.rng.choice(high_agents)
+        agent.strategy = type(role_model.strategy)()
+        agent.reset_for_new_generation()
+
+    self.generation += 1
+```
+
+This evolutionary mechanism introduces several important dynamics. First, it creates frequency-dependent selection—a strategy's success depends not just on its inherent properties but on the distribution of strategies in the population. A strategy that performs well against cooperators might struggle when defectors dominate. Second, the stochastic selection process allows for drift and maintains diversity longer than deterministic selection would. Third, the complete reset of agent state between generations ensures that accumulated scores don't carry over, making each generation's selection truly based on current performance.
+
+The model initialization distributes strategies evenly across the population, giving each an equal starting representation:
+
+```python
+def __init__(self, n_agents=60, rounds_per_gen=10,
+             enable_evolution=True, seed=42):
+    super().__init__(seed=seed)
+    self.n_agents        = n_agents
+    self.rounds_per_gen  = rounds_per_gen
+    self.enable_evolution = enable_evolution
+    self.generation      = 0
+
+    strategies_cycle = (STRATEGIES * (n_agents // len(STRATEGIES) + 1))[:n_agents]
+    for strategy_cls in strategies_cycle:
+        PlayerAgent(self, strategy_cls)
+```
+
+The data collection system tracks both aggregate population metrics and individual agent characteristics. Dynamic strategy-fraction reporters compute the proportion of the population using each strategy at each time step:
+
+```python
+strategy_reporters = {
+    f"Frac_{cls().name}": (
+        lambda m, sname=cls().name:
+            sum(1 for a in m.agents if a.strategy.name == sname) / m.n_agents
+    )
+    for cls in STRATEGIES
+}
+
+self.datacollector = mesa.DataCollector(
+    model_reporters={
+        "Cooperation_Rate": lambda m: np.mean([a.cooperation_rate for a in m.agents]),
+        "Mean_Score":       lambda m: np.mean([a.score for a in m.agents]),
+        "Generation":       lambda m: m.generation,
+        **strategy_reporters,
+    },
+    agent_reporters={
+        "Score":            "score",
+        "Strategy":         lambda a: a.strategy.name,
+        "Cooperation_Rate": "cooperation_rate",
+    },
+)
+```
+
+## Emergent Cooperation and Strategic Equilibria
+
+When we execute the model with typical parameters—60 agents, 10 rounds per generation, evolutionary selection enabled—fascinating dynamics emerge. The simulation runs for 30 generations, periodically reporting cooperation rates:
+
+```python
+model   = GameTheoryModel(n_agents=60, rounds_per_gen=10,
+                          enable_evolution=True, seed=42)
+N_STEPS = 30
+
+for step in range(N_STEPS):
+    model.step()
+    if (step + 1) % 10 == 0:
+        df_tmp = model.datacollector.get_model_vars_dataframe()
+        coop   = df_tmp["Cooperation_Rate"].iloc[-1]
+        print(f"Generation {model.generation:3d} | Coop Rate: {coop:.2%}")
+```
+
+The evolutionary trajectory typically reveals several phases. Initially, with strategies evenly distributed, cooperation rates reflect the diversity of the population. Unconditional cooperators interact with both reciprocators and exploiters, creating moderate average cooperation. As generations progress, selection pressures begin reshaping the population composition.
+
+Unconditional defection often shows early success, exploiting naive cooperators for high payoffs. However, this success proves self-limiting—as defectors proliferate, they increasingly face each other, earning only the punishment payoff P rather than the temptation payoff T. Meanwhile, conditional cooperators like Tit-for-Tat establish stable, mutually beneficial relationships with each other, consistently earning the reward payoff R.
+
+The mathematical expectation for strategy fitness depends critically on population composition. Let f_i denote the frequency of strategy i in the population, and let π(i, j) represent the expected payoff when strategy i plays against strategy j over multiple rounds. The expected fitness of strategy i becomes:
+
+W_i = Σ_j f_j π(i, j)
+
+This frequency-dependent fitness creates complex dynamics. In populations dominated by cooperators, Tit-for-Tat and similar reciprocal strategies thrive because they cooperate with cooperators while protecting themselves from occasional defectors. In populations with many defectors, more defensive strategies gain advantages. The evolutionary trajectory depends on initial conditions and stochastic fluctuations in the selection process.
+
+## Visualization and Pattern Recognition
+
+The comprehensive visualization system reveals multiple dimensions of the evolutionary dynamics. Three complementary plots capture different aspects of the system's behavior:
+
+```python
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+# Cooperation rate trajectory
+axes[0].plot(df_model["Cooperation_Rate"], color="steelblue", linewidth=2)
+axes[0].set_title("Cooperation Rate Over Generations")
+axes[0].set_xlabel("Generation")
+axes[0].set_ylabel("Cooperation Rate")
+axes[0].set_ylim(0, 1)
+axes[0].grid(True, alpha=0.3)
+
+# Strategy frequency evolution
+for sname, color in STRAT_COLORS.items():
+    col = f"Frac_{sname}"
+    if col in df_model.columns:
+        axes[1].plot(df_model[col], label=sname, color=color, linewidth=2)
+axes[1].set_title("Strategy Evolution Over Generations")
+axes[1].set_xlabel("Generation")
+axes[1].set_ylabel("Fraction of Population")
+axes[1].legend(loc="upper right", fontsize=8)
+
+# Final performance comparison
+final_agents = df_agents.xs(N_STEPS, level="Step")
+strat_scores = (final_agents.groupby("Strategy")["Score"]
+                             .mean()
+                             .sort_values(ascending=False))
+axes[2].bar(strat_scores.index, strat_scores.values,
+            color=[STRAT_COLORS.get(s, "gray") for s in strat_scores.index])
+axes[2].set_title("Mean Final Score by Strategy")
+```
+
+The cooperation rate plot typically shows initial volatility as the population composition shifts rapidly, followed by stabilization as a dominant coalition emerges. Strategy frequency trajectories often display characteristic patterns—unconditional cooperators usually decline rapidly as defectors exploit them, while Tit-for-Tat and related reciprocal strategies expand. The final score distribution reveals which strategies succeeded in the evolutionary competition, though success may come through different mechanisms—high scores against diverse opponents versus moderate scores accumulated through stable cooperation with similar strategies.
+
+## Theoretical Implications and Extensions
+
+The iterated prisoner's dilemma with evolutionary selection illuminates several fundamental principles about cooperation. First, cooperation can emerge and persist among self-interested agents without central authority or binding agreements. Reciprocal strategies create incentives for cooperation through the shadow of future interactions—defection today risks punishment tomorrow. Second, the success of cooperative strategies depends critically on population structure and interaction patterns. Random matching, as implemented here, differs from spatial models where agents interact primarily with neighbors, or network models where interaction patterns follow fixed topologies.
+
+The model's parameters profoundly influence outcomes. Increasing rounds per generation strengthens the advantage of reciprocal strategies by providing more opportunities to establish cooperative relationships. Decreasing the population size increases stochastic effects and can prevent stable equilibria from forming. Modifying the payoff matrix changes the relative advantages of different strategies—reducing the temptation payoff T or increasing the punishment payoff P makes cooperation more attractive.
+
+Extensions to this basic framework open numerous research directions. Introducing noise or mistakes—where agents occasionally choose the wrong action—tests strategy robustness and favors more forgiving approaches like Tit-for-Two-Tats. Adding strategy mutation allows new behavioral variants to emerge endogenously rather than being predefined. Incorporating spatial structure or social networks creates local interaction patterns that can stabilize cooperation through clustering. Multi-level selection, where groups compete as well as individuals, creates additional pressures favoring cooperation within groups.
+
+The tension between individual and group selection appears mathematically through the Price equation, which decomposes fitness changes into within-group and between-group components. Cooperation often reduces individual fitness within groups while increasing group fitness overall, creating the multi-level selection problem that pervades social evolution.
+
+## Computational Considerations and Reproducibility
+
+The implementation demonstrates several best practices for agent-based modeling. Using Mesa's seeded random number generator throughout ensures complete reproducibility—running the model with the same seed produces identical results:
+
+```python
+super().__init__(seed=seed)
+# Later: self.rng.choice(partners)
+```
+
+The separation of strategy logic into independent classes exemplifies good software design, making it trivial to add new strategies or modify existing ones without touching the agent or model code. The comprehensive data collection system captures sufficient information for post-hoc analysis while maintaining reasonable memory footprints through selective storage.
+
+Performance optimization becomes relevant for large-scale experiments. Our implementation prioritizes clarity over speed, but several enhancements could improve efficiency. Vectorizing payoff calculations across multiple games, implementing more efficient opponent selection algorithms, or using compiled libraries for performance-critical loops could accelerate execution for large populations or long simulation runs.
+
+## Connections to Real-World Cooperation
+
+The abstract prisoner's dilemma framework maps onto numerous real-world scenarios. International climate agreements face prisoner's dilemma dynamics—each nation benefits from others reducing emissions while free-riding on those reductions. Business cartels encounter similar incentives—firms profit more from cheating on price-fixing agreements while others maintain high prices. Even everyday social interactions involve cooperative dilemmas—contributing to public goods, following social norms, or helping strangers all entail costs that tempt free-riding.
+
+The emergence of cooperation in our simulations suggests mechanisms that might operate in reality. Reputation effects, where agents remember and respond to others' past behavior, mirror our model's conditional strategies. Institutional arrangements that facilitate repeated interactions and information sharing strengthen the shadow of the future. Social norms and punishment mechanisms serve functions analogous to strategies like Grim Trigger, deterring exploitation through credible threats.
+
+However, real cooperation involves complexities our model simplifies. Humans employ sophisticated reasoning about others' intentions, update beliefs based on observed behavior, and consider ethical principles beyond immediate payoffs. Cultural evolution operates alongside genetic evolution, transmitting cooperative norms across generations through social learning. Group identities and parochial altruism create in-group cooperation that may coexist with out-group competition.
+
+The iterated prisoner's dilemma thus serves as a foundation for understanding cooperation rather than a complete explanation. It identifies key mechanisms—reciprocity, reputation, repeated interaction—while acknowledging that real social behavior emerges from richer psychological, cultural, and institutional processes. Like all models, its value lies not in perfect realism but in isolating essential features that generate insight into complex phenomena.
+
+## Conclusion: From Strategy to Society
+
+Our journey through agent-based models has traced an arc from simple to sophisticated, from random walks through segregation dynamics to strategic interaction and evolutionary selection. Each model reveals how micro-level rules—individual movement, housing preferences, strategic choices—aggregate into macro-level patterns that often surprise us. The prisoner's dilemma demonstrates perhaps the most hopeful of these emergent phenomena: cooperation arising among self-interested agents through repeated interaction and social learning.
+
+The mathematical elegance of game theory combined with agent-based modeling's computational power creates a robust framework for exploring social evolution. We can formalize strategic situations precisely while simulating their complex dynamics over time, watching as populations evolve toward equilibria that analytical methods might not predict. This synthesis of formal theory and computational experiment exemplifies modern social science at its best—rigorous yet realistic, mathematical yet grounded in behavioral detail.
+
+The strategies that succeed in our tournaments—those combining initial cooperation, reciprocity, and appropriate forgiveness—mirror prescriptions that emerge from evolutionary biology, experimental economics, and philosophical ethics. Be nice (start cooperating), be provocable (punish defection), be forgiving (don't hold grudges forever), and be clear (make your strategy understandable to others). These principles, discovered through mathematical analysis and confirmed through simulation, offer guidance for building cooperative institutions in a world of self-interested agents.
+
+As we conclude this exploration of strategic interactions, we recognize that the questions raised extend far beyond academic exercises. How do we design institutions that foster cooperation? What mechanisms sustain public goods provision in the face of free-rider incentives? Can we create social structures where individual and collective interests align? The iterated prisoner's dilemma doesn't answer these questions definitively, but it provides tools for thinking about them systematically—and occasionally, for finding solutions that pure reason alone might not discover.
+
+
+
+
+
+
+
+
+```python
+
+import mesa
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from collections import defaultdict
+
+# Standard PD payoffs: T > R > P > S
+# T=Temptation(5), R=Reward(3), P=Punishment(1), S=Sucker(0)
+PAYOFF_MATRIX = {
+    "C": {"C": 3, "D": 0},
+    "D": {"C": 5, "D": 1},
+}
+
+class Strategy:
+    """Abstract base strategy."""
+    name = "Base"
+    def get_move(self, agent, opponent) -> str:
+        raise NotImplementedError
+    def reset(self):
+        pass
+
+class AlwaysCooperate(Strategy):
+    name = "AllC"
+    def get_move(self, agent, opponent): return "C"
+
+class AlwaysDefect(Strategy):
+    name = "AllD"
+    def get_move(self, agent, opponent): return "D"
+
+class TitForTat(Strategy):
+    """
+    Cooperate on first encounter with any opponent.
+    Then mirror that specific opponent's last move.
+    FIX: Uses per-opponent history to avoid cross-game contamination.
+    """
+    name = "TFT"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        return opp_hist[-1] if opp_hist else "C"
+
+class GrimTrigger(Strategy):
+    """
+    Cooperate until THIS specific opponent has ever defected,
+    then defect permanently against them.
+    FIX: Per-opponent betrayal tracking (not global history).
+    """
+    name = "Grim"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        return "D" if "D" in opp_hist else "C"
+
+class RandomStrategy(Strategy):
+    """
+    Randomly cooperate or defect.
+    FIX: Uses model's seeded RNG for full reproducibility.
+    """
+    name = "Random"
+    def get_move(self, agent, opponent):
+        return agent.model.rng.choice(["C", "D"])  # seeded RNG
+
+class TitForTwoTats(Strategy):
+    """
+    Defect only if THIS opponent defected in their last two moves.
+    FIX: Uses per-opponent history.
+    """
+    name = "TF2T"
+    def get_move(self, agent, opponent):
+        opp_hist = agent.opponent_history.get(opponent.unique_id, [])
+        if len(opp_hist) < 2:
+            return "C"
+        return "D" if opp_hist[-1] == "D" and opp_hist[-2] == "D" else "C"
+
+STRATEGIES = [AlwaysCooperate, AlwaysDefect, TitForTat,
+              GrimTrigger, RandomStrategy, TitForTwoTats]
+
+class PlayerAgent(mesa.Agent):
+    """An agent competing in the Iterated Prisoner's Dilemma."""
+
+    def __init__(self, model, strategy_class):
+        super().__init__(model)
+        self.strategy       = strategy_class()
+        self.score          = 0
+        self.history        = []   # (my_move, opp_move) — full log
+        # FIX: per-opponent history dict: {opp_id: [their moves...]}
+        self.opponent_history = defaultdict(list)
+        self.cooperation_count = 0
+        self.rounds_played     = 0
+
+    def play_game(self, opponent):
+        """
+        One-sided: only self's state is updated.
+        The opponent updates their own state when their step() is called.
+        FIX: Eliminates asymmetric double-counting of scores/rounds.
+        """
+        my_move  = self.strategy.get_move(self, opponent)
+        opp_move = opponent.strategy.get_move(opponent, self)
+
+        payoff   = PAYOFF_MATRIX[my_move][opp_move]
+        self.score += payoff
+
+        # Record full history and per-opponent history
+        self.history.append((my_move, opp_move))
+        self.opponent_history[opponent.unique_id].append(opp_move)
+
+        if my_move == "C":
+            self.cooperation_count += 1
+        self.rounds_played += 1
+
+    @property
+    def cooperation_rate(self):
+        return self.cooperation_count / self.rounds_played if self.rounds_played else 0.0
+
+    def step(self):
+        """Pick a random opponent and play one round (self-update only)."""
+        partners = [a for a in self.model.agents if a is not self]
+        opponent = self.model.rng.choice(partners)  # seeded RNG
+        self.play_game(opponent)
+
+    def reset_for_new_generation(self):
+        """Called by evolve() — full state wipe for strategy adoption."""
+        self.history          = []
+        self.opponent_history = defaultdict(list)
+        self.score            = 0
+        self.cooperation_count = 0
+        self.rounds_played     = 0
+
+class GameTheoryModel(mesa.Model):
+    """
+    Iterated PD Tournament with evolutionary strategy selection.
+    Each generation: agents play N rounds, then the bottom half
+    adopt strategies from a randomly chosen top-half role model.
+    """
+
+    def __init__(self, n_agents=60, rounds_per_gen=10,
+                 enable_evolution=True, seed=42):
+        # FIX: Mesa 3.5+ deprecates seed, use rng parameter instead
+        super().__init__(seed=seed)
+        self.n_agents        = n_agents
+        self.rounds_per_gen  = rounds_per_gen
+        self.enable_evolution = enable_evolution
+        self.generation      = 0
+
+        # Distribute strategies evenly
+        strategies_cycle = (STRATEGIES * (n_agents // len(STRATEGIES) + 1))[:n_agents]
+        for strategy_cls in strategies_cycle:
+            PlayerAgent(self, strategy_cls)
+
+        # Dynamic strategy-fraction reporters
+        strategy_reporters = {
+            f"Frac_{cls().name}": (
+                lambda m, sname=cls().name:
+                    sum(1 for a in m.agents if a.strategy.name == sname) / m.n_agents
+            )
+            for cls in STRATEGIES
+        }
+
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                "Cooperation_Rate": lambda m: np.mean(
+                    [a.cooperation_rate for a in m.agents]),
+                "Mean_Score":       lambda m: np.mean([a.score for a in m.agents]),
+                "Generation":       lambda m: m.generation,
+                **strategy_reporters,
+            },
+            agent_reporters={
+                "Score":            "score",
+                "Strategy":         lambda a: a.strategy.name,
+                "Cooperation_Rate": "cooperation_rate",
+            },
+        )
+        self.datacollector.collect(self)
+
+    def evolve(self):
+        """
+        Evolutionary selection: bottom-half scorers adopt
+        a top-half agent's strategy.
+        FIX: Snapshot high/low lists BEFORE resetting any agent
+        to avoid polluting the selection pool mid-loop.
+        """
+        agents       = list(self.agents)
+        scores       = [a.score for a in agents]
+        median_score = np.median(scores)
+
+        # Snapshot both lists before any mutation
+        low_agents  = [a for a in agents if a.score <  median_score]
+        high_agents = [a for a in agents if a.score >= median_score]
+
+        for agent in low_agents:
+            role_model     = self.rng.choice(high_agents)
+            agent.strategy = type(role_model.strategy)()
+            agent.reset_for_new_generation()
+
+        self.generation += 1
+
+    def step(self):
+        for _ in range(self.rounds_per_gen):
+            self.agents.shuffle_do("step")
+        if self.enable_evolution:
+            self.evolve()
+        self.datacollector.collect(self)
+
+model   = GameTheoryModel(n_agents=60, rounds_per_gen=10,
+                          enable_evolution=True, seed=42)
+N_STEPS = 30
+
+for step in range(N_STEPS):
+    model.step()
+    if (step + 1) % 10 == 0:
+        df_tmp = model.datacollector.get_model_vars_dataframe()
+        coop   = df_tmp["Cooperation_Rate"].iloc[-1]
+        print(f"Generation {model.generation:3d} | Coop Rate: {coop:.2%}")
+
+df_model  = model.datacollector.get_model_vars_dataframe()
+df_agents = model.datacollector.get_agent_vars_dataframe()
+
+print("\nFinal strategy distribution:")
+frac_cols = [c for c in df_model.columns if c.startswith("Frac_")]
+print(df_model[frac_cols].iloc[-1].sort_values(ascending=False).to_string())
+
+STRAT_COLORS = {
+    "AllC": "green", "AllD": "red",    "TFT":    "royalblue",
+    "Grim": "purple", "Random": "orange", "TF2T": "teal"
+}
+strategy_names = [cls().name for cls in STRATEGIES]
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+fig.suptitle("Strategic Interactions: Game Theory & Cooperation",
+             fontsize=14, fontweight="bold")
+
+# Plot 1: Cooperation Rate over generations
+axes[0].plot(df_model["Cooperation_Rate"], color="steelblue", linewidth=2)
+axes[0].set_title("Cooperation Rate Over Generations")
+axes[0].set_xlabel("Generation")
+axes[0].set_ylabel("Cooperation Rate")
+axes[0].set_ylim(0, 1)
+axes[0].grid(True, alpha=0.3)
+
+# Plot 2: Strategy fractions over time
+for sname, color in STRAT_COLORS.items():
+    col = f"Frac_{sname}"
+    if col in df_model.columns:
+        axes[1].plot(df_model[col], label=sname, color=color, linewidth=2)
+axes[1].set_title("Strategy Evolution Over Generations")
+axes[1].set_xlabel("Generation")
+axes[1].set_ylabel("Fraction of Population")
+axes[1].legend(loc="upper right", fontsize=8)
+axes[1].grid(True, alpha=0.3)
+
+# Plot 3: Mean final score by strategy
+# FIX: use step index N_STEPS (last collected step)
+final_agents = df_agents.xs(N_STEPS, level="Step")
+strat_scores = (final_agents.groupby("Strategy")["Score"]
+                             .mean()
+                             .sort_values(ascending=False))
+axes[2].bar(strat_scores.index,
+            strat_scores.values,
+            color=[STRAT_COLORS.get(s, "gray") for s in strat_scores.index])
+axes[2].set_title("Mean Final Score by Strategy")
+axes[2].set_xlabel("Strategy")
+axes[2].set_ylabel("Mean Score")
+axes[2].grid(True, alpha=0.3, axis="y")
+
+plt.tight_layout()
+plt.savefig("game_theory_results.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Chart saved as game_theory_results.png")
+```

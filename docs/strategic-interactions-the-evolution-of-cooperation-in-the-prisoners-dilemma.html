@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 16 Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 16 Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma | Agent Based Modelling" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 16 Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma | Agent Based Modelling" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 16 Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma | Agent Based Modelling" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2026-03-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="opinion-dynamics-and-information-cascades.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Agent Based Modelling</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Agent Based Modelling</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#agent-based-modelling-and-complexity"><i class="fa fa-check"></i><b>1.1</b> Agent-based modelling and complexity</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#structure-of-an-agent-based-model"><i class="fa fa-check"></i><b>1.2</b> Structure of an agent-based model</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#agents"><i class="fa fa-check"></i><b>1.2.1</b> Agents</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.2.2</b> Environment</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#when-to-do-abm"><i class="fa fa-check"></i><b>1.3</b> When to do ABM</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="random-walks-i.html"><a href="random-walks-i.html"><i class="fa fa-check"></i><b>2</b> Random Walks I</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#what-makes-random-walks-special"><i class="fa fa-check"></i><b>2.1</b> What Makes Random Walks Special?</a></li>
+<li class="chapter" data-level="2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#building-our-random-walk-simulation"><i class="fa fa-check"></i><b>2.2</b> Building Our Random Walk Simulation</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="random-walks-i.html"><a href="random-walks-i.html#setting-up-the-environment"><i class="fa fa-check"></i><b>2.2.1</b> Setting Up the Environment</a></li>
+<li class="chapter" data-level="2.2.2" data-path="random-walks-i.html"><a href="random-walks-i.html#creating-the-random-walker-agent"><i class="fa fa-check"></i><b>2.2.2</b> Creating the Random Walker Agent</a></li>
+<li class="chapter" data-level="2.2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#designing-the-model-architecture"><i class="fa fa-check"></i><b>2.2.3</b> Designing the Model Architecture</a></li>
+<li class="chapter" data-level="2.2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#implementing-the-simulation-loop"><i class="fa fa-check"></i><b>2.2.4</b> Implementing the Simulation Loop</a></li>
+<li class="chapter" data-level="2.2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#running-and-analyzing-the-simulation"><i class="fa fa-check"></i><b>2.2.5</b> Running and Analyzing the Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="random-walks-i.html"><a href="random-walks-i.html#the-complete-implementation"><i class="fa fa-check"></i><b>2.3</b> The Complete Implementation</a></li>
+<li class="chapter" data-level="2.4" data-path="random-walks-i.html"><a href="random-walks-i.html#discussion-and-implications"><i class="fa fa-check"></i><b>2.4</b> Discussion and Implications</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="random-walks-i.html"><a href="random-walks-i.html#from-particles-to-populations"><i class="fa fa-check"></i><b>2.4.1</b> From Particles to Populations</a></li>
+<li class="chapter" data-level="2.4.2" data-path="random-walks-i.html"><a href="random-walks-i.html#the-power-of-emergence"><i class="fa fa-check"></i><b>2.4.2</b> The Power of Emergence</a></li>
+<li class="chapter" data-level="2.4.3" data-path="random-walks-i.html"><a href="random-walks-i.html#extending-the-framework"><i class="fa fa-check"></i><b>2.4.3</b> Extending the Framework</a></li>
+<li class="chapter" data-level="2.4.4" data-path="random-walks-i.html"><a href="random-walks-i.html#computational-insights"><i class="fa fa-check"></i><b>2.4.4</b> Computational Insights</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="random-walks-i.html"><a href="random-walks-i.html#visualizing-the-journey"><i class="fa fa-check"></i><b>2.5</b> Visualizing the Journey</a></li>
+<li class="chapter" data-level="2.6" data-path="random-walks-i.html"><a href="random-walks-i.html#conclusion-random-walks-as-research-tools"><i class="fa fa-check"></i><b>2.6</b> Conclusion: Random Walks as Research Tools</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="random-walks-i.html"><a href="random-walks-i.html#full-code"><i class="fa fa-check"></i><b>2.6.1</b> Full Code</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><i class="fa fa-check"></i><b>3</b> Scaling Up: Multi-Agent Random Walks and Emergent Collective Patterns</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#from-solo-to-symphony-the-multi-agent-paradigm"><i class="fa fa-check"></i><b>3.1</b> From Solo to Symphony: The Multi-Agent Paradigm</a></li>
+<li class="chapter" data-level="3.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#architectural-improvements-professional-mesa-development"><i class="fa fa-check"></i><b>3.2</b> Architectural Improvements: Professional Mesa Development</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#enhanced-agent-design"><i class="fa fa-check"></i><b>3.2.1</b> Enhanced Agent Design</a></li>
+<li class="chapter" data-level="3.2.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#professional-data-collection"><i class="fa fa-check"></i><b>3.2.2</b> Professional Data Collection</a></li>
+<li class="chapter" data-level="3.2.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#scalable-model-architecture"><i class="fa fa-check"></i><b>3.2.3</b> Scalable Model Architecture</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#the-complete-enhanced-implementation"><i class="fa fa-check"></i><b>3.3</b> The Complete Enhanced Implementation</a></li>
+<li class="chapter" data-level="3.4" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#emergent-patterns-in-multi-agent-systems"><i class="fa fa-check"></i><b>3.4</b> Emergent Patterns in Multi-Agent Systems</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#collective-coverage-patterns"><i class="fa fa-check"></i><b>3.4.1</b> Collective Coverage Patterns</a></li>
+<li class="chapter" data-level="3.4.2" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#spatial-distribution-dynamics"><i class="fa fa-check"></i><b>3.4.2</b> Spatial Distribution Dynamics</a></li>
+<li class="chapter" data-level="3.4.3" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#temporal-synchronization-and-divergence"><i class="fa fa-check"></i><b>3.4.3</b> Temporal Synchronization and Divergence</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#data-analysis-opportunities"><i class="fa fa-check"></i><b>3.5</b> Data Analysis Opportunities</a></li>
+<li class="chapter" data-level="3.6" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#performance-considerations-and-scalability"><i class="fa fa-check"></i><b>3.6</b> Performance Considerations and Scalability</a></li>
+<li class="chapter" data-level="3.7" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#research-applications-and-extensions"><i class="fa fa-check"></i><b>3.7</b> Research Applications and Extensions</a></li>
+<li class="chapter" data-level="3.8" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#visualization-and-communication"><i class="fa fa-check"></i><b>3.8</b> Visualization and Communication</a></li>
+<li class="chapter" data-level="3.9" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#conclusion-from-randomness-to-understanding"><i class="fa fa-check"></i><b>3.9</b> Conclusion: From Randomness to Understanding</a></li>
+<li class="chapter" data-level="3.10" data-path="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html"><a href="scaling-up-multi-agent-random-walks-and-emergent-collective-patterns.html#full-code-1"><i class="fa fa-check"></i><b>3.10</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html"><i class="fa fa-check"></i><b>4</b> Beyond Random: When Agents Learn to Navigate Their World</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#from-random-to-rational-the-learning-paradigm"><i class="fa fa-check"></i><b>4.1</b> From Random to Rational: The Learning Paradigm</a></li>
+<li class="chapter" data-level="4.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-complexity-resources-and-hazards"><i class="fa fa-check"></i><b>4.2</b> Environmental Complexity: Resources and Hazards</a></li>
+<li class="chapter" data-level="4.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-architecture-of-adaptive-behavior"><i class="fa fa-check"></i><b>4.3</b> The Architecture of Adaptive Behavior</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-exploration-exploitation-dilemma"><i class="fa fa-check"></i><b>4.3.1</b> The Exploration-Exploitation Dilemma</a></li>
+<li class="chapter" data-level="4.3.2" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#adaptive-decision-making"><i class="fa fa-check"></i><b>4.3.2</b> Adaptive Decision Making</a></li>
+<li class="chapter" data-level="4.3.3" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#learning-through-experience"><i class="fa fa-check"></i><b>4.3.3</b> Learning Through Experience</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#environmental-architecture-and-complexity"><i class="fa fa-check"></i><b>4.4</b> Environmental Architecture and Complexity</a></li>
+<li class="chapter" data-level="4.5" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#comprehensive-data-collection-and-analysis"><i class="fa fa-check"></i><b>4.5</b> Comprehensive Data Collection and Analysis</a></li>
+<li class="chapter" data-level="4.6" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#the-complete-learning-walker-implementation"><i class="fa fa-check"></i><b>4.6</b> The Complete Learning Walker Implementation</a></li>
+<li class="chapter" data-level="4.7" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#emergent-intelligence-what-the-data-reveals"><i class="fa fa-check"></i><b>4.7</b> Emergent Intelligence: What the Data Reveals</a></li>
+<li class="chapter" data-level="4.8" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#research-implications-and-real-world-connections"><i class="fa fa-check"></i><b>4.8</b> Research Implications and Real-World Connections</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#extensions-and-future-directions"><i class="fa fa-check"></i><b>4.8.1</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#computational-insights-and-performance"><i class="fa fa-check"></i><b>4.9</b> Computational Insights and Performance</a></li>
+<li class="chapter" data-level="4.10" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#conclusion-intelligence-as-emergent-property"><i class="fa fa-check"></i><b>4.10</b> Conclusion: Intelligence as Emergent Property</a></li>
+<li class="chapter" data-level="4.11" data-path="beyond-random-when-agents-learn-to-navigate-their-world.html"><a href="beyond-random-when-agents-learn-to-navigate-their-world.html#full-code-2"><i class="fa fa-check"></i><b>4.11</b> Full code</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html"><i class="fa fa-check"></i><b>5</b> From Random Walks to Social Segregation: The Schelling Model</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-mechanics-of-social-preference"><i class="fa fa-check"></i><b>5.1</b> The Mechanics of Social Preference</a></li>
+<li class="chapter" data-level="5.2" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#implementation-architecture-and-design-decisions"><i class="fa fa-check"></i><b>5.2</b> Implementation Architecture and Design Decisions</a></li>
+<li class="chapter" data-level="5.3" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#the-emergence-of-segregated-patterns"><i class="fa fa-check"></i><b>5.3</b> The Emergence of Segregated Patterns</a></li>
+<li class="chapter" data-level="5.4" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#quantifying-segregation-dynamics"><i class="fa fa-check"></i><b>5.4</b> Quantifying Segregation Dynamics</a></li>
+<li class="chapter" data-level="5.5" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#extensions-and-variations"><i class="fa fa-check"></i><b>5.5</b> Extensions and Variations</a></li>
+<li class="chapter" data-level="5.6" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#policy-implications-and-interventions"><i class="fa fa-check"></i><b>5.6</b> Policy Implications and Interventions</a></li>
+<li class="chapter" data-level="5.7" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#computational-considerations-and-future-directions"><i class="fa fa-check"></i><b>5.7</b> Computational Considerations and Future Directions</a></li>
+<li class="chapter" data-level="5.8" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#connecting-theory-and-reality"><i class="fa fa-check"></i><b>5.8</b> Connecting Theory and Reality</a></li>
+<li class="chapter" data-level="5.9" data-path="from-random-walks-to-social-segregation-the-schelling-model.html"><a href="from-random-walks-to-social-segregation-the-schelling-model.html#emergence-and-individual-responsibility"><i class="fa fa-check"></i><b>5.9</b> Emergence and Individual Responsibility</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html"><i class="fa fa-check"></i><b>6</b> An Economic Extension of the Schelling Segregation Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#introduction-the-missing-economic-dimension"><i class="fa fa-check"></i><b>6.1</b> Introduction: The Missing Economic Dimension</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#redefining-agents-in-economic-terms"><i class="fa fa-check"></i><b>6.1.1</b> Redefining Agents in Economic Terms</a></li>
+<li class="chapter" data-level="6.1.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#emergent-dynamics-when-constraints-reshape-preferences"><i class="fa fa-check"></i><b>6.1.2</b> Emergent Dynamics: When Constraints Reshape Preferences</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#research-applications-from-theory-to-policy"><i class="fa fa-check"></i><b>6.2</b> Research Applications: From Theory to Policy</a></li>
+<li class="chapter" data-level="6.3" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#methodological-innovations-and-extensions"><i class="fa fa-check"></i><b>6.3</b> Methodological Innovations and Extensions</a></li>
+<li class="chapter" data-level="6.4" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#key-findings-the-economic-reality-of-social-sorting"><i class="fa fa-check"></i><b>6.4</b> Key Findings: The Economic Reality of Social Sorting</a></li>
+<li class="chapter" data-level="6.5" data-path="an-economic-extension-of-the-schelling-segregation-model.html"><a href="an-economic-extension-of-the-schelling-segregation-model.html#conclusion"><i class="fa fa-check"></i><b>6.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><i class="fa fa-check"></i><b>7</b> Space Matters: Grids, Neighborhoods, and Spatial Dynamics</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#the-architecture-of-space-in-agent-based-models"><i class="fa fa-check"></i><b>7.1</b> The Architecture of Space in Agent-Based Models</a></li>
+<li class="chapter" data-level="7.2" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#conways-game-of-life-emergence-from-simplicity"><i class="fa fa-check"></i><b>7.2</b> Conway’s Game of Life: Emergence from Simplicity</a></li>
+<li class="chapter" data-level="7.3" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#patterns-structures-and-emergent-behaviors"><i class="fa fa-check"></i><b>7.3</b> Patterns, Structures, and Emergent Behaviors</a></li>
+<li class="chapter" data-level="7.4" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#boundary-conditions-and-spatial-topology"><i class="fa fa-check"></i><b>7.4</b> Boundary Conditions and Spatial Topology</a></li>
+<li class="chapter" data-level="7.5" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#extending-the-framework-custom-rules-and-variations"><i class="fa fa-check"></i><b>7.5</b> Extending the Framework: Custom Rules and Variations</a></li>
+<li class="chapter" data-level="7.6" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#computational-complexity-and-performance-considerations"><i class="fa fa-check"></i><b>7.6</b> Computational Complexity and Performance Considerations</a></li>
+<li class="chapter" data-level="7.7" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#connections-to-complex-systems-theory"><i class="fa fa-check"></i><b>7.7</b> Connections to Complex Systems Theory</a></li>
+<li class="chapter" data-level="7.8" data-path="space-matters-grids-neighborhoods-and-spatial-dynamics.html"><a href="space-matters-grids-neighborhoods-and-spatial-dynamics.html#spatial-dynamics-and-future-directions"><i class="fa fa-check"></i><b>7.8</b> Spatial Dynamics and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><i class="fa fa-check"></i><b>8</b> Beyond Binary: Multi-State Cellular Automata and Emergent Ecosystems</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#mathematical-foundations-of-multi-state-systems"><i class="fa fa-check"></i><b>8.1</b> Mathematical Foundations of Multi-State Systems</a></li>
+<li class="chapter" data-level="8.2" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#implementation-architecture"><i class="fa fa-check"></i><b>8.2</b> Implementation Architecture</a></li>
+<li class="chapter" data-level="8.3" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#cyclic-dynamics-and-spatial-patterns"><i class="fa fa-check"></i><b>8.3</b> Cyclic Dynamics and Spatial Patterns</a></li>
+<li class="chapter" data-level="8.4" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#parameter-sensitivity-and-system-stability"><i class="fa fa-check"></i><b>8.4</b> Parameter Sensitivity and System Stability</a></li>
+<li class="chapter" data-level="8.5" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#complete-implementation-and-execution"><i class="fa fa-check"></i><b>8.5</b> Complete Implementation and Execution</a></li>
+<li class="chapter" data-level="8.6" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#extensions-and-future-directions-1"><i class="fa fa-check"></i><b>8.6</b> Extensions and Future Directions</a></li>
+<li class="chapter" data-level="8.7" data-path="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html"><a href="beyond-binary-multi-state-cellular-automata-and-emergent-ecosystems.html#connecting-theory-to-reality"><i class="fa fa-check"></i><b>8.7</b> Connecting Theory to Reality</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html"><i class="fa fa-check"></i><b>9</b> Forest Fire Dynamics Modeling I</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#introduction-when-simple-rules-create-complex-patterns"><i class="fa fa-check"></i><b>9.1</b> Introduction: When Simple Rules Create Complex Patterns</a></li>
+<li class="chapter" data-level="9.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-forest-fire-model-four-states-infinite-possibilities"><i class="fa fa-check"></i><b>9.2</b> The Forest Fire Model: Four States, Infinite Possibilities</a></li>
+<li class="chapter" data-level="9.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#two-phase-evolution-separating-growth-from-fire"><i class="fa fa-check"></i><b>9.3</b> Two-Phase Evolution: Separating Growth from Fire</a></li>
+<li class="chapter" data-level="9.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#building-the-complete-model"><i class="fa fa-check"></i><b>9.4</b> Building the Complete Model</a></li>
+<li class="chapter" data-level="9.5" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#emergent-dynamics-self-organized-criticality"><i class="fa fa-check"></i><b>9.5</b> Emergent Dynamics: Self-Organized Criticality</a></li>
+<li class="chapter" data-level="9.6" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#the-critical-fire-spread-probability"><i class="fa fa-check"></i><b>9.6</b> The Critical Fire Spread Probability</a></li>
+<li class="chapter" data-level="9.7" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-patterns-forest-mosaics"><i class="fa fa-check"></i><b>9.7</b> Spatial Patterns: Forest Mosaics</a></li>
+<li class="chapter" data-level="9.8" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-oscillations-boom-and-bust-cycles"><i class="fa fa-check"></i><b>9.8</b> Temporal Oscillations: Boom and Bust Cycles</a></li>
+<li class="chapter" data-level="9.9" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#equilibrium-and-stability"><i class="fa fa-check"></i><b>9.9</b> Equilibrium and Stability</a></li>
+<li class="chapter" data-level="9.10" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-from-theory-to-management"><i class="fa fa-check"></i><b>9.10</b> Applications: From Theory to Management</a>
+<ul>
+<li class="chapter" data-level="9.10.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#fuel-reduction-strategies"><i class="fa fa-check"></i><b>9.10.1</b> Fuel Reduction Strategies</a></li>
+<li class="chapter" data-level="9.10.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-scenarios"><i class="fa fa-check"></i><b>9.10.2</b> Climate Change Scenarios</a></li>
+<li class="chapter" data-level="9.10.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#firebreak-design"><i class="fa fa-check"></i><b>9.10.3</b> Firebreak Design</a></li>
+</ul></li>
+<li class="chapter" data-level="9.11" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#applications-and-policy-implications"><i class="fa fa-check"></i><b>9.11</b> Applications and Policy Implications</a>
+<ul>
+<li class="chapter" data-level="9.11.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#forest-management-strategies"><i class="fa fa-check"></i><b>9.11.1</b> Forest Management Strategies</a></li>
+<li class="chapter" data-level="9.11.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#climate-change-adaptation"><i class="fa fa-check"></i><b>9.11.2</b> Climate Change Adaptation</a></li>
+<li class="chapter" data-level="9.11.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conservation-planning"><i class="fa fa-check"></i><b>9.11.3</b> Conservation Planning</a></li>
+</ul></li>
+<li class="chapter" data-level="9.12" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#model-extensions-and-future-directions"><i class="fa fa-check"></i><b>9.12</b> Model Extensions and Future Directions</a>
+<ul>
+<li class="chapter" data-level="9.12.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-heterogeneity"><i class="fa fa-check"></i><b>9.12.1</b> Spatial Heterogeneity</a></li>
+<li class="chapter" data-level="9.12.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#multi-scale-dynamics"><i class="fa fa-check"></i><b>9.12.2</b> Multi-scale Dynamics</a></li>
+<li class="chapter" data-level="9.12.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#stochastic-fire-spread"><i class="fa fa-check"></i><b>9.12.3</b> Stochastic Fire Spread</a></li>
+</ul></li>
+<li class="chapter" data-level="9.13" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#limitations-and-model-assumptions"><i class="fa fa-check"></i><b>9.13</b> Limitations and Model Assumptions</a>
+<ul>
+<li class="chapter" data-level="9.13.1" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#temporal-resolution"><i class="fa fa-check"></i><b>9.13.1</b> Temporal Resolution</a></li>
+<li class="chapter" data-level="9.13.2" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#spatial-resolution"><i class="fa fa-check"></i><b>9.13.2</b> Spatial Resolution</a></li>
+<li class="chapter" data-level="9.13.3" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#deterministic-vs.-stochastic-elements"><i class="fa fa-check"></i><b>9.13.3</b> Deterministic vs. Stochastic Elements</a></li>
+<li class="chapter" data-level="9.13.4" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#human-dimensions"><i class="fa fa-check"></i><b>9.13.4</b> Human Dimensions</a></li>
+</ul></li>
+<li class="chapter" data-level="9.14" data-path="forest-fire-dynamics-modeling-i.html"><a href="forest-fire-dynamics-modeling-i.html#conclusion-emergent-complexity-from-simple-rules"><i class="fa fa-check"></i><b>9.14</b> Conclusion: Emergent Complexity from Simple Rules</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html"><i class="fa fa-check"></i><b>10</b> Forest Fire Dynamics Modeling II</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#introduction-the-complex-dynamics-of-fire-suppression"><i class="fa fa-check"></i><b>10.1</b> Introduction: The Complex Dynamics of Fire Suppression</a></li>
+<li class="chapter" data-level="10.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#mathematical-framework-multi-agent-fire-suppression-dynamics"><i class="fa fa-check"></i><b>10.2</b> Mathematical Framework: Multi-Agent Fire-Suppression Dynamics</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#enhanced-state-space-definition"><i class="fa fa-check"></i><b>10.2.1</b> Enhanced State Space Definition</a></li>
+<li class="chapter" data-level="10.2.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-agent-dynamics"><i class="fa fa-check"></i><b>10.2.2</b> Firefighter Agent Dynamics</a></li>
+<li class="chapter" data-level="10.2.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#modified-fire-propagation-with-suppression"><i class="fa fa-check"></i><b>10.2.3</b> Modified Fire Propagation with Suppression</a></li>
+<li class="chapter" data-level="10.2.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#firefighter-behavioral-rules"><i class="fa fa-check"></i><b>10.2.4</b> Firefighter Behavioral Rules</a></li>
+<li class="chapter" data-level="10.2.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-effects-on-fire-dynamics"><i class="fa fa-check"></i><b>10.2.5</b> Infrastructure Effects on Fire Dynamics</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-architecture-comparative-strategy-frameworks"><i class="fa fa-check"></i><b>10.3</b> Policy Architecture: Comparative Strategy Frameworks</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#reactive-suppression-policy"><i class="fa fa-check"></i><b>10.3.1</b> Reactive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#preventive-suppression-policy"><i class="fa fa-check"></i><b>10.3.2</b> Preventive Suppression Policy</a></li>
+<li class="chapter" data-level="10.3.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#aggressive-suppression-policy"><i class="fa fa-check"></i><b>10.3.3</b> Aggressive Suppression Policy</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#implementation-architecture-multi-phase-staged-activation"><i class="fa fa-check"></i><b>10.4</b> Implementation Architecture: Multi-Phase Staged Activation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#staged-temporal-dynamics"><i class="fa fa-check"></i><b>10.4.1</b> Staged Temporal Dynamics</a></li>
+<li class="chapter" data-level="10.4.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#multi-agent-coordination-mechanisms"><i class="fa fa-check"></i><b>10.4.2</b> Multi-Agent Coordination Mechanisms</a></li>
+<li class="chapter" data-level="10.4.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#state-machine-implementation"><i class="fa fa-check"></i><b>10.4.3</b> State Machine Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#emergent-dynamics-resource-allocation-and-spatial-coverage"><i class="fa fa-check"></i><b>10.5</b> Emergent Dynamics: Resource Allocation and Spatial Coverage</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#spatial-response-patterns"><i class="fa fa-check"></i><b>10.5.1</b> Spatial Response Patterns</a></li>
+<li class="chapter" data-level="10.5.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-resource-utilization"><i class="fa fa-check"></i><b>10.5.2</b> Temporal Resource Utilization</a></li>
+<li class="chapter" data-level="10.5.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#fire-size-distribution-effects"><i class="fa fa-check"></i><b>10.5.3</b> Fire Size Distribution Effects</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#performance-metrics-multi-objective-policy-evaluation"><i class="fa fa-check"></i><b>10.6</b> Performance Metrics: Multi-Objective Policy Evaluation</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#suppression-effectiveness-measures"><i class="fa fa-check"></i><b>10.6.1</b> Suppression Effectiveness Measures</a></li>
+<li class="chapter" data-level="10.6.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-efficiency-indicators"><i class="fa fa-check"></i><b>10.6.2</b> Resource Efficiency Indicators</a></li>
+<li class="chapter" data-level="10.6.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#economic-cost-considerations"><i class="fa fa-check"></i><b>10.6.3</b> Economic Cost Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="10.7" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#simulation-results-comparative-policy-analysis"><i class="fa fa-check"></i><b>10.7</b> Simulation Results: Comparative Policy Analysis</a>
+<ul>
+<li class="chapter" data-level="10.7.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#burned-area-performance"><i class="fa fa-check"></i><b>10.7.1</b> Burned Area Performance</a></li>
+<li class="chapter" data-level="10.7.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#temporal-dynamics-comparison"><i class="fa fa-check"></i><b>10.7.2</b> Temporal Dynamics Comparison</a></li>
+<li class="chapter" data-level="10.7.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#resource-utilization-trade-offs"><i class="fa fa-check"></i><b>10.7.3</b> Resource Utilization Trade-offs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.8" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#policy-implications-strategic-fire-management"><i class="fa fa-check"></i><b>10.8</b> Policy Implications: Strategic Fire Management</a>
+<ul>
+<li class="chapter" data-level="10.8.1" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#cost-benefit-optimization"><i class="fa fa-check"></i><b>10.8.1</b> Cost-Benefit Optimization</a></li>
+<li class="chapter" data-level="10.8.2" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#infrastructure-investment-strategies"><i class="fa fa-check"></i><b>10.8.2</b> Infrastructure Investment Strategies</a></li>
+<li class="chapter" data-level="10.8.3" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#adaptive-management-frameworks"><i class="fa fa-check"></i><b>10.8.3</b> Adaptive Management Frameworks</a></li>
+</ul></li>
+<li class="chapter" data-level="10.9" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#model-extensions-and-future-directions-1"><i class="fa fa-check"></i><b>10.9</b> Model Extensions and Future Directions</a></li>
+<li class="chapter" data-level="10.10" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#limitations-and-critical-assessment"><i class="fa fa-check"></i><b>10.10</b> Limitations and Critical Assessment</a></li>
+<li class="chapter" data-level="10.11" data-path="forest-fire-dynamics-modeling-ii.html"><a href="forest-fire-dynamics-modeling-ii.html#conclusion-1"><i class="fa fa-check"></i><b>10.11</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html"><i class="fa fa-check"></i><b>11</b> Predator-Prey Dynamics: The Wolf-Sheep Model</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#the-mathematical-foundation"><i class="fa fa-check"></i><b>11.1</b> The Mathematical Foundation</a></li>
+<li class="chapter" data-level="11.2" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#agent-architecture-and-behavioral-rules"><i class="fa fa-check"></i><b>11.2</b> Agent Architecture and Behavioral Rules</a></li>
+<li class="chapter" data-level="11.3" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#model-initialization-and-parameter-space"><i class="fa fa-check"></i><b>11.3</b> Model Initialization and Parameter Space</a></li>
+<li class="chapter" data-level="11.4" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#data-collection-and-population-tracking"><i class="fa fa-check"></i><b>11.4</b> Data Collection and Population Tracking</a></li>
+<li class="chapter" data-level="11.5" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#emergent-population-dynamics"><i class="fa fa-check"></i><b>11.5</b> Emergent Population Dynamics</a></li>
+<li class="chapter" data-level="11.6" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#spatial-patterns-and-local-dynamics"><i class="fa fa-check"></i><b>11.6</b> Spatial Patterns and Local Dynamics</a></li>
+<li class="chapter" data-level="11.7" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#parameter-sensitivity-and-system-stability-1"><i class="fa fa-check"></i><b>11.7</b> Parameter Sensitivity and System Stability</a></li>
+<li class="chapter" data-level="11.8" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#extensions-and-ecological-complexity"><i class="fa fa-check"></i><b>11.8</b> Extensions and Ecological Complexity</a></li>
+<li class="chapter" data-level="11.9" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#connections-to-conservation-and-management"><i class="fa fa-check"></i><b>11.9</b> Connections to Conservation and Management</a></li>
+<li class="chapter" data-level="11.10" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#computational-and-theoretical-reflections"><i class="fa fa-check"></i><b>11.10</b> Computational and Theoretical Reflections</a></li>
+<li class="chapter" data-level="11.11" data-path="predator-prey-dynamics-the-wolf-sheep-model.html"><a href="predator-prey-dynamics-the-wolf-sheep-model.html#from-individual-decisions-to-collective-patterns"><i class="fa fa-check"></i><b>11.11</b> From Individual Decisions to Collective Patterns</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html"><i class="fa fa-check"></i><b>12</b> The Emergence of Inequality: The sugarscape Model</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#the-mathematical-framework-of-random-exchange"><i class="fa fa-check"></i><b>12.1</b> The Mathematical Framework of Random Exchange</a></li>
+<li class="chapter" data-level="12.2" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#measuring-inequality-through-the-gini-coefficient"><i class="fa fa-check"></i><b>12.2</b> Measuring Inequality Through the Gini Coefficient</a></li>
+<li class="chapter" data-level="12.3" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#model-architecture-and-data-collection"><i class="fa fa-check"></i><b>12.3</b> Model Architecture and Data Collection</a></li>
+<li class="chapter" data-level="12.4" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#the-dynamics-of-inequality-emergence"><i class="fa fa-check"></i><b>12.4</b> The Dynamics of Inequality Emergence</a></li>
+<li class="chapter" data-level="12.5" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#statistical-properties-and-theoretical-insights"><i class="fa fa-check"></i><b>12.5</b> Statistical Properties and Theoretical Insights</a></li>
+<li class="chapter" data-level="12.6" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#visualizing-inequality-through-multiple-lenses"><i class="fa fa-check"></i><b>12.6</b> Visualizing Inequality Through Multiple Lenses</a></li>
+<li class="chapter" data-level="12.7" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#policy-implications-and-model-extensions"><i class="fa fa-check"></i><b>12.7</b> Policy Implications and Model Extensions</a></li>
+<li class="chapter" data-level="12.8" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#connections-to-econophysics-and-statistical-mechanics"><i class="fa fa-check"></i><b>12.8</b> Connections to Econophysics and Statistical Mechanics</a></li>
+<li class="chapter" data-level="12.9" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#computational-considerations-and-simulation-design"><i class="fa fa-check"></i><b>12.9</b> Computational Considerations and Simulation Design</a></li>
+<li class="chapter" data-level="12.10" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#interpreting-results-and-avoiding-common-pitfalls"><i class="fa fa-check"></i><b>12.10</b> Interpreting Results and Avoiding Common Pitfalls</a></li>
+<li class="chapter" data-level="12.11" data-path="the-emergence-of-inequality-the-sugarscape-model.html"><a href="the-emergence-of-inequality-the-sugarscape-model.html#from-simple-models-to-complex-realities"><i class="fa fa-check"></i><b>12.11</b> From Simple Models to Complex Realities</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html"><i class="fa fa-check"></i><b>13</b> The Boids Flocking Model</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#the-mathematics-of-flocking"><i class="fa fa-check"></i><b>13.1</b> The Mathematics of Flocking</a></li>
+<li class="chapter" data-level="13.2" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#implementation-in-continuous-space"><i class="fa fa-check"></i><b>13.2</b> Implementation in Continuous Space</a></li>
+<li class="chapter" data-level="13.3" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#model-architecture-and-data-collection-1"><i class="fa fa-check"></i><b>13.3</b> Model Architecture and Data Collection</a></li>
+<li class="chapter" data-level="13.4" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#emergent-phenomena-and-pattern-formation"><i class="fa fa-check"></i><b>13.4</b> Emergent Phenomena and Pattern Formation</a></li>
+<li class="chapter" data-level="13.5" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#variations-and-extensions"><i class="fa fa-check"></i><b>13.5</b> Variations and Extensions</a></li>
+<li class="chapter" data-level="13.6" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#computational-considerations"><i class="fa fa-check"></i><b>13.6</b> Computational Considerations</a></li>
+<li class="chapter" data-level="13.7" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#biological-parallels-and-theoretical-insights"><i class="fa fa-check"></i><b>13.7</b> Biological Parallels and Theoretical Insights</a></li>
+<li class="chapter" data-level="13.8" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#from-local-rules-to-global-order"><i class="fa fa-check"></i><b>13.8</b> From Local Rules to Global Order</a></li>
+<li class="chapter" data-level="13.9" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#practical-applications-and-future-directions"><i class="fa fa-check"></i><b>13.9</b> Practical Applications and Future Directions</a></li>
+<li class="chapter" data-level="13.10" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#conclusion-the-beauty-of-emergent-coordination"><i class="fa fa-check"></i><b>13.10</b> Conclusion: The Beauty of Emergent Coordination</a></li>
+<li class="chapter" data-level="13.11" data-path="the-boids-flocking-model.html"><a href="the-boids-flocking-model.html#complete-implementation"><i class="fa fa-check"></i><b>13.11</b> Complete Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html"><i class="fa fa-check"></i><b>14</b> Modeling Disease Spread: The SIR Epidemic Framework</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#the-mathematics-of-contagion"><i class="fa fa-check"></i><b>14.1</b> The Mathematics of Contagion</a></li>
+<li class="chapter" data-level="14.2" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#building-the-epidemic-agents"><i class="fa fa-check"></i><b>14.2</b> Building the Epidemic Agents</a></li>
+<li class="chapter" data-level="14.3" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#orchestrating-the-epidemic"><i class="fa fa-check"></i><b>14.3</b> Orchestrating the Epidemic</a></li>
+<li class="chapter" data-level="14.4" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#the-temporal-evolution-of-epidemics"><i class="fa fa-check"></i><b>14.4</b> The Temporal Evolution of Epidemics</a></li>
+<li class="chapter" data-level="14.5" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#analyzing-epidemic-dynamics"><i class="fa fa-check"></i><b>14.5</b> Analyzing Epidemic Dynamics</a></li>
+<li class="chapter" data-level="14.6" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#the-role-of-stochasticity"><i class="fa fa-check"></i><b>14.6</b> The Role of Stochasticity</a></li>
+<li class="chapter" data-level="14.7" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#extensions-and-variations-1"><i class="fa fa-check"></i><b>14.7</b> Extensions and Variations</a></li>
+<li class="chapter" data-level="14.8" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#public-health-implications"><i class="fa fa-check"></i><b>14.8</b> Public Health Implications</a></li>
+<li class="chapter" data-level="14.9" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#computational-considerations-1"><i class="fa fa-check"></i><b>14.9</b> Computational Considerations</a></li>
+<li class="chapter" data-level="14.10" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#limitations-and-future-directions"><i class="fa fa-check"></i><b>14.10</b> Limitations and Future Directions</a></li>
+<li class="chapter" data-level="14.11" data-path="modeling-disease-spread-the-sir-epidemic-framework.html"><a href="modeling-disease-spread-the-sir-epidemic-framework.html#from-individuals-to-populations"><i class="fa fa-check"></i><b>14.11</b> From Individuals to Populations</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html"><i class="fa fa-check"></i><b>15</b> Opinion Dynamics and Information Cascades</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#the-mathematics-of-social-influence"><i class="fa fa-check"></i><b>15.1</b> The Mathematics of Social Influence</a></li>
+<li class="chapter" data-level="15.2" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#network-topology-and-social-structure"><i class="fa fa-check"></i><b>15.2</b> Network Topology and Social Structure</a></li>
+<li class="chapter" data-level="15.3" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#influencers-and-opinion-leaders"><i class="fa fa-check"></i><b>15.3</b> Influencers and Opinion Leaders</a></li>
+<li class="chapter" data-level="15.4" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#measuring-collective-opinion-states"><i class="fa fa-check"></i><b>15.4</b> Measuring Collective Opinion States</a></li>
+<li class="chapter" data-level="15.5" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#simulation-dynamics-and-emergent-patterns"><i class="fa fa-check"></i><b>15.5</b> Simulation Dynamics and Emergent Patterns</a></li>
+<li class="chapter" data-level="15.6" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#network-structure-and-opinion-outcomes"><i class="fa fa-check"></i><b>15.6</b> Network Structure and Opinion Outcomes</a></li>
+<li class="chapter" data-level="15.7" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#parameter-sensitivity-and-control"><i class="fa fa-check"></i><b>15.7</b> Parameter Sensitivity and Control</a></li>
+<li class="chapter" data-level="15.8" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#information-cascades-and-tipping-points"><i class="fa fa-check"></i><b>15.8</b> Information Cascades and Tipping Points</a></li>
+<li class="chapter" data-level="15.9" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#implications-for-social-systems"><i class="fa fa-check"></i><b>15.9</b> Implications for Social Systems</a></li>
+<li class="chapter" data-level="15.10" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#extensions-and-future-directions-2"><i class="fa fa-check"></i><b>15.10</b> Extensions and Future Directions</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><i class="fa fa-check"></i><b>16</b> Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#the-mathematical-structure-of-social-dilemmas"><i class="fa fa-check"></i><b>16.1</b> The Mathematical Structure of Social Dilemmas</a></li>
+<li class="chapter" data-level="16.2" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#strategic-diversity-and-behavioral-rules"><i class="fa fa-check"></i><b>16.2</b> Strategic Diversity and Behavioral Rules</a></li>
+<li class="chapter" data-level="16.3" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#agent-architecture-and-interaction-mechanics"><i class="fa fa-check"></i><b>16.3</b> Agent Architecture and Interaction Mechanics</a></li>
+<li class="chapter" data-level="16.4" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#evolutionary-dynamics-and-strategy-selection"><i class="fa fa-check"></i><b>16.4</b> Evolutionary Dynamics and Strategy Selection</a></li>
+<li class="chapter" data-level="16.5" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#emergent-cooperation-and-strategic-equilibria"><i class="fa fa-check"></i><b>16.5</b> Emergent Cooperation and Strategic Equilibria</a></li>
+<li class="chapter" data-level="16.6" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#visualization-and-pattern-recognition"><i class="fa fa-check"></i><b>16.6</b> Visualization and Pattern Recognition</a></li>
+<li class="chapter" data-level="16.7" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#theoretical-implications-and-extensions"><i class="fa fa-check"></i><b>16.7</b> Theoretical Implications and Extensions</a></li>
+<li class="chapter" data-level="16.8" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#computational-considerations-and-reproducibility"><i class="fa fa-check"></i><b>16.8</b> Computational Considerations and Reproducibility</a></li>
+<li class="chapter" data-level="16.9" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#connections-to-real-world-cooperation"><i class="fa fa-check"></i><b>16.9</b> Connections to Real-World Cooperation</a></li>
+<li class="chapter" data-level="16.10" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#conclusion-from-strategy-to-society"><i class="fa fa-check"></i><b>16.10</b> Conclusion: From Strategy to Society</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Agent Based Modelling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma" class="section level1 hasAnchor" number="16">
+<h1><span class="header-section-number">Chapter 16</span> Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>In our exploration of agent-based models, we’ve witnessed how simple movement rules generate complex patterns in random walks, and how individual preferences for similarity cascade into striking residential segregation in the Schelling model. Now we venture into perhaps the most profound question in social science: how does cooperation emerge and persist among self-interested agents? The iterated prisoner’s dilemma provides a powerful framework for examining this question, revealing how strategic interactions and evolutionary pressures shape collective behavior in ways that transcend individual rationality.</p>
+<p>The prisoner’s dilemma represents one of game theory’s most elegant paradoxes. Two players must simultaneously choose to cooperate or defect, knowing that mutual cooperation yields better outcomes than mutual defection, yet each individual has an incentive to defect regardless of the other’s choice. This tension between individual and collective rationality pervades social life, from international relations and business competition to everyday social interactions. When we extend this one-shot game to repeated interactions and allow strategies to evolve based on performance, we create a dynamic system where cooperation can emerge, spread, and potentially dominate populations of initially diverse strategies.</p>
+<div id="the-mathematical-structure-of-social-dilemmas" class="section level2 hasAnchor" number="16.1">
+<h2><span class="header-section-number">16.1</span> The Mathematical Structure of Social Dilemmas<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#the-mathematical-structure-of-social-dilemmas" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The prisoner’s dilemma derives its power from a specific ordering of payoffs. When player i chooses action a_i ∈ {C, D} and player j chooses a_j ∈ {C, D}, player i receives payoff π(a_i, a_j) according to the payoff matrix:</p>
+<pre><code>         j: C    j: D
+i: C     R, R    S, T
+i: D     T, S    P, P</code></pre>
+<p>The defining characteristic of the prisoner’s dilemma requires T &gt; R &gt; P &gt; S, where T represents the temptation payoff for defecting against a cooperator, R the reward for mutual cooperation, P the punishment for mutual defection, and S the sucker’s payoff for cooperating with a defector. In our implementation, we use the canonical values T = 5, R = 3, P = 1, and S = 0, which clearly demonstrate the dilemma’s structure:</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb129-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb129-1" tabindex="-1"></a>PAYOFF_MATRIX <span class="op">=</span> {</span>
+<span id="cb129-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb129-2" tabindex="-1"></a>    <span class="st">&quot;C&quot;</span>: {<span class="st">&quot;C&quot;</span>: <span class="dv">3</span>, <span class="st">&quot;D&quot;</span>: <span class="dv">0</span>},</span>
+<span id="cb129-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb129-3" tabindex="-1"></a>    <span class="st">&quot;D&quot;</span>: {<span class="st">&quot;C&quot;</span>: <span class="dv">5</span>, <span class="st">&quot;D&quot;</span>: <span class="dv">1</span>},</span>
+<span id="cb129-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb129-4" tabindex="-1"></a>}</span></code></pre></div>
+<p>This payoff structure creates a dominant strategy in the one-shot game—defection yields higher payoffs regardless of the opponent’s choice. Yet mutual defection produces worse outcomes than mutual cooperation, creating the social dilemma. The challenge becomes understanding how cooperation might emerge when agents interact repeatedly and strategies can evolve based on their success.</p>
+</div>
+<div id="strategic-diversity-and-behavioral-rules" class="section level2 hasAnchor" number="16.2">
+<h2><span class="header-section-number">16.2</span> Strategic Diversity and Behavioral Rules<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#strategic-diversity-and-behavioral-rules" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our model implements six distinct strategies that span the spectrum from unconditional cooperation to sophisticated conditional responses. The <code>Strategy</code> base class establishes the interface through which agents make decisions:</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb130-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-1" tabindex="-1"></a><span class="kw">class</span> Strategy:</span>
+<span id="cb130-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-2" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Abstract base strategy.&quot;&quot;&quot;</span></span>
+<span id="cb130-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-3" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Base&quot;</span></span>
+<span id="cb130-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-4" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb130-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-5" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="cb130-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-6" tabindex="-1"></a>    <span class="kw">def</span> reset(<span class="va">self</span>):</span>
+<span id="cb130-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb130-7" tabindex="-1"></a>        <span class="cf">pass</span></span></code></pre></div>
+<p>The simplest strategies ignore opponent behavior entirely. <code>AlwaysCooperate</code> unconditionally chooses cooperation, representing pure altruism or perhaps naivete, while <code>AlwaysDefect</code> unconditionally defects, embodying pure self-interest without regard for long-term consequences:</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb131-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-1" tabindex="-1"></a><span class="kw">class</span> AlwaysCooperate(Strategy):</span>
+<span id="cb131-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-2" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;AllC&quot;</span></span>
+<span id="cb131-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-3" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent): <span class="cf">return</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb131-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-4" tabindex="-1"></a></span>
+<span id="cb131-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-5" tabindex="-1"></a><span class="kw">class</span> AlwaysDefect(Strategy):</span>
+<span id="cb131-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-6" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;AllD&quot;</span></span>
+<span id="cb131-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb131-7" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent): <span class="cf">return</span> <span class="st">&quot;D&quot;</span></span></code></pre></div>
+<p>More sophisticated strategies condition their behavior on opponent history. The celebrated <code>TitForTat</code> strategy begins by cooperating, then mirrors whatever the opponent did in their previous interaction. This creates a reciprocal dynamic—cooperation begets cooperation, while defection triggers retaliation:</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb132-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb132-1" tabindex="-1"></a><span class="kw">class</span> TitForTat(Strategy):</span>
+<span id="cb132-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb132-2" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;TFT&quot;</span></span>
+<span id="cb132-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb132-3" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb132-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb132-4" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb132-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb132-5" tabindex="-1"></a>        <span class="cf">return</span> opp_hist[<span class="op">-</span><span class="dv">1</span>] <span class="cf">if</span> opp_hist <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span></code></pre></div>
+<p>The implementation maintains separate interaction histories for each opponent through the <code>opponent_history</code> dictionary, ensuring that an agent’s response to opponent A doesn’t get confused with their history against opponent B. This per-opponent tracking proves crucial for accurate strategy execution in multi-agent tournaments.</p>
+<p><code>GrimTrigger</code> represents an unforgiving strategy that cooperates until the opponent defects even once, then defects permanently against that opponent. This creates a credible threat that can deter exploitation but risks permanent breakdown of cooperation from a single mistake:</p>
+<div class="sourceCode" id="cb133"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb133-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb133-1" tabindex="-1"></a><span class="kw">class</span> GrimTrigger(Strategy):</span>
+<span id="cb133-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb133-2" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Grim&quot;</span></span>
+<span id="cb133-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb133-3" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb133-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb133-4" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb133-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb133-5" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;D&quot;</span> <span class="cf">if</span> <span class="st">&quot;D&quot;</span> <span class="kw">in</span> opp_hist <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span></code></pre></div>
+<p><code>TitForTwoTats</code> offers a more forgiving variant, defecting only when the opponent has defected in both of their last two moves. This tolerance for occasional defection can sustain cooperation in noisy environments where mistakes occur:</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb134-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-1" tabindex="-1"></a><span class="kw">class</span> TitForTwoTats(Strategy):</span>
+<span id="cb134-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-2" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;TF2T&quot;</span></span>
+<span id="cb134-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-3" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb134-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-4" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb134-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-5" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(opp_hist) <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb134-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-6" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb134-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb134-7" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;D&quot;</span> <span class="cf">if</span> opp_hist[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> <span class="st">&quot;D&quot;</span> <span class="kw">and</span> opp_hist[<span class="op">-</span><span class="dv">2</span>] <span class="op">==</span> <span class="st">&quot;D&quot;</span> <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span></code></pre></div>
+<p>Finally, <code>RandomStrategy</code> provides a baseline by choosing randomly between cooperation and defection. Using the model’s seeded random number generator ensures reproducibility:</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb135-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb135-1" tabindex="-1"></a><span class="kw">class</span> RandomStrategy(Strategy):</span>
+<span id="cb135-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb135-2" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Random&quot;</span></span>
+<span id="cb135-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb135-3" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb135-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb135-4" tabindex="-1"></a>        <span class="cf">return</span> agent.model.rng.choice([<span class="st">&quot;C&quot;</span>, <span class="st">&quot;D&quot;</span>])</span></code></pre></div>
+</div>
+<div id="agent-architecture-and-interaction-mechanics" class="section level2 hasAnchor" number="16.3">
+<h2><span class="header-section-number">16.3</span> Agent Architecture and Interaction Mechanics<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#agent-architecture-and-interaction-mechanics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The <code>PlayerAgent</code> class encapsulates the state and behavior of individual players in the tournament. Each agent maintains comprehensive records of their interactions, including total score, full game history, per-opponent move sequences, and aggregate statistics:</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb136-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-1" tabindex="-1"></a><span class="kw">class</span> PlayerAgent(mesa.Agent):</span>
+<span id="cb136-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model, strategy_class):</span>
+<span id="cb136-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-3" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb136-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-4" tabindex="-1"></a>        <span class="va">self</span>.strategy       <span class="op">=</span> strategy_class()</span>
+<span id="cb136-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-5" tabindex="-1"></a>        <span class="va">self</span>.score          <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb136-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-6" tabindex="-1"></a>        <span class="va">self</span>.history        <span class="op">=</span> []</span>
+<span id="cb136-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-7" tabindex="-1"></a>        <span class="va">self</span>.opponent_history <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb136-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-8" tabindex="-1"></a>        <span class="va">self</span>.cooperation_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb136-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb136-9" tabindex="-1"></a>        <span class="va">self</span>.rounds_played     <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>The interaction mechanism requires careful design to avoid double-counting and ensure symmetric information. When agent i plays against agent j, only agent i updates their state during that interaction. Agent j will update their own state when their <code>step()</code> method executes and they select an opponent. This one-sided update eliminates asymmetries that could arise from processing the same interaction twice:</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb137-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-1" tabindex="-1"></a><span class="kw">def</span> play_game(<span class="va">self</span>, opponent):</span>
+<span id="cb137-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-2" tabindex="-1"></a>    my_move  <span class="op">=</span> <span class="va">self</span>.strategy.get_move(<span class="va">self</span>, opponent)</span>
+<span id="cb137-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-3" tabindex="-1"></a>    opp_move <span class="op">=</span> opponent.strategy.get_move(opponent, <span class="va">self</span>)</span>
+<span id="cb137-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-4" tabindex="-1"></a></span>
+<span id="cb137-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-5" tabindex="-1"></a>    payoff   <span class="op">=</span> PAYOFF_MATRIX[my_move][opp_move]</span>
+<span id="cb137-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-6" tabindex="-1"></a>    <span class="va">self</span>.score <span class="op">+=</span> payoff</span>
+<span id="cb137-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-7" tabindex="-1"></a></span>
+<span id="cb137-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-8" tabindex="-1"></a>    <span class="va">self</span>.history.append((my_move, opp_move))</span>
+<span id="cb137-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-9" tabindex="-1"></a>    <span class="va">self</span>.opponent_history[opponent.unique_id].append(opp_move)</span>
+<span id="cb137-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-10" tabindex="-1"></a></span>
+<span id="cb137-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-11" tabindex="-1"></a>    <span class="cf">if</span> my_move <span class="op">==</span> <span class="st">&quot;C&quot;</span>:</span>
+<span id="cb137-12"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-12" tabindex="-1"></a>        <span class="va">self</span>.cooperation_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb137-13"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb137-13" tabindex="-1"></a>    <span class="va">self</span>.rounds_played <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div>
+<p>The agent’s step method implements random matching—each agent selects a random opponent from the population and plays one round. This ensures broad exposure across different strategies rather than agents getting locked into repeated interactions with the same partners:</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb138-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb138-1" tabindex="-1"></a><span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb138-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb138-2" tabindex="-1"></a>    partners <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> <span class="va">self</span>.model.agents <span class="cf">if</span> a <span class="kw">is</span> <span class="kw">not</span> <span class="va">self</span>]</span>
+<span id="cb138-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb138-3" tabindex="-1"></a>    opponent <span class="op">=</span> <span class="va">self</span>.model.rng.choice(partners)</span>
+<span id="cb138-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb138-4" tabindex="-1"></a>    <span class="va">self</span>.play_game(opponent)</span></code></pre></div>
+<p>The cooperation rate emerges as a derived property, computed from the agent’s accumulated cooperation count and total rounds played:</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb139-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb139-1" tabindex="-1"></a><span class="at">@property</span></span>
+<span id="cb139-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb139-2" tabindex="-1"></a><span class="kw">def</span> cooperation_rate(<span class="va">self</span>):</span>
+<span id="cb139-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb139-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.cooperation_count <span class="op">/</span> <span class="va">self</span>.rounds_played <span class="cf">if</span> <span class="va">self</span>.rounds_played <span class="cf">else</span> <span class="fl">0.0</span></span></code></pre></div>
+</div>
+<div id="evolutionary-dynamics-and-strategy-selection" class="section level2 hasAnchor" number="16.4">
+<h2><span class="header-section-number">16.4</span> Evolutionary Dynamics and Strategy Selection<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#evolutionary-dynamics-and-strategy-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model implements evolutionary strategy selection through a simple but effective mechanism. After each generation of repeated interactions, the bottom-performing half of the population adopts strategies from the top-performing half. This creates selection pressure favoring strategies that accumulate higher payoffs:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb140-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-1" tabindex="-1"></a><span class="kw">def</span> evolve(<span class="va">self</span>):</span>
+<span id="cb140-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-2" tabindex="-1"></a>    agents       <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.agents)</span>
+<span id="cb140-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-3" tabindex="-1"></a>    scores       <span class="op">=</span> [a.score <span class="cf">for</span> a <span class="kw">in</span> agents]</span>
+<span id="cb140-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-4" tabindex="-1"></a>    median_score <span class="op">=</span> np.median(scores)</span>
+<span id="cb140-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-5" tabindex="-1"></a></span>
+<span id="cb140-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-6" tabindex="-1"></a>    low_agents  <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> agents <span class="cf">if</span> a.score <span class="op">&lt;</span>  median_score]</span>
+<span id="cb140-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-7" tabindex="-1"></a>    high_agents <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> agents <span class="cf">if</span> a.score <span class="op">&gt;=</span> median_score]</span>
+<span id="cb140-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-8" tabindex="-1"></a></span>
+<span id="cb140-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-9" tabindex="-1"></a>    <span class="cf">for</span> agent <span class="kw">in</span> low_agents:</span>
+<span id="cb140-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-10" tabindex="-1"></a>        role_model     <span class="op">=</span> <span class="va">self</span>.rng.choice(high_agents)</span>
+<span id="cb140-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-11" tabindex="-1"></a>        agent.strategy <span class="op">=</span> <span class="bu">type</span>(role_model.strategy)()</span>
+<span id="cb140-12"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-12" tabindex="-1"></a>        agent.reset_for_new_generation()</span>
+<span id="cb140-13"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-13" tabindex="-1"></a></span>
+<span id="cb140-14"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb140-14" tabindex="-1"></a>    <span class="va">self</span>.generation <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div>
+<p>This evolutionary mechanism introduces several important dynamics. First, it creates frequency-dependent selection—a strategy’s success depends not just on its inherent properties but on the distribution of strategies in the population. A strategy that performs well against cooperators might struggle when defectors dominate. Second, the stochastic selection process allows for drift and maintains diversity longer than deterministic selection would. Third, the complete reset of agent state between generations ensures that accumulated scores don’t carry over, making each generation’s selection truly based on current performance.</p>
+<p>The model initialization distributes strategies evenly across the population, giving each an equal starting representation:</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb141-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-1" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_agents<span class="op">=</span><span class="dv">60</span>, rounds_per_gen<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb141-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-2" tabindex="-1"></a>             enable_evolution<span class="op">=</span><span class="va">True</span>, seed<span class="op">=</span><span class="dv">42</span>):</span>
+<span id="cb141-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-3" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb141-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-4" tabindex="-1"></a>    <span class="va">self</span>.n_agents        <span class="op">=</span> n_agents</span>
+<span id="cb141-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-5" tabindex="-1"></a>    <span class="va">self</span>.rounds_per_gen  <span class="op">=</span> rounds_per_gen</span>
+<span id="cb141-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-6" tabindex="-1"></a>    <span class="va">self</span>.enable_evolution <span class="op">=</span> enable_evolution</span>
+<span id="cb141-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-7" tabindex="-1"></a>    <span class="va">self</span>.generation      <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb141-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-8" tabindex="-1"></a></span>
+<span id="cb141-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-9" tabindex="-1"></a>    strategies_cycle <span class="op">=</span> (STRATEGIES <span class="op">*</span> (n_agents <span class="op">//</span> <span class="bu">len</span>(STRATEGIES) <span class="op">+</span> <span class="dv">1</span>))[:n_agents]</span>
+<span id="cb141-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-10" tabindex="-1"></a>    <span class="cf">for</span> strategy_cls <span class="kw">in</span> strategies_cycle:</span>
+<span id="cb141-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb141-11" tabindex="-1"></a>        PlayerAgent(<span class="va">self</span>, strategy_cls)</span></code></pre></div>
+<p>The data collection system tracks both aggregate population metrics and individual agent characteristics. Dynamic strategy-fraction reporters compute the proportion of the population using each strategy at each time step:</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb142-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-1" tabindex="-1"></a>strategy_reporters <span class="op">=</span> {</span>
+<span id="cb142-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-2" tabindex="-1"></a>    <span class="ss">f&quot;Frac_</span><span class="sc">{</span>cls()<span class="sc">.</span>name<span class="sc">}</span><span class="ss">&quot;</span>: (</span>
+<span id="cb142-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-3" tabindex="-1"></a>        <span class="kw">lambda</span> m, sname<span class="op">=</span>cls().name:</span>
+<span id="cb142-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-4" tabindex="-1"></a>            <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> a <span class="kw">in</span> m.agents <span class="cf">if</span> a.strategy.name <span class="op">==</span> sname) <span class="op">/</span> m.n_agents</span>
+<span id="cb142-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-5" tabindex="-1"></a>    )</span>
+<span id="cb142-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-6" tabindex="-1"></a>    <span class="cf">for</span> cls <span class="kw">in</span> STRATEGIES</span>
+<span id="cb142-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-7" tabindex="-1"></a>}</span>
+<span id="cb142-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-8" tabindex="-1"></a></span>
+<span id="cb142-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-9" tabindex="-1"></a><span class="va">self</span>.datacollector <span class="op">=</span> mesa.DataCollector(</span>
+<span id="cb142-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-10" tabindex="-1"></a>    model_reporters<span class="op">=</span>{</span>
+<span id="cb142-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-11" tabindex="-1"></a>        <span class="st">&quot;Cooperation_Rate&quot;</span>: <span class="kw">lambda</span> m: np.mean([a.cooperation_rate <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb142-12"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-12" tabindex="-1"></a>        <span class="st">&quot;Mean_Score&quot;</span>:       <span class="kw">lambda</span> m: np.mean([a.score <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb142-13"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-13" tabindex="-1"></a>        <span class="st">&quot;Generation&quot;</span>:       <span class="kw">lambda</span> m: m.generation,</span>
+<span id="cb142-14"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-14" tabindex="-1"></a>        <span class="op">**</span>strategy_reporters,</span>
+<span id="cb142-15"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-15" tabindex="-1"></a>    },</span>
+<span id="cb142-16"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-16" tabindex="-1"></a>    agent_reporters<span class="op">=</span>{</span>
+<span id="cb142-17"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-17" tabindex="-1"></a>        <span class="st">&quot;Score&quot;</span>:            <span class="st">&quot;score&quot;</span>,</span>
+<span id="cb142-18"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-18" tabindex="-1"></a>        <span class="st">&quot;Strategy&quot;</span>:         <span class="kw">lambda</span> a: a.strategy.name,</span>
+<span id="cb142-19"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-19" tabindex="-1"></a>        <span class="st">&quot;Cooperation_Rate&quot;</span>: <span class="st">&quot;cooperation_rate&quot;</span>,</span>
+<span id="cb142-20"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-20" tabindex="-1"></a>    },</span>
+<span id="cb142-21"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb142-21" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="emergent-cooperation-and-strategic-equilibria" class="section level2 hasAnchor" number="16.5">
+<h2><span class="header-section-number">16.5</span> Emergent Cooperation and Strategic Equilibria<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#emergent-cooperation-and-strategic-equilibria" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When we execute the model with typical parameters—60 agents, 10 rounds per generation, evolutionary selection enabled—fascinating dynamics emerge. The simulation runs for 30 generations, periodically reporting cooperation rates:</p>
+<div class="sourceCode" id="cb143"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb143-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-1" tabindex="-1"></a>model   <span class="op">=</span> GameTheoryModel(n_agents<span class="op">=</span><span class="dv">60</span>, rounds_per_gen<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb143-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-2" tabindex="-1"></a>                          enable_evolution<span class="op">=</span><span class="va">True</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb143-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-3" tabindex="-1"></a>N_STEPS <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb143-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-4" tabindex="-1"></a></span>
+<span id="cb143-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-5" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> <span class="bu">range</span>(N_STEPS):</span>
+<span id="cb143-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-6" tabindex="-1"></a>    model.step()</span>
+<span id="cb143-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-7" tabindex="-1"></a>    <span class="cf">if</span> (step <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb143-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-8" tabindex="-1"></a>        df_tmp <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb143-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-9" tabindex="-1"></a>        coop   <span class="op">=</span> df_tmp[<span class="st">&quot;Cooperation_Rate&quot;</span>].iloc[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb143-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb143-10" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Generation </span><span class="sc">{</span>model<span class="sc">.</span>generation<span class="sc">:3d}</span><span class="ss"> | Coop Rate: </span><span class="sc">{</span>coop<span class="sc">:.2%}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>The evolutionary trajectory typically reveals several phases. Initially, with strategies evenly distributed, cooperation rates reflect the diversity of the population. Unconditional cooperators interact with both reciprocators and exploiters, creating moderate average cooperation. As generations progress, selection pressures begin reshaping the population composition.</p>
+<p>Unconditional defection often shows early success, exploiting naive cooperators for high payoffs. However, this success proves self-limiting—as defectors proliferate, they increasingly face each other, earning only the punishment payoff P rather than the temptation payoff T. Meanwhile, conditional cooperators like Tit-for-Tat establish stable, mutually beneficial relationships with each other, consistently earning the reward payoff R.</p>
+<p>The mathematical expectation for strategy fitness depends critically on population composition. Let f_i denote the frequency of strategy i in the population, and let π(i, j) represent the expected payoff when strategy i plays against strategy j over multiple rounds. The expected fitness of strategy i becomes:</p>
+<p>W_i = Σ_j f_j π(i, j)</p>
+<p>This frequency-dependent fitness creates complex dynamics. In populations dominated by cooperators, Tit-for-Tat and similar reciprocal strategies thrive because they cooperate with cooperators while protecting themselves from occasional defectors. In populations with many defectors, more defensive strategies gain advantages. The evolutionary trajectory depends on initial conditions and stochastic fluctuations in the selection process.</p>
+</div>
+<div id="visualization-and-pattern-recognition" class="section level2 hasAnchor" number="16.6">
+<h2><span class="header-section-number">16.6</span> Visualization and Pattern Recognition<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#visualization-and-pattern-recognition" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The comprehensive visualization system reveals multiple dimensions of the evolutionary dynamics. Three complementary plots capture different aspects of the system’s behavior:</p>
+<div class="sourceCode" id="cb144"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb144-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-1" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">5</span>))</span>
+<span id="cb144-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-2" tabindex="-1"></a></span>
+<span id="cb144-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-3" tabindex="-1"></a><span class="co"># Cooperation rate trajectory</span></span>
+<span id="cb144-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-4" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(df_model[<span class="st">&quot;Cooperation_Rate&quot;</span>], color<span class="op">=</span><span class="st">&quot;steelblue&quot;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb144-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-5" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">&quot;Cooperation Rate Over Generations&quot;</span>)</span>
+<span id="cb144-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-6" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Generation&quot;</span>)</span>
+<span id="cb144-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-7" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Cooperation Rate&quot;</span>)</span>
+<span id="cb144-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-8" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb144-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-9" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb144-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-10" tabindex="-1"></a></span>
+<span id="cb144-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-11" tabindex="-1"></a><span class="co"># Strategy frequency evolution</span></span>
+<span id="cb144-12"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-12" tabindex="-1"></a><span class="cf">for</span> sname, color <span class="kw">in</span> STRAT_COLORS.items():</span>
+<span id="cb144-13"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-13" tabindex="-1"></a>    col <span class="op">=</span> <span class="ss">f&quot;Frac_</span><span class="sc">{</span>sname<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb144-14"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-14" tabindex="-1"></a>    <span class="cf">if</span> col <span class="kw">in</span> df_model.columns:</span>
+<span id="cb144-15"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-15" tabindex="-1"></a>        axes[<span class="dv">1</span>].plot(df_model[col], label<span class="op">=</span>sname, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb144-16"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-16" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">&quot;Strategy Evolution Over Generations&quot;</span>)</span>
+<span id="cb144-17"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-17" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Generation&quot;</span>)</span>
+<span id="cb144-18"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-18" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Fraction of Population&quot;</span>)</span>
+<span id="cb144-19"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-19" tabindex="-1"></a>axes[<span class="dv">1</span>].legend(loc<span class="op">=</span><span class="st">&quot;upper right&quot;</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb144-20"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-20" tabindex="-1"></a></span>
+<span id="cb144-21"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-21" tabindex="-1"></a><span class="co"># Final performance comparison</span></span>
+<span id="cb144-22"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-22" tabindex="-1"></a>final_agents <span class="op">=</span> df_agents.xs(N_STEPS, level<span class="op">=</span><span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb144-23"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-23" tabindex="-1"></a>strat_scores <span class="op">=</span> (final_agents.groupby(<span class="st">&quot;Strategy&quot;</span>)[<span class="st">&quot;Score&quot;</span>]</span>
+<span id="cb144-24"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-24" tabindex="-1"></a>                             .mean()</span>
+<span id="cb144-25"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-25" tabindex="-1"></a>                             .sort_values(ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb144-26"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-26" tabindex="-1"></a>axes[<span class="dv">2</span>].bar(strat_scores.index, strat_scores.values,</span>
+<span id="cb144-27"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-27" tabindex="-1"></a>            color<span class="op">=</span>[STRAT_COLORS.get(s, <span class="st">&quot;gray&quot;</span>) <span class="cf">for</span> s <span class="kw">in</span> strat_scores.index])</span>
+<span id="cb144-28"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb144-28" tabindex="-1"></a>axes[<span class="dv">2</span>].set_title(<span class="st">&quot;Mean Final Score by Strategy&quot;</span>)</span></code></pre></div>
+<p>The cooperation rate plot typically shows initial volatility as the population composition shifts rapidly, followed by stabilization as a dominant coalition emerges. Strategy frequency trajectories often display characteristic patterns—unconditional cooperators usually decline rapidly as defectors exploit them, while Tit-for-Tat and related reciprocal strategies expand. The final score distribution reveals which strategies succeeded in the evolutionary competition, though success may come through different mechanisms—high scores against diverse opponents versus moderate scores accumulated through stable cooperation with similar strategies.</p>
+</div>
+<div id="theoretical-implications-and-extensions" class="section level2 hasAnchor" number="16.7">
+<h2><span class="header-section-number">16.7</span> Theoretical Implications and Extensions<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#theoretical-implications-and-extensions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The iterated prisoner’s dilemma with evolutionary selection illuminates several fundamental principles about cooperation. First, cooperation can emerge and persist among self-interested agents without central authority or binding agreements. Reciprocal strategies create incentives for cooperation through the shadow of future interactions—defection today risks punishment tomorrow. Second, the success of cooperative strategies depends critically on population structure and interaction patterns. Random matching, as implemented here, differs from spatial models where agents interact primarily with neighbors, or network models where interaction patterns follow fixed topologies.</p>
+<p>The model’s parameters profoundly influence outcomes. Increasing rounds per generation strengthens the advantage of reciprocal strategies by providing more opportunities to establish cooperative relationships. Decreasing the population size increases stochastic effects and can prevent stable equilibria from forming. Modifying the payoff matrix changes the relative advantages of different strategies—reducing the temptation payoff T or increasing the punishment payoff P makes cooperation more attractive.</p>
+<p>Extensions to this basic framework open numerous research directions. Introducing noise or mistakes—where agents occasionally choose the wrong action—tests strategy robustness and favors more forgiving approaches like Tit-for-Two-Tats. Adding strategy mutation allows new behavioral variants to emerge endogenously rather than being predefined. Incorporating spatial structure or social networks creates local interaction patterns that can stabilize cooperation through clustering. Multi-level selection, where groups compete as well as individuals, creates additional pressures favoring cooperation within groups.</p>
+<p>The tension between individual and group selection appears mathematically through the Price equation, which decomposes fitness changes into within-group and between-group components. Cooperation often reduces individual fitness within groups while increasing group fitness overall, creating the multi-level selection problem that pervades social evolution.</p>
+</div>
+<div id="computational-considerations-and-reproducibility" class="section level2 hasAnchor" number="16.8">
+<h2><span class="header-section-number">16.8</span> Computational Considerations and Reproducibility<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#computational-considerations-and-reproducibility" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The implementation demonstrates several best practices for agent-based modeling. Using Mesa’s seeded random number generator throughout ensures complete reproducibility—running the model with the same seed produces identical results:</p>
+<div class="sourceCode" id="cb145"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb145-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb145-1" tabindex="-1"></a><span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb145-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb145-2" tabindex="-1"></a><span class="co"># Later: self.rng.choice(partners)</span></span></code></pre></div>
+<p>The separation of strategy logic into independent classes exemplifies good software design, making it trivial to add new strategies or modify existing ones without touching the agent or model code. The comprehensive data collection system captures sufficient information for post-hoc analysis while maintaining reasonable memory footprints through selective storage.</p>
+<p>Performance optimization becomes relevant for large-scale experiments. Our implementation prioritizes clarity over speed, but several enhancements could improve efficiency. Vectorizing payoff calculations across multiple games, implementing more efficient opponent selection algorithms, or using compiled libraries for performance-critical loops could accelerate execution for large populations or long simulation runs.</p>
+</div>
+<div id="connections-to-real-world-cooperation" class="section level2 hasAnchor" number="16.9">
+<h2><span class="header-section-number">16.9</span> Connections to Real-World Cooperation<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#connections-to-real-world-cooperation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The abstract prisoner’s dilemma framework maps onto numerous real-world scenarios. International climate agreements face prisoner’s dilemma dynamics—each nation benefits from others reducing emissions while free-riding on those reductions. Business cartels encounter similar incentives—firms profit more from cheating on price-fixing agreements while others maintain high prices. Even everyday social interactions involve cooperative dilemmas—contributing to public goods, following social norms, or helping strangers all entail costs that tempt free-riding.</p>
+<p>The emergence of cooperation in our simulations suggests mechanisms that might operate in reality. Reputation effects, where agents remember and respond to others’ past behavior, mirror our model’s conditional strategies. Institutional arrangements that facilitate repeated interactions and information sharing strengthen the shadow of the future. Social norms and punishment mechanisms serve functions analogous to strategies like Grim Trigger, deterring exploitation through credible threats.</p>
+<p>However, real cooperation involves complexities our model simplifies. Humans employ sophisticated reasoning about others’ intentions, update beliefs based on observed behavior, and consider ethical principles beyond immediate payoffs. Cultural evolution operates alongside genetic evolution, transmitting cooperative norms across generations through social learning. Group identities and parochial altruism create in-group cooperation that may coexist with out-group competition.</p>
+<p>The iterated prisoner’s dilemma thus serves as a foundation for understanding cooperation rather than a complete explanation. It identifies key mechanisms—reciprocity, reputation, repeated interaction—while acknowledging that real social behavior emerges from richer psychological, cultural, and institutional processes. Like all models, its value lies not in perfect realism but in isolating essential features that generate insight into complex phenomena.</p>
+</div>
+<div id="conclusion-from-strategy-to-society" class="section level2 hasAnchor" number="16.10">
+<h2><span class="header-section-number">16.10</span> Conclusion: From Strategy to Society<a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#conclusion-from-strategy-to-society" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our journey through agent-based models has traced an arc from simple to sophisticated, from random walks through segregation dynamics to strategic interaction and evolutionary selection. Each model reveals how micro-level rules—individual movement, housing preferences, strategic choices—aggregate into macro-level patterns that often surprise us. The prisoner’s dilemma demonstrates perhaps the most hopeful of these emergent phenomena: cooperation arising among self-interested agents through repeated interaction and social learning.</p>
+<p>The mathematical elegance of game theory combined with agent-based modeling’s computational power creates a robust framework for exploring social evolution. We can formalize strategic situations precisely while simulating their complex dynamics over time, watching as populations evolve toward equilibria that analytical methods might not predict. This synthesis of formal theory and computational experiment exemplifies modern social science at its best—rigorous yet realistic, mathematical yet grounded in behavioral detail.</p>
+<p>The strategies that succeed in our tournaments—those combining initial cooperation, reciprocity, and appropriate forgiveness—mirror prescriptions that emerge from evolutionary biology, experimental economics, and philosophical ethics. Be nice (start cooperating), be provocable (punish defection), be forgiving (don’t hold grudges forever), and be clear (make your strategy understandable to others). These principles, discovered through mathematical analysis and confirmed through simulation, offer guidance for building cooperative institutions in a world of self-interested agents.</p>
+<p>As we conclude this exploration of strategic interactions, we recognize that the questions raised extend far beyond academic exercises. How do we design institutions that foster cooperation? What mechanisms sustain public goods provision in the face of free-rider incentives? Can we create social structures where individual and collective interests align? The iterated prisoner’s dilemma doesn’t answer these questions definitively, but it provides tools for thinking about them systematically—and occasionally, for finding solutions that pure reason alone might not discover.</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb146-1"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-1" tabindex="-1"></a></span>
+<span id="cb146-2"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-2" tabindex="-1"></a><span class="im">import</span> mesa</span>
+<span id="cb146-3"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb146-4"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-4" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb146-5"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-5" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb146-6"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-6" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb146-7"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-7" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="cb146-8"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-8" tabindex="-1"></a></span>
+<span id="cb146-9"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-9" tabindex="-1"></a><span class="co"># Standard PD payoffs: T &gt; R &gt; P &gt; S</span></span>
+<span id="cb146-10"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-10" tabindex="-1"></a><span class="co"># T=Temptation(5), R=Reward(3), P=Punishment(1), S=Sucker(0)</span></span>
+<span id="cb146-11"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-11" tabindex="-1"></a>PAYOFF_MATRIX <span class="op">=</span> {</span>
+<span id="cb146-12"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-12" tabindex="-1"></a>    <span class="st">&quot;C&quot;</span>: {<span class="st">&quot;C&quot;</span>: <span class="dv">3</span>, <span class="st">&quot;D&quot;</span>: <span class="dv">0</span>},</span>
+<span id="cb146-13"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-13" tabindex="-1"></a>    <span class="st">&quot;D&quot;</span>: {<span class="st">&quot;C&quot;</span>: <span class="dv">5</span>, <span class="st">&quot;D&quot;</span>: <span class="dv">1</span>},</span>
+<span id="cb146-14"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-14" tabindex="-1"></a>}</span>
+<span id="cb146-15"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-15" tabindex="-1"></a></span>
+<span id="cb146-16"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-16" tabindex="-1"></a><span class="kw">class</span> Strategy:</span>
+<span id="cb146-17"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-17" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Abstract base strategy.&quot;&quot;&quot;</span></span>
+<span id="cb146-18"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-18" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Base&quot;</span></span>
+<span id="cb146-19"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-19" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb146-20"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-20" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span>
+<span id="cb146-21"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-21" tabindex="-1"></a>    <span class="kw">def</span> reset(<span class="va">self</span>):</span>
+<span id="cb146-22"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-22" tabindex="-1"></a>        <span class="cf">pass</span></span>
+<span id="cb146-23"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-23" tabindex="-1"></a></span>
+<span id="cb146-24"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-24" tabindex="-1"></a><span class="kw">class</span> AlwaysCooperate(Strategy):</span>
+<span id="cb146-25"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-25" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;AllC&quot;</span></span>
+<span id="cb146-26"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-26" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent): <span class="cf">return</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb146-27"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-27" tabindex="-1"></a></span>
+<span id="cb146-28"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-28" tabindex="-1"></a><span class="kw">class</span> AlwaysDefect(Strategy):</span>
+<span id="cb146-29"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-29" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;AllD&quot;</span></span>
+<span id="cb146-30"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-30" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent): <span class="cf">return</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb146-31"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-31" tabindex="-1"></a></span>
+<span id="cb146-32"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-32" tabindex="-1"></a><span class="kw">class</span> TitForTat(Strategy):</span>
+<span id="cb146-33"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-33" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-34"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-34" tabindex="-1"></a><span class="co">    Cooperate on first encounter with any opponent.</span></span>
+<span id="cb146-35"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-35" tabindex="-1"></a><span class="co">    Then mirror that specific opponent&#39;s last move.</span></span>
+<span id="cb146-36"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-36" tabindex="-1"></a><span class="co">    FIX: Uses per-opponent history to avoid cross-game contamination.</span></span>
+<span id="cb146-37"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-37" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb146-38"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-38" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;TFT&quot;</span></span>
+<span id="cb146-39"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-39" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb146-40"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-40" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb146-41"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-41" tabindex="-1"></a>        <span class="cf">return</span> opp_hist[<span class="op">-</span><span class="dv">1</span>] <span class="cf">if</span> opp_hist <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb146-42"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-42" tabindex="-1"></a></span>
+<span id="cb146-43"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-43" tabindex="-1"></a><span class="kw">class</span> GrimTrigger(Strategy):</span>
+<span id="cb146-44"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-44" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-45"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-45" tabindex="-1"></a><span class="co">    Cooperate until THIS specific opponent has ever defected,</span></span>
+<span id="cb146-46"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-46" tabindex="-1"></a><span class="co">    then defect permanently against them.</span></span>
+<span id="cb146-47"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-47" tabindex="-1"></a><span class="co">    FIX: Per-opponent betrayal tracking (not global history).</span></span>
+<span id="cb146-48"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-48" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb146-49"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-49" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Grim&quot;</span></span>
+<span id="cb146-50"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-50" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb146-51"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-51" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb146-52"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-52" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;D&quot;</span> <span class="cf">if</span> <span class="st">&quot;D&quot;</span> <span class="kw">in</span> opp_hist <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb146-53"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-53" tabindex="-1"></a></span>
+<span id="cb146-54"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-54" tabindex="-1"></a><span class="kw">class</span> RandomStrategy(Strategy):</span>
+<span id="cb146-55"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-55" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-56"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-56" tabindex="-1"></a><span class="co">    Randomly cooperate or defect.</span></span>
+<span id="cb146-57"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-57" tabindex="-1"></a><span class="co">    FIX: Uses model&#39;s seeded RNG for full reproducibility.</span></span>
+<span id="cb146-58"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-58" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb146-59"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-59" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Random&quot;</span></span>
+<span id="cb146-60"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-60" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb146-61"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-61" tabindex="-1"></a>        <span class="cf">return</span> agent.model.rng.choice([<span class="st">&quot;C&quot;</span>, <span class="st">&quot;D&quot;</span>])  <span class="co"># seeded RNG</span></span>
+<span id="cb146-62"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-62" tabindex="-1"></a></span>
+<span id="cb146-63"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-63" tabindex="-1"></a><span class="kw">class</span> TitForTwoTats(Strategy):</span>
+<span id="cb146-64"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-64" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-65"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-65" tabindex="-1"></a><span class="co">    Defect only if THIS opponent defected in their last two moves.</span></span>
+<span id="cb146-66"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-66" tabindex="-1"></a><span class="co">    FIX: Uses per-opponent history.</span></span>
+<span id="cb146-67"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-67" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb146-68"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-68" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;TF2T&quot;</span></span>
+<span id="cb146-69"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-69" tabindex="-1"></a>    <span class="kw">def</span> get_move(<span class="va">self</span>, agent, opponent):</span>
+<span id="cb146-70"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-70" tabindex="-1"></a>        opp_hist <span class="op">=</span> agent.opponent_history.get(opponent.unique_id, [])</span>
+<span id="cb146-71"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-71" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(opp_hist) <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb146-72"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-72" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb146-73"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-73" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;D&quot;</span> <span class="cf">if</span> opp_hist[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> <span class="st">&quot;D&quot;</span> <span class="kw">and</span> opp_hist[<span class="op">-</span><span class="dv">2</span>] <span class="op">==</span> <span class="st">&quot;D&quot;</span> <span class="cf">else</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb146-74"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-74" tabindex="-1"></a></span>
+<span id="cb146-75"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-75" tabindex="-1"></a>STRATEGIES <span class="op">=</span> [AlwaysCooperate, AlwaysDefect, TitForTat,</span>
+<span id="cb146-76"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-76" tabindex="-1"></a>              GrimTrigger, RandomStrategy, TitForTwoTats]</span>
+<span id="cb146-77"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-77" tabindex="-1"></a></span>
+<span id="cb146-78"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-78" tabindex="-1"></a><span class="kw">class</span> PlayerAgent(mesa.Agent):</span>
+<span id="cb146-79"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-79" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;An agent competing in the Iterated Prisoner&#39;s Dilemma.&quot;&quot;&quot;</span></span>
+<span id="cb146-80"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-80" tabindex="-1"></a></span>
+<span id="cb146-81"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-81" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model, strategy_class):</span>
+<span id="cb146-82"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-82" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb146-83"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-83" tabindex="-1"></a>        <span class="va">self</span>.strategy       <span class="op">=</span> strategy_class()</span>
+<span id="cb146-84"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-84" tabindex="-1"></a>        <span class="va">self</span>.score          <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-85"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-85" tabindex="-1"></a>        <span class="va">self</span>.history        <span class="op">=</span> []   <span class="co"># (my_move, opp_move) — full log</span></span>
+<span id="cb146-86"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-86" tabindex="-1"></a>        <span class="co"># FIX: per-opponent history dict: {opp_id: [their moves...]}</span></span>
+<span id="cb146-87"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-87" tabindex="-1"></a>        <span class="va">self</span>.opponent_history <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb146-88"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-88" tabindex="-1"></a>        <span class="va">self</span>.cooperation_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-89"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-89" tabindex="-1"></a>        <span class="va">self</span>.rounds_played     <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-90"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-90" tabindex="-1"></a></span>
+<span id="cb146-91"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-91" tabindex="-1"></a>    <span class="kw">def</span> play_game(<span class="va">self</span>, opponent):</span>
+<span id="cb146-92"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-92" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-93"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-93" tabindex="-1"></a><span class="co">        One-sided: only self&#39;s state is updated.</span></span>
+<span id="cb146-94"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-94" tabindex="-1"></a><span class="co">        The opponent updates their own state when their step() is called.</span></span>
+<span id="cb146-95"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-95" tabindex="-1"></a><span class="co">        FIX: Eliminates asymmetric double-counting of scores/rounds.</span></span>
+<span id="cb146-96"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-96" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb146-97"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-97" tabindex="-1"></a>        my_move  <span class="op">=</span> <span class="va">self</span>.strategy.get_move(<span class="va">self</span>, opponent)</span>
+<span id="cb146-98"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-98" tabindex="-1"></a>        opp_move <span class="op">=</span> opponent.strategy.get_move(opponent, <span class="va">self</span>)</span>
+<span id="cb146-99"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-99" tabindex="-1"></a></span>
+<span id="cb146-100"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-100" tabindex="-1"></a>        payoff   <span class="op">=</span> PAYOFF_MATRIX[my_move][opp_move]</span>
+<span id="cb146-101"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-101" tabindex="-1"></a>        <span class="va">self</span>.score <span class="op">+=</span> payoff</span>
+<span id="cb146-102"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-102" tabindex="-1"></a></span>
+<span id="cb146-103"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-103" tabindex="-1"></a>        <span class="co"># Record full history and per-opponent history</span></span>
+<span id="cb146-104"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-104" tabindex="-1"></a>        <span class="va">self</span>.history.append((my_move, opp_move))</span>
+<span id="cb146-105"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-105" tabindex="-1"></a>        <span class="va">self</span>.opponent_history[opponent.unique_id].append(opp_move)</span>
+<span id="cb146-106"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-106" tabindex="-1"></a></span>
+<span id="cb146-107"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-107" tabindex="-1"></a>        <span class="cf">if</span> my_move <span class="op">==</span> <span class="st">&quot;C&quot;</span>:</span>
+<span id="cb146-108"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-108" tabindex="-1"></a>            <span class="va">self</span>.cooperation_count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb146-109"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-109" tabindex="-1"></a>        <span class="va">self</span>.rounds_played <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb146-110"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-110" tabindex="-1"></a></span>
+<span id="cb146-111"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-111" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb146-112"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-112" tabindex="-1"></a>    <span class="kw">def</span> cooperation_rate(<span class="va">self</span>):</span>
+<span id="cb146-113"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-113" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.cooperation_count <span class="op">/</span> <span class="va">self</span>.rounds_played <span class="cf">if</span> <span class="va">self</span>.rounds_played <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb146-114"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-114" tabindex="-1"></a></span>
+<span id="cb146-115"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-115" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb146-116"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-116" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Pick a random opponent and play one round (self-update only).&quot;&quot;&quot;</span></span>
+<span id="cb146-117"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-117" tabindex="-1"></a>        partners <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> <span class="va">self</span>.model.agents <span class="cf">if</span> a <span class="kw">is</span> <span class="kw">not</span> <span class="va">self</span>]</span>
+<span id="cb146-118"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-118" tabindex="-1"></a>        opponent <span class="op">=</span> <span class="va">self</span>.model.rng.choice(partners)  <span class="co"># seeded RNG</span></span>
+<span id="cb146-119"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-119" tabindex="-1"></a>        <span class="va">self</span>.play_game(opponent)</span>
+<span id="cb146-120"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-120" tabindex="-1"></a></span>
+<span id="cb146-121"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-121" tabindex="-1"></a>    <span class="kw">def</span> reset_for_new_generation(<span class="va">self</span>):</span>
+<span id="cb146-122"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-122" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Called by evolve() — full state wipe for strategy adoption.&quot;&quot;&quot;</span></span>
+<span id="cb146-123"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-123" tabindex="-1"></a>        <span class="va">self</span>.history          <span class="op">=</span> []</span>
+<span id="cb146-124"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-124" tabindex="-1"></a>        <span class="va">self</span>.opponent_history <span class="op">=</span> defaultdict(<span class="bu">list</span>)</span>
+<span id="cb146-125"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-125" tabindex="-1"></a>        <span class="va">self</span>.score            <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-126"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-126" tabindex="-1"></a>        <span class="va">self</span>.cooperation_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-127"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-127" tabindex="-1"></a>        <span class="va">self</span>.rounds_played     <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-128"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-128" tabindex="-1"></a></span>
+<span id="cb146-129"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-129" tabindex="-1"></a><span class="kw">class</span> GameTheoryModel(mesa.Model):</span>
+<span id="cb146-130"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-130" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-131"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-131" tabindex="-1"></a><span class="co">    Iterated PD Tournament with evolutionary strategy selection.</span></span>
+<span id="cb146-132"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-132" tabindex="-1"></a><span class="co">    Each generation: agents play N rounds, then the bottom half</span></span>
+<span id="cb146-133"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-133" tabindex="-1"></a><span class="co">    adopt strategies from a randomly chosen top-half role model.</span></span>
+<span id="cb146-134"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-134" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb146-135"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-135" tabindex="-1"></a></span>
+<span id="cb146-136"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-136" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_agents<span class="op">=</span><span class="dv">60</span>, rounds_per_gen<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb146-137"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-137" tabindex="-1"></a>                 enable_evolution<span class="op">=</span><span class="va">True</span>, seed<span class="op">=</span><span class="dv">42</span>):</span>
+<span id="cb146-138"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-138" tabindex="-1"></a>        <span class="co"># FIX: Mesa 3.5+ deprecates seed, use rng parameter instead</span></span>
+<span id="cb146-139"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-139" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb146-140"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-140" tabindex="-1"></a>        <span class="va">self</span>.n_agents        <span class="op">=</span> n_agents</span>
+<span id="cb146-141"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-141" tabindex="-1"></a>        <span class="va">self</span>.rounds_per_gen  <span class="op">=</span> rounds_per_gen</span>
+<span id="cb146-142"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-142" tabindex="-1"></a>        <span class="va">self</span>.enable_evolution <span class="op">=</span> enable_evolution</span>
+<span id="cb146-143"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-143" tabindex="-1"></a>        <span class="va">self</span>.generation      <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb146-144"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-144" tabindex="-1"></a></span>
+<span id="cb146-145"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-145" tabindex="-1"></a>        <span class="co"># Distribute strategies evenly</span></span>
+<span id="cb146-146"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-146" tabindex="-1"></a>        strategies_cycle <span class="op">=</span> (STRATEGIES <span class="op">*</span> (n_agents <span class="op">//</span> <span class="bu">len</span>(STRATEGIES) <span class="op">+</span> <span class="dv">1</span>))[:n_agents]</span>
+<span id="cb146-147"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-147" tabindex="-1"></a>        <span class="cf">for</span> strategy_cls <span class="kw">in</span> strategies_cycle:</span>
+<span id="cb146-148"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-148" tabindex="-1"></a>            PlayerAgent(<span class="va">self</span>, strategy_cls)</span>
+<span id="cb146-149"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-149" tabindex="-1"></a></span>
+<span id="cb146-150"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-150" tabindex="-1"></a>        <span class="co"># Dynamic strategy-fraction reporters</span></span>
+<span id="cb146-151"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-151" tabindex="-1"></a>        strategy_reporters <span class="op">=</span> {</span>
+<span id="cb146-152"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-152" tabindex="-1"></a>            <span class="ss">f&quot;Frac_</span><span class="sc">{</span>cls()<span class="sc">.</span>name<span class="sc">}</span><span class="ss">&quot;</span>: (</span>
+<span id="cb146-153"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-153" tabindex="-1"></a>                <span class="kw">lambda</span> m, sname<span class="op">=</span>cls().name:</span>
+<span id="cb146-154"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-154" tabindex="-1"></a>                    <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> a <span class="kw">in</span> m.agents <span class="cf">if</span> a.strategy.name <span class="op">==</span> sname) <span class="op">/</span> m.n_agents</span>
+<span id="cb146-155"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-155" tabindex="-1"></a>            )</span>
+<span id="cb146-156"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-156" tabindex="-1"></a>            <span class="cf">for</span> cls <span class="kw">in</span> STRATEGIES</span>
+<span id="cb146-157"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-157" tabindex="-1"></a>        }</span>
+<span id="cb146-158"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-158" tabindex="-1"></a></span>
+<span id="cb146-159"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-159" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> mesa.DataCollector(</span>
+<span id="cb146-160"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-160" tabindex="-1"></a>            model_reporters<span class="op">=</span>{</span>
+<span id="cb146-161"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-161" tabindex="-1"></a>                <span class="st">&quot;Cooperation_Rate&quot;</span>: <span class="kw">lambda</span> m: np.mean(</span>
+<span id="cb146-162"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-162" tabindex="-1"></a>                    [a.cooperation_rate <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb146-163"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-163" tabindex="-1"></a>                <span class="st">&quot;Mean_Score&quot;</span>:       <span class="kw">lambda</span> m: np.mean([a.score <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb146-164"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-164" tabindex="-1"></a>                <span class="st">&quot;Generation&quot;</span>:       <span class="kw">lambda</span> m: m.generation,</span>
+<span id="cb146-165"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-165" tabindex="-1"></a>                <span class="op">**</span>strategy_reporters,</span>
+<span id="cb146-166"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-166" tabindex="-1"></a>            },</span>
+<span id="cb146-167"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-167" tabindex="-1"></a>            agent_reporters<span class="op">=</span>{</span>
+<span id="cb146-168"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-168" tabindex="-1"></a>                <span class="st">&quot;Score&quot;</span>:            <span class="st">&quot;score&quot;</span>,</span>
+<span id="cb146-169"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-169" tabindex="-1"></a>                <span class="st">&quot;Strategy&quot;</span>:         <span class="kw">lambda</span> a: a.strategy.name,</span>
+<span id="cb146-170"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-170" tabindex="-1"></a>                <span class="st">&quot;Cooperation_Rate&quot;</span>: <span class="st">&quot;cooperation_rate&quot;</span>,</span>
+<span id="cb146-171"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-171" tabindex="-1"></a>            },</span>
+<span id="cb146-172"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-172" tabindex="-1"></a>        )</span>
+<span id="cb146-173"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-173" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb146-174"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-174" tabindex="-1"></a></span>
+<span id="cb146-175"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-175" tabindex="-1"></a>    <span class="kw">def</span> evolve(<span class="va">self</span>):</span>
+<span id="cb146-176"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-176" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb146-177"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-177" tabindex="-1"></a><span class="co">        Evolutionary selection: bottom-half scorers adopt</span></span>
+<span id="cb146-178"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-178" tabindex="-1"></a><span class="co">        a top-half agent&#39;s strategy.</span></span>
+<span id="cb146-179"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-179" tabindex="-1"></a><span class="co">        FIX: Snapshot high/low lists BEFORE resetting any agent</span></span>
+<span id="cb146-180"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-180" tabindex="-1"></a><span class="co">        to avoid polluting the selection pool mid-loop.</span></span>
+<span id="cb146-181"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-181" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb146-182"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-182" tabindex="-1"></a>        agents       <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.agents)</span>
+<span id="cb146-183"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-183" tabindex="-1"></a>        scores       <span class="op">=</span> [a.score <span class="cf">for</span> a <span class="kw">in</span> agents]</span>
+<span id="cb146-184"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-184" tabindex="-1"></a>        median_score <span class="op">=</span> np.median(scores)</span>
+<span id="cb146-185"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-185" tabindex="-1"></a></span>
+<span id="cb146-186"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-186" tabindex="-1"></a>        <span class="co"># Snapshot both lists before any mutation</span></span>
+<span id="cb146-187"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-187" tabindex="-1"></a>        low_agents  <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> agents <span class="cf">if</span> a.score <span class="op">&lt;</span>  median_score]</span>
+<span id="cb146-188"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-188" tabindex="-1"></a>        high_agents <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> agents <span class="cf">if</span> a.score <span class="op">&gt;=</span> median_score]</span>
+<span id="cb146-189"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-189" tabindex="-1"></a></span>
+<span id="cb146-190"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-190" tabindex="-1"></a>        <span class="cf">for</span> agent <span class="kw">in</span> low_agents:</span>
+<span id="cb146-191"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-191" tabindex="-1"></a>            role_model     <span class="op">=</span> <span class="va">self</span>.rng.choice(high_agents)</span>
+<span id="cb146-192"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-192" tabindex="-1"></a>            agent.strategy <span class="op">=</span> <span class="bu">type</span>(role_model.strategy)()</span>
+<span id="cb146-193"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-193" tabindex="-1"></a>            agent.reset_for_new_generation()</span>
+<span id="cb146-194"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-194" tabindex="-1"></a></span>
+<span id="cb146-195"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-195" tabindex="-1"></a>        <span class="va">self</span>.generation <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb146-196"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-196" tabindex="-1"></a></span>
+<span id="cb146-197"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-197" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb146-198"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-198" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.rounds_per_gen):</span>
+<span id="cb146-199"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-199" tabindex="-1"></a>            <span class="va">self</span>.agents.shuffle_do(<span class="st">&quot;step&quot;</span>)</span>
+<span id="cb146-200"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-200" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.enable_evolution:</span>
+<span id="cb146-201"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-201" tabindex="-1"></a>            <span class="va">self</span>.evolve()</span>
+<span id="cb146-202"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-202" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb146-203"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-203" tabindex="-1"></a></span>
+<span id="cb146-204"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-204" tabindex="-1"></a>model   <span class="op">=</span> GameTheoryModel(n_agents<span class="op">=</span><span class="dv">60</span>, rounds_per_gen<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb146-205"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-205" tabindex="-1"></a>                          enable_evolution<span class="op">=</span><span class="va">True</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb146-206"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-206" tabindex="-1"></a>N_STEPS <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb146-207"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-207" tabindex="-1"></a></span>
+<span id="cb146-208"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-208" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> <span class="bu">range</span>(N_STEPS):</span>
+<span id="cb146-209"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-209" tabindex="-1"></a>    model.step()</span>
+<span id="cb146-210"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-210" tabindex="-1"></a>    <span class="cf">if</span> (step <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb146-211"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-211" tabindex="-1"></a>        df_tmp <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb146-212"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-212" tabindex="-1"></a>        coop   <span class="op">=</span> df_tmp[<span class="st">&quot;Cooperation_Rate&quot;</span>].iloc[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb146-213"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-213" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Generation </span><span class="sc">{</span>model<span class="sc">.</span>generation<span class="sc">:3d}</span><span class="ss"> | Coop Rate: </span><span class="sc">{</span>coop<span class="sc">:.2%}</span><span class="ss">&quot;</span>)</span>
+<span id="cb146-214"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-214" tabindex="-1"></a></span>
+<span id="cb146-215"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-215" tabindex="-1"></a>df_model  <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb146-216"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-216" tabindex="-1"></a>df_agents <span class="op">=</span> model.datacollector.get_agent_vars_dataframe()</span>
+<span id="cb146-217"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-217" tabindex="-1"></a></span>
+<span id="cb146-218"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-218" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Final strategy distribution:&quot;</span>)</span>
+<span id="cb146-219"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-219" tabindex="-1"></a>frac_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df_model.columns <span class="cf">if</span> c.startswith(<span class="st">&quot;Frac_&quot;</span>)]</span>
+<span id="cb146-220"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-220" tabindex="-1"></a><span class="bu">print</span>(df_model[frac_cols].iloc[<span class="op">-</span><span class="dv">1</span>].sort_values(ascending<span class="op">=</span><span class="va">False</span>).to_string())</span>
+<span id="cb146-221"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-221" tabindex="-1"></a></span>
+<span id="cb146-222"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-222" tabindex="-1"></a>STRAT_COLORS <span class="op">=</span> {</span>
+<span id="cb146-223"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-223" tabindex="-1"></a>    <span class="st">&quot;AllC&quot;</span>: <span class="st">&quot;green&quot;</span>, <span class="st">&quot;AllD&quot;</span>: <span class="st">&quot;red&quot;</span>,    <span class="st">&quot;TFT&quot;</span>:    <span class="st">&quot;royalblue&quot;</span>,</span>
+<span id="cb146-224"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-224" tabindex="-1"></a>    <span class="st">&quot;Grim&quot;</span>: <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;Random&quot;</span>: <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;TF2T&quot;</span>: <span class="st">&quot;teal&quot;</span></span>
+<span id="cb146-225"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-225" tabindex="-1"></a>}</span>
+<span id="cb146-226"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-226" tabindex="-1"></a>strategy_names <span class="op">=</span> [cls().name <span class="cf">for</span> cls <span class="kw">in</span> STRATEGIES]</span>
+<span id="cb146-227"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-227" tabindex="-1"></a></span>
+<span id="cb146-228"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-228" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">5</span>))</span>
+<span id="cb146-229"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-229" tabindex="-1"></a>fig.suptitle(<span class="st">&quot;Strategic Interactions: Game Theory &amp; Cooperation&quot;</span>,</span>
+<span id="cb146-230"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-230" tabindex="-1"></a>             fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)</span>
+<span id="cb146-231"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-231" tabindex="-1"></a></span>
+<span id="cb146-232"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-232" tabindex="-1"></a><span class="co"># Plot 1: Cooperation Rate over generations</span></span>
+<span id="cb146-233"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-233" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(df_model[<span class="st">&quot;Cooperation_Rate&quot;</span>], color<span class="op">=</span><span class="st">&quot;steelblue&quot;</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb146-234"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-234" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">&quot;Cooperation Rate Over Generations&quot;</span>)</span>
+<span id="cb146-235"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-235" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">&quot;Generation&quot;</span>)</span>
+<span id="cb146-236"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-236" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">&quot;Cooperation Rate&quot;</span>)</span>
+<span id="cb146-237"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-237" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb146-238"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-238" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb146-239"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-239" tabindex="-1"></a></span>
+<span id="cb146-240"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-240" tabindex="-1"></a><span class="co"># Plot 2: Strategy fractions over time</span></span>
+<span id="cb146-241"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-241" tabindex="-1"></a><span class="cf">for</span> sname, color <span class="kw">in</span> STRAT_COLORS.items():</span>
+<span id="cb146-242"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-242" tabindex="-1"></a>    col <span class="op">=</span> <span class="ss">f&quot;Frac_</span><span class="sc">{</span>sname<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb146-243"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-243" tabindex="-1"></a>    <span class="cf">if</span> col <span class="kw">in</span> df_model.columns:</span>
+<span id="cb146-244"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-244" tabindex="-1"></a>        axes[<span class="dv">1</span>].plot(df_model[col], label<span class="op">=</span>sname, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb146-245"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-245" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">&quot;Strategy Evolution Over Generations&quot;</span>)</span>
+<span id="cb146-246"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-246" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Generation&quot;</span>)</span>
+<span id="cb146-247"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-247" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Fraction of Population&quot;</span>)</span>
+<span id="cb146-248"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-248" tabindex="-1"></a>axes[<span class="dv">1</span>].legend(loc<span class="op">=</span><span class="st">&quot;upper right&quot;</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb146-249"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-249" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb146-250"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-250" tabindex="-1"></a></span>
+<span id="cb146-251"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-251" tabindex="-1"></a><span class="co"># Plot 3: Mean final score by strategy</span></span>
+<span id="cb146-252"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-252" tabindex="-1"></a><span class="co"># FIX: use step index N_STEPS (last collected step)</span></span>
+<span id="cb146-253"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-253" tabindex="-1"></a>final_agents <span class="op">=</span> df_agents.xs(N_STEPS, level<span class="op">=</span><span class="st">&quot;Step&quot;</span>)</span>
+<span id="cb146-254"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-254" tabindex="-1"></a>strat_scores <span class="op">=</span> (final_agents.groupby(<span class="st">&quot;Strategy&quot;</span>)[<span class="st">&quot;Score&quot;</span>]</span>
+<span id="cb146-255"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-255" tabindex="-1"></a>                             .mean()</span>
+<span id="cb146-256"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-256" tabindex="-1"></a>                             .sort_values(ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb146-257"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-257" tabindex="-1"></a>axes[<span class="dv">2</span>].bar(strat_scores.index,</span>
+<span id="cb146-258"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-258" tabindex="-1"></a>            strat_scores.values,</span>
+<span id="cb146-259"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-259" tabindex="-1"></a>            color<span class="op">=</span>[STRAT_COLORS.get(s, <span class="st">&quot;gray&quot;</span>) <span class="cf">for</span> s <span class="kw">in</span> strat_scores.index])</span>
+<span id="cb146-260"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-260" tabindex="-1"></a>axes[<span class="dv">2</span>].set_title(<span class="st">&quot;Mean Final Score by Strategy&quot;</span>)</span>
+<span id="cb146-261"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-261" tabindex="-1"></a>axes[<span class="dv">2</span>].set_xlabel(<span class="st">&quot;Strategy&quot;</span>)</span>
+<span id="cb146-262"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-262" tabindex="-1"></a>axes[<span class="dv">2</span>].set_ylabel(<span class="st">&quot;Mean Score&quot;</span>)</span>
+<span id="cb146-263"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-263" tabindex="-1"></a>axes[<span class="dv">2</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">&quot;y&quot;</span>)</span>
+<span id="cb146-264"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-264" tabindex="-1"></a></span>
+<span id="cb146-265"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-265" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb146-266"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-266" tabindex="-1"></a>plt.savefig(<span class="st">&quot;game_theory_results.png&quot;</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">&quot;tight&quot;</span>)</span>
+<span id="cb146-267"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-267" tabindex="-1"></a>plt.show()</span>
+<span id="cb146-268"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html#cb146-268" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Chart saved as game_theory_results.png&quot;</span>)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="opinion-dynamics-and-information-cascades.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/15-Game.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/15-Game.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
