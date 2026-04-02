@@ -1,0 +1,641 @@
+# Learning to Cope: Reinforcement Learning in Mental Health Agent-Based Models
+
+Our journey through agent-based modeling began with random walks, where agents moved without purpose across a grid, their paths determined entirely by chance. We then progressed to the Schelling model, where agents made decisions based on preferences about their immediate social environment. Now we venture into territory where agents not only make decisions but actively learn from experience, adapting their strategies over time to optimize outcomes they cannot fully predict. This represents a fundamental shift: from reactive behavior to adaptive intelligence, from fixed rules to learned policies.
+
+The mental health coping model explores how individuals learn to manage psychological stress through experience. Unlike our previous models where behavior remained static throughout the simulation, this framework introduces reinforcement learning—specifically Q-learning—to capture how people discover effective coping strategies through trial and error. Some agents in our model adapt their approach based on what works, while others maintain rigid coping patterns regardless of outcomes. This contrast illuminates not only the mechanics of adaptive learning but also raises profound questions about behavioral flexibility, mental health intervention, and the computational nature of psychological adaptation.
+
+## The Mathematics of Learning to Cope
+
+At the heart of this model lies a Markov Decision Process (MDP), a mathematical framework for modeling decision-making in situations where outcomes are partly random and partly under the control of a decision-maker. An MDP consists of states S, actions A, transition probabilities P(s'|s,a), and rewards R(s,a,s'). The agent's goal is to learn a policy π: S → A that maximizes expected cumulative reward over time.
+
+Our mental health model defines states as discrete representations of an agent's psychological condition. Each state s ∈ S is a tuple capturing three dimensions:
+
+s = (stress_bin, daily_stress_bin, support_bin)
+
+where each component takes values in {0, 1, 2, 3, 4}, representing discretized levels of personal stress, environmental stress, and perceived social support. This discretization transforms continuous psychological variables into a finite state space amenable to tabular Q-learning:
+
+```python
+def discretize(value, bin_size, max_bin=4):
+    idx = int(value / bin_size)
+    return max(0, min(idx, max_bin))
+
+def get_state(self):
+    s_bin  = discretize(self.stress, 20)
+    d_bin  = discretize(self.model.daily_stress, 5)
+    sup_bin = discretize(self.perceived_support, 20)
+    return (s_bin, d_bin, sup_bin)
+```
+
+The action space consists of three coping strategies: A = {healthy_coping, avoidance, seek_support}. Each action influences the agent's stress level and social support through psychologically-inspired dynamics. Healthy coping—representing activities like exercise, cognitive behavioral techniques, or mindfulness—typically reduces stress with some variability but requires consistent effort. Avoidance provides immediate relief but carries delayed costs through a rebound effect. Seeking support depends on environmental availability and can be highly effective when accessible but frustrating when support systems prove unavailable.
+
+The reward function encodes the agent's objective: minimize stress while accounting for improvement trajectories. We define the reward r_t at time t as:
+
+r_t = -stress_t + 0.5 × (stress_{t-1} - stress_t)
+
+This formulation penalizes high stress levels while providing bonuses for stress reduction, encouraging agents to both maintain low stress and actively work toward improvement:
+
+```python
+def compute_reward(self):
+    delta = self.prev_stress - self.stress
+    return -self.stress + 0.5 * delta
+```
+
+## Q-Learning: The Bellman Equation in Action
+
+Q-learning learns an action-value function Q(s,a) that estimates the expected cumulative reward of taking action a in state s and following an optimal policy thereafter. The Q-function satisfies the Bellman optimality equation:
+
+Q*(s,a) = E[r + γ max_a' Q*(s',a')]
+
+where γ ∈ [0,1] represents the discount factor, determining how much the agent values future rewards relative to immediate ones. The Q-learning update rule iteratively approximates Q* through temporal difference learning:
+
+Q(s,a) ← Q(s,a) + α[r + γ max_a' Q(s',a') - Q(s,a)]
+
+where α ∈ [0,1] is the learning rate, controlling how quickly new information overwrites old estimates. This update moves Q(s,a) toward the observed reward r plus the discounted value of the best action in the next state, gradually converging to the optimal action-value function under appropriate conditions:
+
+```python
+def update_q_value(self, state, action, reward, next_state):
+    old_q   = self.q_table.get((state, action), 0.0)
+    next_max = max(self.q_table.get((next_state, a), 0.0)
+                   for a in self.actions)
+    new_q = old_q + self.learning_rate * (
+        reward + self.discount * next_max - old_q
+    )
+    self.q_table[(state, action)] = new_q
+```
+
+The implementation uses a dictionary to store Q-values, with (state, action) tuples as keys. This tabular representation works well for our discrete state space but would require function approximation for continuous or high-dimensional state spaces.
+
+## Exploration Versus Exploitation: The ε-Greedy Policy
+
+A fundamental challenge in reinforcement learning involves balancing exploration—trying new actions to discover their effects—with exploitation—using known good actions to maximize reward. Without exploration, an agent might never discover optimal strategies, converging prematurely to suboptimal policies. Pure exploration, however, prevents the agent from leveraging learned knowledge.
+
+The ε-greedy policy provides a simple yet effective solution. With probability ε, the agent explores by selecting a random action; with probability 1-ε, it exploits by choosing the action with highest Q-value:
+
+π(s) = {
+  random action from A,           with probability ε
+  argmax_a Q(s,a),                with probability 1-ε
+}
+
+Our implementation gradually reduces ε over time through exponential decay, starting with ε = 1.0 (pure exploration) and decaying toward ε_min = 0.05:
+
+ε_t = max(ε_min, ε_{t-1} × ε_decay)
+
+```python
+def choose_action(self, state):
+    if random.random() < self.epsilon:
+        return random.choice(self.actions)
+    q_vals = {a: self.q_table.get((state, a), 0.0)
+              for a in self.actions}
+    return max(q_vals, key=q_vals.get)
+```
+
+This decay schedule implements a form of simulated annealing, allowing extensive early exploration when the agent knows little, gradually shifting toward exploitation as knowledge accumulates. The final epsilon value maintains some exploration to handle environmental non-stationarity.
+
+## Coping Strategy Dynamics and Psychological Realism
+
+The action execution methods implement simplified but psychologically-grounded dynamics for each coping strategy. Healthy coping reduces stress through a base effect plus random variation, capturing the variability in how effective techniques prove across different occasions:
+
+```python
+if action == "healthy_coping":
+    base_reduction = random.uniform(8, 15)
+    variability = random.uniform(-3, 3)
+    self.stress -= (base_reduction + variability)
+    self.perceived_support += random.uniform(1, 3)
+```
+
+The avoidance strategy introduces an important temporal complexity: immediate relief followed by delayed rebound. This captures how avoidant coping—substance use, distraction, denial—might provide short-term stress reduction while potentially worsening long-term outcomes:
+
+```python
+elif action == "avoidance":
+    short_relief = random.uniform(4, 8)
+    rebound = random.uniform(2, 10)
+    self.stress -= short_relief
+    self.model.rebound_pool.append((self, rebound))
+```
+
+The model implements delayed costs through a rebound pool, applying accumulated penalties in the subsequent environmental update. This temporal structure creates a learning challenge: agents must discover that immediate rewards from avoidance don't represent true long-term value, requiring sufficient exploration and the discount factor γ to properly value future states.
+
+Seeking support introduces environmental dependency. When support is available, this strategy can be highly effective; when unavailable, it may increase stress through frustration:
+
+```python
+elif action == "seek_support":
+    if self.model.support_availability > 0.2:
+        self.stress -= random.uniform(10, 18)
+        self.perceived_support += random.uniform(5, 10)
+    else:
+        self.stress += random.uniform(0, 6)
+```
+
+This conditional structure models how social support effectiveness depends on external factors beyond individual control—availability of mental health services, strength of social networks, cultural norms around help-seeking.
+
+## Environmental Dynamics and Non-Stationarity
+
+The model's environment introduces several sources of complexity that challenge learning agents. Daily stress evolves as a mean-reverting stochastic process, providing a dynamic backdrop against which agents must adapt:
+
+```python
+def _update_environment(self):
+    mean_level = 5.0
+    shock = random.gauss(0, 1.5)
+    self.daily_stress += 0.3 * (mean_level - self.daily_stress) + shock
+    self.daily_stress = max(0, min(self.daily_stress, 12))
+```
+
+This formulation implements an Ornstein-Uhlenbeck process, commonly used to model mean-reverting quantities in stochastic systems. The daily stress tends toward a baseline level but experiences random shocks representing unpredictable life events. Agents cannot control this environmental stress but must develop strategies that remain effective across varying external conditions.
+
+Support availability fluctuates through a combination of random drift and seasonal patterns:
+
+```python
+seasonality = 0.1 * random.sin(self.schedule.time / 30.0)
+self.support_availability += random.gauss(0, 0.05) + seasonality
+self.support_availability = max(0.0, min(self.support_availability, 1.0))
+```
+
+These environmental dynamics create a partially observable, non-stationary MDP where optimal policies must generalize across different environmental states. Agents that successfully learn must discover strategies robust to these fluctuations rather than overfitting to specific conditions.
+
+## Adaptive Versus Fixed Agents: A Natural Experiment
+
+The model includes two agent types providing a built-in comparison. Q-learning agents adapt their coping strategies through experience, while fixed agents maintain predetermined behavioral patterns:
+
+```python
+class FixedCopingAgent(mesa.Agent):
+    def __init__(self, model, strategy="mostly_avoidance"):
+        super().__init__(model)
+        self.stress = random.uniform(30, 70)
+        self.perceived_support = random.uniform(30, 70)
+        self.strategy = strategy
+        self.agent_type = f"Fixed-{strategy}"
+```
+
+Fixed agents choose actions probabilistically according to their strategy type. A "mostly_avoidance" agent selects avoidance with 70% probability, while "mostly_healthy" agents favor healthy coping:
+
+```python
+def choose_action(self):
+    if self.strategy == "mostly_avoidance":
+        probs = [0.1, 0.7, 0.2]  # [healthy, avoid, support]
+    elif self.strategy == "mostly_healthy":
+        probs = [0.7, 0.1, 0.2]
+    elif self.strategy == "mostly_support":
+        probs = [0.2, 0.2, 0.6]
+```
+
+This design creates a natural experiment within the simulation. Both agent types face identical environmental conditions and action dynamics. Differences in outcomes—stress levels, support perception, adaptation to environmental changes—reveal the value of adaptive learning compared to rigid behavioral patterns. The comparison illuminates not just whether learning helps but when and how much it matters across different environmental conditions.
+
+## Emergence of Learned Coping Policies
+
+When we run the simulation for 200 steps, we observe Q-learning agents gradually developing sophisticated coping policies. The Q-table—initially empty—populates with learned action-values as agents explore the state-action space:
+
+```python
+print(f"{'State':<20} {'Action':<16} {'Q-Value':>8}")
+print("-" * 48)
+top = sorted(sample.q_table.items(),
+             key=lambda kv: kv[1],
+             reverse=True)[:12]
+for (state, action), q in top:
+    print(f"{str(state):<20} {action:<16} {q:>8.3f}")
+```
+
+The highest Q-values typically emerge for healthy coping in moderate-to-high stress states with available support. This learned preference reflects the model's reward structure and action dynamics—healthy coping provides consistent stress reduction without delayed costs. Interestingly, agents often learn context-dependent policies: seeking support when availability is high, defaulting to healthy coping when support is scarce, and rarely choosing avoidance except in extreme stress states where any immediate relief becomes valuable.
+
+The epsilon decay curve reveals the learning trajectory. Early simulation phases show high exploration rates (ε ≈ 1.0), with agents trying various strategies across different states. As learning progresses and ε decays, agents increasingly exploit accumulated knowledge, converging toward learned policies. By simulation end, epsilon typically reaches near-minimal levels (ε ≈ 0.05), indicating confidence in learned strategies while maintaining modest exploration for environmental changes.
+
+The comparative stress trajectories tell a compelling story. Both agent types start with similar stress levels, but trajectories diverge as Q-learners discover effective strategies. Fixed agents following avoidant patterns often maintain elevated stress due to rebound effects, while those favoring healthy coping achieve moderate outcomes. Q-learning agents, through adaptive policy refinement, typically achieve lower average stress than any single fixed strategy, discovering context-appropriate action selection that rigid rules cannot match.
+
+## Computational Psychiatry and Mental Health Modeling
+
+This model represents a simplified instance of computational psychiatry—using computational models to understand mental health phenomena and treatment mechanisms. Real clinical applications involve far greater complexity: multidimensional symptom spaces, intricate treatment interactions, individual differences in treatment response, and temporal dynamics spanning months or years rather than simulation steps.
+
+However, even simplified models illuminate important principles. The emergence of learned coping policies demonstrates how individuals might discover effective strategies through experience, suggesting mechanisms for spontaneous recovery or naturalistic adaptation. The comparison with fixed agents highlights the value of behavioral flexibility, echoing clinical observations that psychological rigidity often predicts poor mental health outcomes.
+
+The model's structure also suggests potential intervention points. If real individuals behave like Q-learning agents, interventions that enhance exploration (trying new coping strategies), improve reward signals (helping people recognize strategy effectiveness), or alter environmental conditions (increasing support availability) might facilitate better adaptation. Cognitive behavioral therapy, for instance, might work partly by helping clients explore new behavioral strategies and recognize their effects—analogous to guiding the exploration-exploitation balance in reinforcement learning.
+
+The environmental dynamics emphasize that individual coping strategies interact with external conditions. Even optimal personal strategies may prove insufficient under extreme environmental stress or severely limited support availability. This perspective suggests that effective mental health intervention requires both individual skill development and systemic changes that create supportive environments.
+
+## Extensions and Future Directions
+
+This framework admits numerous extensions that could increase realism and explanatory power. Multi-agent social interactions could model peer effects in coping behavior, where agents influence each other's strategy choices and perceived support. Such extensions might reveal how social contagion affects mental health outcomes or how peer support networks emerge and function.
+
+Deep Q-learning could replace tabular methods, enabling continuous state spaces that capture psychological states with greater fidelity. Neural networks could learn complex state representations, potentially discovering features and patterns that discrete binning misses. This would also facilitate scaling to high-dimensional state spaces incorporating multiple symptoms, personality factors, and life circumstances.
+
+Inverse reinforcement learning offers intriguing possibilities for calibrating models to real behavioral data. Given observed coping behaviors, inverse RL could infer implicit reward functions that rationalize those behaviors, potentially revealing how individuals implicitly value different outcomes or how disorders might involve maladaptive reward structures.
+
+Hierarchical reinforcement learning could model multiple timescales—immediate coping responses versus long-term strategic planning. An agent might learn both reflexive reactions to acute stress and higher-level policies about when to seek therapy, modify life circumstances, or invest in social relationships. This hierarchical structure might better capture how human decision-making operates across temporal scales.
+
+## Methodological Reflections and Limitations
+
+The model makes numerous simplifying assumptions that warrant explicit acknowledgment. Stress reduction is modeled through simple arithmetic operations with random components, while real psychological processes involve complex neurobiological, cognitive, and social mechanisms. The three-action space drastically simplifies the vast repertoire of human coping behaviors. State discretization, while necessary for tabular Q-learning, inevitably loses information about psychological states' continuous nature.
+
+The reward function represents a normative assumption—that minimizing stress constitutes the objective. Real individuals pursue multiple, sometimes conflicting goals: managing stress while maintaining productivity, seeking support while preserving independence, achieving short-term relief versus long-term wellbeing. These goal conflicts might explain apparently suboptimal coping patterns better than learning failures.
+
+Environmental dynamics, while introducing useful complexity, remain stylized. Real life stress patterns involve complex temporal structures—chronic stressors, acute crises, seasonal patterns, life transitions—that simple stochastic processes cannot fully capture. Support availability depends on specific relationships, institutional structures, and resource constraints that vary systematically across social contexts.
+
+Despite these limitations, the model demonstrates how reinforcement learning frameworks can formalize theories about adaptive behavior in mental health contexts. By making assumptions explicit through mathematical formalization and computational implementation, we create theories that can be precisely specified, systematically varied, and rigorously tested against alternatives.
+
+## The Value of Adaptive Models
+
+The progression from random walks through social preference to reinforcement learning traces an arc of increasing behavioral sophistication in agent-based modeling. Random walkers moved without purpose. Schelling agents acted on preferences but never modified them. Q-learning agents adapt strategies through experience, discovering effective policies for managing a partly unpredictable environment.
+
+This trajectory mirrors our evolving understanding of behavior itself. Early behavioral models treated organisms as reactive systems, responding mechanically to stimuli. Later theories recognized goal-directed behavior guided by preferences and beliefs. Contemporary frameworks increasingly emphasize learning, adaptation, and the computational processes underlying intelligent behavior.
+
+The mental health coping model illustrates both the power and challenges of this adaptive perspective. Agents that learn outperform those that don't, discovering context-appropriate strategies that rigid rules miss. Yet learning requires time, exploration, and appropriate environmental structure. Some fixed strategies—particularly healthy coping—perform respectably, raising questions about when adaptive complexity provides sufficient advantage to justify its costs.
+
+These models ultimately serve as tools for thinking clearly about complex phenomena. They force precise specification of assumptions, enable systematic exploration of implications, and generate predictions that can guide empirical investigation. By implementing psychological theories as computational models, we transform verbal descriptions into executable systems whose behavior can be observed, measured, and compared with alternatives.
+
+The journey from random walks to reinforcement learning demonstrates how agent-based modeling can capture increasingly sophisticated aspects of behavior while maintaining the core insights that make these models valuable: the recognition that complex system-level patterns emerge from individual behaviors, the importance of local interactions and environmental context, and the power of computational simulation to reveal non-obvious implications of simple rules. As we continue developing these approaches, we build bridges between computational theory, empirical observation, and practical intervention—advancing our understanding of how individuals and populations navigate an uncertain world.
+
+
+```python
+# ============================================================
+# 1. Imports
+# ============================================================
+import random
+import collections
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import mesa
+
+print("Mesa version:", mesa.__version__)
+
+# ============================================================
+# 2. GLOBAL SETTINGS & MDP STRUCTURE
+# ============================================================
+ACTIONS        = ["healthy_coping", "avoidance", "seek_support"]
+LEARNING_RATE  = 0.15
+DISCOUNT       = 0.95
+EPSILON_START  = 1.0
+EPSILON_MIN    = 0.05
+EPSILON_DECAY  = 0.995
+
+# Helper for discretizing continuous variables into bins
+def discretize(value, bin_size, max_bin=4):
+    idx = int(value / bin_size)
+    return max(0, min(idx, max_bin))   # 0..max_bin inclusive
+
+
+# ============================================================
+# 3. Q-LEARNING COPING AGENT
+# ============================================================
+class QLearningCopingAgent(mesa.Agent):
+    """
+    Q-Learning agent modeling adaptive coping with stress.
+    State:  (stress_bin, daily_stress_bin, support_bin)
+    Action: healthy_coping | avoidance | seek_support
+    Reward: negative stress (agent learns to minimize long-term stress)
+    """
+
+    def __init__(self, model, learning_rate=LEARNING_RATE,
+                 discount=DISCOUNT, epsilon=EPSILON_START):
+        super().__init__(model)
+        self.stress       = random.uniform(30, 70)   # 0–100
+        self.perceived_support = random.uniform(30, 70)
+        self.actions      = ACTIONS
+        self.q_table      = {}        # (state, action) -> Q-value
+        self.learning_rate = learning_rate
+        self.discount     = discount
+        self.epsilon      = epsilon
+        self.memory       = collections.deque(maxlen=100)
+        self.agent_type   = "Q-Learner"
+        self.last_state   = None
+        self.last_action  = None
+        self.prev_stress  = self.stress
+
+    # ----- MDP: State -----
+    def get_state(self):
+        s_bin  = discretize(self.stress, 20)              # 0–4
+        d_bin  = discretize(self.model.daily_stress, 5)   # 0–4
+        sup_bin = discretize(self.perceived_support, 20)  # 0–4
+        return (s_bin, d_bin, sup_bin)
+
+    # ----- MDP: Q-update (Bellman) -----
+    def update_q_value(self, state, action, reward, next_state):
+        old_q   = self.q_table.get((state, action), 0.0)
+        next_max = max(self.q_table.get((next_state, a), 0.0)
+                       for a in self.actions)
+        new_q = old_q + self.learning_rate * (
+            reward + self.discount * next_max - old_q
+        )
+        self.q_table[(state, action)] = new_q
+
+    # ----- Policy: ε-greedy -----
+    def choose_action(self, state):
+        if random.random() < self.epsilon:
+            return random.choice(self.actions)
+        q_vals = {a: self.q_table.get((state, a), 0.0)
+                  for a in self.actions}
+        return max(q_vals, key=q_vals.get)
+
+    # ----- Reward: less stress is better -----
+    def compute_reward(self):
+        # Encourage low stress and improvement
+        # Negative of stress + bonus for reduction
+        delta = self.prev_stress - self.stress
+        return -self.stress + 0.5 * delta
+
+    # ----- Action dynamics (psychologically-inspired toy rules) -----
+    def _execute_action(self, action):
+        env_stress = self.model.daily_stress
+
+        if action == "healthy_coping":
+            # E.g., exercise, CBT, journaling, breathing
+            base_reduction = random.uniform(8, 15)
+            variability = random.uniform(-3, 3)
+            self.stress -= (base_reduction + variability)
+            self.perceived_support += random.uniform(1, 3)
+        elif action == "avoidance":
+            # Instant relief, but long-term cost
+            short_relief = random.uniform(4, 8)
+            rebound = random.uniform(2, 10)
+            self.stress -= short_relief
+            # Delayed rebound added via environment (below)
+            self.model.rebound_pool.append((self, rebound))
+        elif action == "seek_support":
+            # Talking to friend, therapy, helpline
+            if self.model.support_availability > 0.2:
+                self.stress -= random.uniform(10, 18)
+                self.perceived_support += random.uniform(5, 10)
+            else:
+                # Could not access support – frustrating
+                self.stress += random.uniform(0, 6)
+
+        # Environmental stress (can't fully control life events)
+        self.stress += env_stress * random.uniform(0.4, 1.0)
+
+        # Natural adaptation, stress bounds
+        self.stress = max(0, min(self.stress, 100))
+        self.perceived_support = max(0, min(self.perceived_support, 100))
+
+    # ----- Mesa step -----
+    def step(self):
+        state = self.get_state()
+        action = self.choose_action(state)
+
+        self.prev_stress = self.stress
+        self._execute_action(action)
+
+        reward = self.compute_reward()
+        next_state = self.get_state()
+
+        self.memory.append((state, action, reward, next_state))
+        self.update_q_value(state, action, reward, next_state)
+
+        self.epsilon = max(EPSILON_MIN, self.epsilon * EPSILON_DECAY)
+        self.last_state  = next_state
+        self.last_action = action
+
+
+# ============================================================
+# 4. FIXED COPING AGENT (NON-ADAPTIVE)
+# ============================================================
+class FixedCopingAgent(mesa.Agent):
+    """
+    Baseline agents with non-learning coping strategies.
+    Strategies:
+      - "mostly_avoidance"
+      - "mostly_healthy"
+      - "mostly_support"
+    """
+
+    def __init__(self, model, strategy="mostly_avoidance"):
+        super().__init__(model)
+        self.stress       = random.uniform(30, 70)
+        self.perceived_support = random.uniform(30, 70)
+        self.strategy     = strategy
+        self.agent_type   = f"Fixed-{strategy}"
+
+    def choose_action(self):
+        if self.strategy == "mostly_avoidance":
+            probs = [0.1, 0.7, 0.2]
+        elif self.strategy == "mostly_healthy":
+            probs = [0.7, 0.1, 0.2]
+        elif self.strategy == "mostly_support":
+            probs = [0.2, 0.2, 0.6]
+        else:
+            probs = [1/3, 1/3, 1/3]
+
+        r = random.random()
+        if r < probs[0]:
+            return "healthy_coping"
+        elif r < probs[0] + probs[1]:
+            return "avoidance"
+        else:
+            return "seek_support"
+
+    def _execute_action(self, action):
+        env_stress = self.model.daily_stress
+
+        if action == "healthy_coping":
+            self.stress -= random.uniform(5, 10)
+            self.perceived_support += random.uniform(0, 2)
+        elif action == "avoidance":
+            self.stress -= random.uniform(3, 7)
+            rebound = random.uniform(1, 8)
+            self.model.rebound_pool.append((self, rebound))
+        elif action == "seek_support":
+            if self.model.support_availability > 0.2:
+                self.stress -= random.uniform(8, 14)
+                self.perceived_support += random.uniform(2, 6)
+            else:
+                self.stress += random.uniform(0, 4)
+
+        self.stress += env_stress * random.uniform(0.4, 1.0)
+        self.stress = max(0, min(self.stress, 100))
+        self.perceived_support = max(0, min(self.perceived_support, 100))
+
+    def step(self):
+        action = self.choose_action()
+        self._execute_action(action)
+
+
+# ============================================================
+# 5. MENTAL HEALTH ENVIRONMENT MODEL
+# ============================================================
+class MentalHealthModel(mesa.Model):
+    """
+    Simple agent-based mental health environment.
+    Daily stress is an exogenous process; agents choose coping strategies.
+    Q-Learners adapt; fixed agents follow rigid coping styles.
+    """
+
+    def __init__(self, n_qlearners=10, n_fixed=10, seed=42):
+        super().__init__(seed=seed)
+        self.daily_stress         = 5.0     # baseline external stress
+        self.support_availability = 0.6     # probability / intensity of support access
+        self.rebound_pool         = []      # store delayed costs of avoidance
+
+        # Q-Learning agents
+        for _ in range(n_qlearners):
+            QLearningCopingAgent(self)
+
+        # Fixed agents with different biases
+        strategies = ["mostly_avoidance", "mostly_healthy", "mostly_support"]
+        for i in range(n_fixed):
+            FixedCopingAgent(self, strategy=strategies[i % len(strategies)])
+
+        # Data collection
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                "Avg_Stress_QL": lambda m: round(
+                    sum(a.stress for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 2),
+                "Avg_Stress_Fixed": lambda m: round(
+                    sum(a.stress for a in m.agents if isinstance(a, FixedCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, FixedCopingAgent))), 2),
+                "Avg_Support_QL": lambda m: round(
+                    sum(a.perceived_support for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 2),
+                "Avg_Support_Fixed": lambda m: round(
+                    sum(a.perceived_support for a in m.agents if isinstance(a, FixedCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, FixedCopingAgent))), 2),
+                "Daily_Stress": lambda m: round(m.daily_stress, 2),
+                "Avg_Epsilon": lambda m: round(
+                    sum(a.epsilon for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 3),
+            }
+        )
+
+    def _update_environment(self):
+        # External stress as mean-reverting stochastic process
+        mean_level = 5.0
+        shock = random.gauss(0, 1.5)
+        self.daily_stress += 0.3 * (mean_level - self.daily_stress) + shock
+        self.daily_stress = max(0, min(self.daily_stress, 12))
+
+        # Availability of support (e.g., therapy access, social contact)
+        seasonality = 0.1 * random.sin(self.schedule.time / 30.0) if hasattr(self, "schedule") else 0.0
+        self.support_availability += random.gauss(0, 0.05) + seasonality
+        self.support_availability = max(0.0, min(self.support_availability, 1.0))
+
+        # Apply delayed rebound from avoidance
+        for agent, rebound in self.rebound_pool:
+            agent.stress += rebound
+            agent.stress = max(0, min(agent.stress, 100))
+        self.rebound_pool = []
+
+    def step(self):
+        # Mesa 3: use built-in agent container
+        self.agents.shuffle_do("step")
+        self._update_environment()
+        self.datacollector.collect(self)
+
+
+# ============================================================
+# 6. RUN SIMULATION
+# ============================================================
+N_STEPS     = 200
+N_QLEARNERS = 12
+N_FIXED     = 12
+
+model = MentalHealthModel(n_qlearners=N_QLEARNERS, n_fixed=N_FIXED, seed=3)
+
+print("Running mental-health coping simulation...")
+for t in range(N_STEPS):
+    model.step()
+    if (t + 1) % 50 == 0:
+        df_tmp = model.datacollector.get_model_vars_dataframe()
+        last   = df_tmp.iloc[-1]
+        print(f" Step {t+1:3d} | DailyStress={last['Daily_Stress']:4.1f} "
+              f"| StressQL={last['Avg_Stress_QL']:5.1f} "
+              f"| StressFx={last['Avg_Stress_Fixed']:5.1f} "
+              f"| ε={last['Avg_Epsilon']:.3f}")
+
+df = model.datacollector.get_model_vars_dataframe()
+print("\nSimulation finished. Last rows:")
+print(df.tail(5))
+
+
+# ============================================================
+# 7. VISUALIZE RESULTS
+# ============================================================
+fig = plt.figure(figsize=(16, 10))
+fig.patch.set_facecolor("#081018")
+gs  = gridspec.GridSpec(2, 2, figure=fig, hspace=0.45, wspace=0.35)
+
+COL = {
+    "stress_ql":   "#00d4ff",
+    "stress_fx":   "#ff6b6b",
+    "support_ql":  "#7dff7a",
+    "support_fx":  "#ffd166",
+    "daily":       "#c792ea",
+    "eps":         "#a8ff78",
+}
+BG = "#111827"
+steps = range(len(df))
+
+# Plot 1: Average stress (learning vs fixed)
+ax1 = fig.add_subplot(gs[0, 0])
+ax1.set_facecolor(BG)
+ax1.plot(steps, df["Avg_Stress_QL"], color=COL["stress_ql"], lw=2, label="Q-Learner Stress")
+ax1.plot(steps, df["Avg_Stress_Fixed"], color=COL["stress_fx"], lw=2, linestyle="--", label="Fixed Stress")
+ax1.set_title("Average Stress: Adaptive vs Fixed Coping", color="white", fontsize=11, pad=8)
+ax1.set_xlabel("Simulation Step", color="#aaa")
+ax1.set_ylabel("Average Stress (0–100)", color="#aaa")
+ax1.legend(facecolor="#222", labelcolor="white", fontsize=9)
+ax1.tick_params(colors="#aaa")
+for s in ax1.spines.values(): s.set_edgecolor("#444")
+
+# Plot 2: Perceived social support
+ax2 = fig.add_subplot(gs[0, 1])
+ax2.set_facecolor(BG)
+ax2.plot(steps, df["Avg_Support_QL"], color=COL["support_ql"], lw=2, label="Q-Learner Support")
+ax2.plot(steps, df["Avg_Support_Fixed"], color=COL["support_fx"], lw=2, linestyle="--", label="Fixed Support")
+ax2.set_title("Perceived Support Over Time", color="white", fontsize=11, pad=8)
+ax2.set_xlabel("Simulation Step", color="#aaa")
+ax2.set_ylabel("Support (0–100)", color="#aaa")
+ax2.legend(facecolor="#222", labelcolor="white", fontsize=9)
+ax2.tick_params(colors="#aaa")
+for s in ax2.spines.values(): s.set_edgecolor("#444")
+
+# Plot 3: External daily stress and epsilon
+ax3 = fig.add_subplot(gs[1, 0])
+ax3.set_facecolor(BG)
+ax3.plot(steps, df["Daily_Stress"], color=COL["daily"], lw=2, label="Daily External Stress")
+ax3.set_xlabel("Simulation Step", color="#aaa")
+ax3.set_ylabel("Daily Stress Level", color="#aaa")
+ax3.tick_params(colors="#aaa")
+for s in ax3.spines.values(): s.set_edgecolor("#444")
+ax3_2 = ax3.twinx()
+ax3_2.plot(steps, df["Avg_Epsilon"], color=COL["eps"], lw=1.5, linestyle="--", label="Avg ε (Exploration)")
+ax3_2.set_ylabel("Epsilon (ε)", color=COL["eps"])
+ax3_2.tick_params(colors=COL["eps"])
+lines, labels = ax3.get_legend_handles_labels()
+lines2, labels2 = ax3_2.get_legend_handles_labels()
+ax3.legend(lines + lines2, labels + labels2, facecolor="#222", labelcolor="white", fontsize=8, loc="upper right")
+
+# Plot 4: Stress gap (adaptive advantage)
+ax4 = fig.add_subplot(gs[1, 1])
+ax4.set_facecolor(BG)
+gap = df["Avg_Stress_Fixed"] - df["Avg_Stress_QL"]  # positive = QL lower stress
+ax4.fill_between(steps, gap, where=(gap >= 0), color=COL["stress_ql"], alpha=0.6, label="Q-Learners lower stress")
+ax4.fill_between(steps, gap, where=(gap < 0), color=COL["stress_fx"], alpha=0.6, label="Fixed lower stress")
+ax4.axhline(0, color="#888", lw=1)
+ax4.set_title("Adaptive Advantage in Stress Regulation", color="white", fontsize=11, pad=8)
+ax4.set_xlabel("Simulation Step", color="#aaa")
+ax4.set_ylabel("Δ Stress (Fixed − QL)", color="#aaa")
+ax4.legend(facecolor="#222", labelcolor="white", fontsize=9)
+ax4.tick_params(colors="#aaa")
+for s in ax4.spines.values(): s.set_edgecolor("#444")
+
+fig.suptitle("Learning Mental-Health Coping Strategies\nMesa ABM + Q-Learning (MDP on Stress & Support)",
+             color="white", fontsize=14, y=1.01)
+plt.savefig("mental_health_coping_qlearning.png", dpi=130, bbox_inches="tight",
+            facecolor=fig.get_facecolor())
+plt.show()
+print("Chart saved: mental_health_coping_qlearning.png")
+
+# ============================================================
+# 8. Q-TABLE SAMPLE
+# ============================================================
+ql_agents = [a for a in model.agents if isinstance(a, QLearningCopingAgent)]
+if ql_agents:
+    sample = ql_agents[0]
+    print(f"\n--- Learned Q-Table Sample (Agent uid={sample.unique_id}) ---")
+    print(f"{'State':<20} {'Action':<16} {'Q-Value':>8}")
+    print("-" * 48)
+    top = sorted(sample.q_table.items(),
+                 key=lambda kv: kv[1],
+                 reverse=True)[:12]
+    for (state, action), q in top:
+        print(f"{str(state):<20} {action:<16} {q:>8.3f}")
+    print(f"\nTotal Q-table entries: {len(sample.q_table)}")
+    print(f"Final epsilon: {sample.epsilon:.4f}")
+```

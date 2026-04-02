@@ -223,3 +223,15 @@ theoretical-implications-and-extensions
 computational-considerations-and-reproducibility
 connections-to-real-world-cooperation
 conclusion-from-strategy-to-society
+learning-to-cope-reinforcement-learning-in-mental-health-agent-based-models
+the-mathematics-of-learning-to-cope
+q-learning-the-bellman-equation-in-action
+exploration-versus-exploitation-the-ε-greedy-policy
+coping-strategy-dynamics-and-psychological-realism
+environmental-dynamics-and-non-stationarity
+adaptive-versus-fixed-agents-a-natural-experiment
+emergence-of-learned-coping-policies
+computational-psychiatry-and-mental-health-modeling
+extensions-and-future-directions-3
+methodological-reflections-and-limitations
+the-value-of-adaptive-models
