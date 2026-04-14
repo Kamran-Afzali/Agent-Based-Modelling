@@ -1,0 +1,158 @@
+Absolutely — below is a follow-up blog post in the same conceptual lane, but adapted to your new code and written as a cohesive, polished article with mathematical formalisms, restrained subsectioning, and code-style excerpts including R pseudocode and algorithmic pseudocode. It reflects the added social-interaction layer, peer learning, stress contagion, and the adaptive-versus-fixed comparison. [github](https://github.com/LLNL/Abmarl)
+
+Learning to Cope Together: Social Reinforcement Learning in Mental Health Agent-Based Models
+
+The first version of this model treated coping as an individual learning problem: an agent observed stress, chose a strategy, and updated its policy from the consequences. The new version extends that idea into a social setting, where coping is no longer purely private. Agents now influence one another through stress contagion, support sharing, and even peer-based transfer of learned value estimates, turning the simulation into a small laboratory for studying how mental health adaptation unfolds in a connected population. [ijcai](https://www.ijcai.org/proceedings/2022/0055.pdf)
+
+This shift matters because coping in real life is rarely isolated. People learn from friends, absorb emotional tone from their surroundings, and often change behavior after observing that someone else’s strategy appears to work better. The model captures that intuition in a compact computational form: a reinforcement-learning agent embedded in a social network, competing with fixed baseline agents under the same environmental pressures. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/)
+
+## From isolated learning to social adaptation
+
+At its core, the model still rests on a Markov Decision Process. Each agent seeks a policy \(\pi(a \mid s)\) that maximizes expected cumulative reward, but now the state is shaped not only by the agent’s internal stress and support, but also by the stress and support of nearby peers. Formally, the agent observes a discretized state
+
+\[
+s_t = (\text{stress\_bin}_t,\ \text{daily\_stress\_bin}_t,\ \text{support\_bin}_t)
+\]
+
+and chooses among three actions:
+
+\[
+A = \{\text{healthy\_coping},\ \text{avoidance},\ \text{seek\_support}\}.
+\]
+
+The Q-learning update remains the same Bellman-style increment:
+
+\[
+Q(s_t,a_t) \leftarrow Q(s_t,a_t) + \alpha \Big[r_t + \gamma \max_{a'} Q(s_{t+1},a') - Q(s_t,a_t)\Big].
+\]
+
+What changes is the environment in which that update takes place. The agent’s reward is now partially shaped by social context, because perceived support contributes directly to the reward signal and peer dynamics can alter the next state before the update occurs. This makes the learning problem more realistic and more unstable, since the target distribution moves as other agents act. [en.wikipedia](https://en.wikipedia.org/wiki/Q-learning)
+
+A compact way to think about the system is:
+
+```pseudo
+initialize agent state and Q-table
+for each step:
+    observe state s
+    choose action a using epsilon-greedy policy
+    execute action a
+    interact with neighbours
+    observe reward r and next state s'
+    update Q(s,a)
+    decay epsilon
+```
+
+That structure is simple, but it now hides an important social feedback loop: what one agent learns can spill into another through peer Q-learning, and what one agent feels can alter the emotional field of the whole local neighborhood. [thedecisionlab](https://thedecisionlab.com/insights/society/is-agent-based-modeling-the-future-of-behavioral-science)
+
+## The social mechanism
+
+The most interesting addition is the social layer. After each action, agents do not simply sit in their new internal state; they interact with neighbors. Stress contagion moves a fraction of the stress gap across social ties, while support sharing lifts perceived support when the neighborhood is more resilient. In notation, if \(\bar{s}_N\) is the average stress of a neighborhood and \(s_i\) the agent’s own stress, then a simple contagion rule is
+
+\[
+s_i \leftarrow s_i + \lambda_s(\bar{s}_N - s_i),
+\]
+
+with an analogous rule for support:
+
+\[
+u_i \leftarrow u_i + \lambda_u(\bar{u}_N - u_i).
+\]
+
+These are not claims about the brain or a validated clinical mechanism. They are stylized social-diffusion rules, useful because they create heterogeneity and feedback without making the model intractable. Models of this kind are often valued precisely because they translate qualitative hypotheses about interaction into testable computational structure. [research.vu](https://research.vu.nl/ws/portalfiles/portal/42165832/chapter+07+Learning+emotion+regulation+strategies:+A+cognitive+agent+model.pdf)
+
+Peer Q-learning adds another layer. If a neighbor has accumulated higher reward, the agent softly blends that neighbor’s Q-values into its own table. A simple version looks like this:
+
+```pseudo
+if neighbour_reward > my_reward:
+    for each state-action key:
+        Q_i(key) <- Q_i(key) + beta * (Q_neighbour(key) - Q_i(key))
+```
+
+This is not classical independent Q-learning anymore. It is closer to observational learning, where value estimates diffuse through the social network. In practical terms, it means the best local coping policy may spread faster than one agent could discover it alone. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/)
+
+## Reward and interpretation
+
+The reward function in the code is deliberately mixed. It penalizes high stress, rewards improvement, and gives a small bonus for perceived support:
+
+\[
+r_t = -\text{stress}_t + 0.5(\text{stress}_{t-1} - \text{stress}_t) + 0.02 \cdot \text{support}_t.
+\]
+
+This design does two things at once. First, it makes immediate stress reduction matter. Second, it encourages trajectories that improve over time rather than only rewarding a low final state. That matters in coping problems, where short-lived relief can sometimes be misleading and social support can function as a long-run stabilizer rather than a direct one-step fix. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC8892374/)
+
+The support bonus is especially interesting because it subtly changes the policy landscape. Without it, the agent may favor actions that merely reduce stress quickly. With it, the agent can learn that maintaining a supportive environment has an intrinsic value beyond the next stress decrement. In psychological terms, this mirrors the idea that social resources can be part of the objective, not just a by-product of coping. [research.vu](https://research.vu.nl/ws/portalfiles/portal/42165832/chapter+07+Learning+emotion+regulation+strategies:+A+cognitive+agent+model.pdf)
+
+## Environment and non-stationarity
+
+The environment still contains daily stress and support availability, but now those variables matter not just as background noise but as social context. Daily stress is mean-reverting, so it fluctuates around a baseline while still allowing shocks. Support availability also drifts seasonally, which means the best action today may not be the best action next week. In reinforcement-learning language, the agent is not learning in a fixed world; it is learning in a changing one. [quantstart](https://www.quantstart.com/articles/ornstein-uhlenbeck-simulation-with-python/)
+
+A useful mathematical shorthand for the environmental stress process is:
+
+\[
+x_{t+1} = x_t + \kappa(\mu - x_t) + \sigma \varepsilon_t,
+\]
+
+where \(x_t\) is daily stress, \(\mu\) is the long-run mean, \(\kappa\) controls mean reversion, and \(\varepsilon_t\) is random shock. That same logic can be used to justify the seasonal support term as a low-frequency modulation of resource availability. The result is a partially non-stationary MDP, which is exactly the kind of setting where exploration and adaptive policies become especially important. [ijcai](https://www.ijcai.org/proceedings/2022/0055.pdf)
+
+An R-style pseudocode sketch for the environment update would look like this:
+
+```r
+update_environment <- function(state, t) {
+  state$daily_stress <- state$daily_stress + kappa * (mu - state$daily_stress) + rnorm(1, 0, sigma)
+  state$support_availability <- clamp(state$support_availability + rnorm(1, 0, 0.05) + 0.1 * sin(t / 30), 0, 1)
+  state$stress <- pmin(100, pmax(0, state$stress + state$daily_stress * runif(1, 0.4, 1.0)))
+  state
+}
+```
+
+The syntax is intentionally lightweight, but the logic is important: environment changes can raise or lower the value of the same coping behavior from one step to the next. [publichealth.columbia](https://www.publichealth.columbia.edu/research/population-health-methods/agent-based-modeling)
+
+## Fixed agents and adaptive agents
+
+The comparison between Q-learners and fixed agents gives the model its empirical spine. Fixed agents embody rigid tendencies such as mostly avoiding, mostly coping actively, or mostly seeking support. They do not learn, but they still live inside the same stress field and social network. That means the comparison is not between intelligence and no intelligence; it is between adaptive policy refinement and stable behavioral bias. [annals-csis](https://annals-csis.org/proceedings/2011/pliks/242.pdf)
+
+This distinction is scientifically useful. A fixed “mostly healthy” strategy can perform surprisingly well, especially if the environment is benign or support is consistent. Yet under changing conditions, the Q-learning agents can shift toward whichever action has the best expected value in the current state. That flexibility is the key advantage of reinforcement learning in this setting. [en.wikipedia](https://en.wikipedia.org/wiki/Q-learning)
+
+A clean way to state the contrast is:
+
+\[
+\text{Performance} = f(\text{policy flexibility}, \text{environment stability}, \text{social context}).
+\]
+
+In a stable world, flexibility may matter less. In a variable world with peer effects, flexibility becomes more valuable because the agent can respond to changing stress, shifting support, and the behavior of neighbors. This is why the model’s most important result is not simply “learning wins,” but “learning wins when the world is unstable enough for adaptability to matter.” [thedecisionlab](https://thedecisionlab.com/insights/society/is-agent-based-modeling-the-future-of-behavioral-science)
+
+## Reading the charts
+
+The six-panel dashboard is doing more than decoration. Stress trajectories show whether adaptive agents are actually outperforming fixed baselines. Support trajectories reveal whether social feedback is being internalized. Epsilon decay shows the exploration-to-exploitation transition, and the variance panels help detect whether social influence is causing homogenization or clustering. Cumulative reward is especially important because it summarizes long-term wellbeing rather than a single-step snapshot. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/)
+
+One subtle result to watch for is divergence in variance. If Q-learners become more similar to one another over time, that suggests peer learning and shared environment are aligning policies. If fixed agents show higher variance, that may indicate that rigid strategies produce uneven outcomes depending on the neighborhood they happen to inhabit. Such patterns are exactly the kind of emergent effect agent-based models are good at revealing. [publichealth.columbia](https://www.publichealth.columbia.edu/research/population-health-methods/agent-based-modeling)
+
+## What the model suggests
+
+Taken together, the model offers a simple but meaningful hypothesis about coping: behavior improves not only when agents learn from reward, but also when they learn socially. In other words, people may not need to discover everything from scratch. They can partially inherit effective coping through local interaction, especially when peers who are doing better serve as behavioral exemplars. [research.vu](https://research.vu.nl/ws/portalfiles/portal/42165832/chapter+07+Learning+emotion+regulation+strategies:+A+cognitive+agent+model.pdf)
+
+This has a natural interpretation in mental health contexts. Supportive social networks may help by reducing stress directly, by making help-seeking more rewarding, and by accelerating the spread of more adaptive strategies. At the same time, stressful networks can transmit distress and reinforce maladaptive habits. The model therefore captures a dual possibility: social structure can either stabilize coping or amplify vulnerability. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC8892374/)
+
+## A concise implementation view
+
+If you wanted to describe the whole system in one algorithmic block, it would be:
+
+```pseudo
+for each time step:
+    for each agent:
+        observe discretized psychological state
+        select coping action with epsilon-greedy policy or fixed rule
+        apply action effects
+        interact with neighbours
+        compute reward
+        update Q-table if learning agent
+    update daily stress and support availability
+    apply rebound penalties
+    record summary statistics
+```
+
+That is the essence of the model. The code adds detail, but the conceptual story remains compact: individual coping, social influence, and learning are fused into one evolving dynamical system. [github](https://github.com/LLNL/Abmarl)
+
+This version is richer than a lone-agent coping model because it shows how mental health adaptation may be both personal and social. It also shows why reinforcement learning is useful beyond games or robotics: it provides a formal language for describing how living systems search for better behavior under uncertainty, feedback, and influence from others. [jnnp.bmj](https://jnnp.bmj.com/content/87/1/53)
+
+If you want, I can turn this into a publication-ready blog post with a title, intro hook, figure captions, and a cleaner transition into the code walkthrough.
