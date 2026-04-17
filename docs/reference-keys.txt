@@ -235,3 +235,15 @@ computational-psychiatry-and-mental-health-modeling
 extensions-and-future-directions-3
 methodological-reflections-and-limitations
 the-value-of-adaptive-models
+connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models
+three-new-social-forces
+the-social-network-structure
+reward-augmentation-social-support-as-intrinsic-value
+peer-q-learning-observational-learning-as-a-computational-mechanism
+stress-contagion-when-social-networks-hurt-and-help
+what-the-six-panel-dashboard-reveals
+emergent-dynamics-clustering-and-cascades
+the-asymmetry-of-social-learning
+methodological-considerations
+connections-to-computational-social-science
+from-isolated-learners-to-a-social-ecology-of-coping

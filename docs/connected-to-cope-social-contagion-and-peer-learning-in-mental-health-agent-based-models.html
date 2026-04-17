@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Agent Based Modelling</title>
-  <meta name="description" content="Agent Based Modelling" />
+  <title>Chapter 18 Connected to Cope: Social Contagion and Peer Learning in Mental Health Agent-Based Models | Agent Based Modelling</title>
+  <meta name="description" content="Chapter 18 Connected to Cope: Social Contagion and Peer Learning in Mental Health Agent-Based Models | Agent Based Modelling" />
   <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Agent Based Modelling" />
+  <meta property="og:title" content="Chapter 18 Connected to Cope: Social Contagion and Peer Learning in Mental Health Agent-Based Models | Agent Based Modelling" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Agent Based Modelling" />
+  <meta name="twitter:title" content="Chapter 18 Connected to Cope: Social Contagion and Peer Learning in Mental Health Agent-Based Models | Agent Based Modelling" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="learning-to-cope-reinforcement-learning-in-mental-health-agent-based-models.html"/>
 
-<link rel="next" href="random-walks-i.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -484,69 +484,610 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Agent Based Modelling</h1>
-<p class="author"><em>Kamran Afzali</em></p>
-<p class="date"><em>2026-04-17</em></p>
-</div>
-<div id="agent-based-modelling" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Agent Based Modelling<a href="index.html#agent-based-modelling" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Computational modelling of the Systems Dynamics of autonomous agents is made possible through recent innovations in agent-based modelling and simulation (ABMS). In this approach each agent has attributes, interactions with other agents, within the context of the affordance of their environment. Autonomous agents act and interact in response to situations each agent encounters during the simulation. Simulating attributes of individual agents and their environment, enables study if the emergent properties of the system as well as the full effects of the diversity that exists among agents. In other words, self-organizing patterns, structures, and behaviours that were not explicitly encoded into the models will rise through the system interactions can be studied through modelling systems from the ‘ground up’—agent-by-agent and agent-by-environment interactions. The emphasis on modelling the attributes and diversity of agents, affordance of the environment, and the emergence of self-organizng patterns are unique qualities of agent-based modelling as compared to other simulation techniques. Agent-based modelling offers a way to model social systems that are composed of agents who interact with and influence each other, learn from their experiences, and adapt their behaviours so they are better suited to their environment. Given these qualities agent-based simulation is most commonly used to model individual decision-making and social and organizational behavior. Agent-based simulation has been used in a large range of domains including physical, biological, social, and behavioral sciences. Simulations covers a continuum that goes from elegant, yet minimalist academic models based on a set of idealized assumptions, designed to capture only the most salient features of a system to large-scale decision support systems for all-encompassing applications based on real data, and have passed appropriate validation tests to establish credibility. In both cases agent-based modelling is a powerful approach to guide researchers’ intuition for the analysis of unprecedented scenarios (e.g., counterfactuals), as the following insights of Doran, Gilbert, and Hales.</p>
-<blockquote>
-<p>We can therefor hope to develop an abstract theory of multiple agent systems and then to transfer its insights to human social systems, without a priori commitment to existing particular social theory. (Doran 1998).</p>
-</blockquote>
-<blockquote>
-<p>Our stress… is on a new experimental methodology consisting of observing theoretical models performing on some testbed. Such a new methodology could be defined as ‘exploratory simulation’ … (Gilbert 1995).</p>
-</blockquote>
-<blockquote>
-<p>Artificial societies do not aim to model real societies in any direct sense. They can be seen as an aid to intuition in which the researcher formalizes abstract and logical relationships between entities. (Hales 1998).</p>
-</blockquote>
-<p>Also, there is a growing number of academic courses and conferences devoted to agent-based modelling, as well as the growing number of peer-reviewed publications across a wide range of application areas as well as interest on the part of funding agencies in supporting programmes that require agent-based models.</p>
-<p>It is noteworthy that rather than a specific toolset/software, ABM can be conceptualized as a mindset/viewpoint emphasizing description of a system from the perspective of its constituent units. This is a micro-level or microscopic modeling, which is an alternative the macro-level or macroscopic modeling. Along these lines it is important to have a clear notion of when and how to use ABM before attempting an implementation. Indeed, there is fundamental understanding of why to simulate a system, it is fairly easy to program an agent-based model. But although ABM is technically simple, it is also conceptually deep. This unusual combination can sometimes leads to improper use of ABM.</p>
-<div id="agent-based-modelling-and-complexity" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> Agent-based modelling and complexity<a href="index.html#agent-based-modelling-and-complexity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Agent based approach can be a basis for research addressing characteristics of Systems Dynamics such as emergent phenomenon, the self-organization, and adaptation. Systems Dynamics are comprised of autonomous yet interacting components with capability for agents to adapt at the individual or population levels. More specifically one of the motivations for agent-based simulation is the capacity to model emergence. Emergence can exhibit emergent behavior resulting from agent-agent or agent-environment interactions. By definition, emergent phenomena cannot be reduced to micro-level unites as “the whole is more than the sum of its parts” because of the interactions between the parts. An emergent phenomenon has properties that are dissociated/transcend the properties of individual units that makes them difficult to understand, predict and sometimes counterintuitive. In other words, <em>Even simple agent- based models in which agents are completely described by simple, deterministic rules and use only local information can self-organize and sustain themselves in ways that have not been explicitly programmed into the models.</em></p>
-</div>
-<div id="structure-of-an-agent-based-model" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Structure of an agent-based model<a href="index.html#structure-of-an-agent-based-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A typical agent-based model has two elements:</p>
+<div id="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models" class="section level1 hasAnchor" number="18">
+<h1><span class="header-section-number">Chapter 18</span> Connected to Cope: Social Contagion and Peer Learning in Mental Health Agent-Based Models<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Our previous model placed adaptive Q-learning agents alongside fixed-strategy agents in a shared environment and watched them navigate psychological stress. Both types faced the same Ornstein-Uhlenbeck daily stress process, the same fluctuating support availability, and the same three coping actions. The Q-learners gradually outperformed their rigid counterparts by discovering context-sensitive policies — seeking support when it was available, defaulting to healthy coping when it wasn’t, and learning through painful experience to distrust avoidance. But those agents lived in social isolation. They adapted to the environment, not to each other.</p>
+<p>That isolation was always a simplification. Human coping does not happen in a vacuum. Stress spreads through friendships; a colleague’s bad week bleeds into yours. Support is shared; the resilience of those around us shapes how supported we feel. And coping strategies propagate socially — watching someone successfully manage a hard week nudges us toward their approach. Version 2 of the model introduces all three of these mechanisms, transforming a collection of independent learners into an interconnected social network. The consequences, as we will see, reach far beyond what individual adaptation alone could produce.</p>
+<div id="three-new-social-forces" class="section level2 hasAnchor" number="18.1">
+<h2><span class="header-section-number">18.1</span> Three New Social Forces<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#three-new-social-forces" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Version 2 adds three agent-level mechanisms that operate on every step, layered on top of the individual MDP dynamics from before:</p>
 <ul>
-<li><p>Agents, with their attributes and behaviors.</p></li>
-<li><p>Environment. Agents live in and interact according to the affordance their environment.</p></li>
+<li><strong>Stress contagion</strong> — each agent’s stress is partially pulled toward its neighbours’ average, with a contagion coefficient of 0.08. Neighbours who are more stressed transmit some of that load; neighbours who are calmer provide a modest buffer.</li>
+<li><strong>Support sharing</strong> — perceived social support is similarly nudged toward the neighbourhood average at a rate of 0.05. This captures how emotionally supportive social environments lift individual wellbeing even without explicit help-seeking.</li>
+<li><strong>Peer Q-learning</strong> — each Q-learning agent identifies the neighbour with the highest cumulative lifetime reward and, if that neighbour is outperforming them, soft-blends its Q-table entries toward theirs at a rate of 0.05. Fixed agents participate in contagion and support sharing but cannot copy Q-tables; they experience social effects passively.</li>
 </ul>
-<p>These elements define the quality of quantity of interaction between agents as well as topology of connectedness that outlines how and with whom agents interact.</p>
-<div id="agents" class="section level3 hasAnchor" number="1.2.1">
-<h3><span class="header-section-number">1.2.1</span> Agents<a href="index.html#agents" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Based on why and how ABS models are built and for practical modeling purposes, agents are built to have certain properties and attributes as their essential characteristics:</p>
-<ul>
-<li><p>Autonomy: An agent is autonomous and self-directed. An agent can function independently in its environment and in its interactions with other agents over a limited range of situations that are of interest in the model, generally from a limited range of situations that are of interest and that arise in the model. When we refer to an agent’s behavior, we refer to a general process that links the information the agent senses from its environment and interactions to its decisions and actions. In other words, an agent’s behaviour can be specified by anything from simple rules to abstract models, such as neural networks or genetic programs that relate agent inputs to outputs through adaptive mechanisms.</p></li>
-<li><p>Modularity: Agents are modular or self-contained. Agents have attributes that allow the agents to be distinguished from and recognized by other agents. The modularity requirement implies that an agent has a boundary. One can easily determine whether something is part of an agent, is not part of an agent, or is a shared attribute.
-An agent is an identifiable, discrete entity with a set of characteristics or attributes, behaviors, and decision-making capability.</p></li>
-<li><p>Sociality: An agent is social having dynamic interactions with other agents that influence its behaviour. Common agent interaction protocols include communication/ agent recognition, movement and contention for space and collision avoidance, the capability to respond to the environment.</p></li>
-<li><p>Conditionality: An agent has a state that varies over time. Just as a system has a state consisting of the collection of its state variables, an agent also has a state that represents the essential variables associated with its current situation. An agent’s state consists of a set or subset of its attributes. The state of an agent-based model is the collective states of all the agents along with the state of the environment. An agent’s behaviours are conditioned on its state. As such, the richer the set of an agent’s possible states, the richer the set of behaviours that an agent can have. In an agent-based simulation, the state at any time is all the information needed to move the system from that point forward.</p></li>
-<li><p>Adaptivity: Agents have rules or more abstract mechanisms that modify their behaviours this can be achieved through the ability to learn and adapt its behaviours based on its accumulated experiences, which requires some form of memory. In the same vein populations of agents may be adaptive through the process of selection, as individuals better suited to the environment proportionately increase in numbers.</p></li>
-<li><p>Goal-directedness: An agent may be goal-directed, having goals to achieve (not necessarily objectives to maximize) with respect to its behaviours. This allows an agent to compare the outcome of its behaviours relative to its goals and adjust its responses and behaviours in future interactions.</p></li>
-<li><p>Heterogeneity: Agents may also be endowed with different amounts of resources or accumulate different levels of resources as well as their behaviours, how much information is considered in the agent’s decisions, the agent’s internal models of the external world, the agent’s view of the possible reactions of other agents in response to its actions, and the extent of memory of past events the agent retains and uses in making its decisions.</p></li>
-</ul>
+<p>Together, these three forces mean that an individual agent’s psychological trajectory is now a function of both its own learning and the composition and behaviour of its social neighbourhood.</p>
 </div>
-<div id="environment" class="section level3 hasAnchor" number="1.2.2">
-<h3><span class="header-section-number">1.2.2</span> Environment<a href="index.html#environment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The environment provides information on the spatial location of an agent relative to other agents and hence if it is possible for a given agent to interact with other agents. An agent’s location, is a dynamic attribute that is required to track agents as they change their location across a landscape, interact with other agents, acquire resources, and encounter new situations. Other information can be included to build complex environmental schemas to model the agents’ surroundings. For instance, the environment may provide a rich set of geographic information about the affordance of the surrounding circumstances of an agent and hence their interaction with the environment. Along these lines, the environment in an agent-based disease model would include the focal points (e.g. city centers) and capacities of the cities and links of the road network. These capacities would create dispersion effects (reduced/increased infection speeds) and set limit the number of agents moving through a given city network at any given time.</p>
+<div id="the-social-network-structure" class="section level2 hasAnchor" number="18.2">
+<h2><span class="header-section-number">18.2</span> The Social Network Structure<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#the-social-network-structure" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model builds an Erdős–Rényi-style random network after all agents are instantiated, assigning each agent exactly <code>N_NEIGHBOURS = 3</code> connections sampled without replacement from the full population:</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb160-1"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb160-1" tabindex="-1"></a>all_agents <span class="op">=</span> <span class="bu">list</span>(<span class="va">self</span>.agents)</span>
+<span id="cb160-2"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb160-2" tabindex="-1"></a><span class="cf">for</span> agent <span class="kw">in</span> all_agents:</span>
+<span id="cb160-3"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb160-3" tabindex="-1"></a>    candidates <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> all_agents <span class="cf">if</span> a <span class="kw">is</span> <span class="kw">not</span> agent]</span>
+<span id="cb160-4"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb160-4" tabindex="-1"></a>    agent.neighbours <span class="op">=</span> random.sample(candidates, <span class="bu">min</span>(N_NEIGHBOURS, <span class="bu">len</span>(candidates)))</span></code></pre></div>
+<p>This design is intentionally minimal — undirected, unweighted, fixed throughout the simulation. It suffices to demonstrate social dynamics without introducing the additional complexity of network evolution. Each Q-learner will have, on average, some proportion of connections to other Q-learners (peer learning links) and some to fixed agents (who contribute contagion and support but not Q-table knowledge). The asymmetry matters: a Q-learner surrounded mostly by fixed avoidance-biased neighbours will absorb elevated stress through contagion, while one embedded in a cluster of healthy-coping neighbours gains a double benefit — lower ambient stress and support buffering.</p>
 </div>
+<div id="reward-augmentation-social-support-as-intrinsic-value" class="section level2 hasAnchor" number="18.3">
+<h2><span class="header-section-number">18.3</span> Reward Augmentation: Social Support as Intrinsic Value<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#reward-augmentation-social-support-as-intrinsic-value" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The reward function gains a new term in v2:</p>
+<p><span class="math display">\[
+r_t = -\text{stress}_t + 0.5(\text{stress}_{t-1} - \text{stress}_t) + 0.02 \times \text{perceived\_support}_t
+\]</span></p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb161-1"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb161-1" tabindex="-1"></a><span class="kw">def</span> compute_reward(<span class="va">self</span>):</span>
+<span id="cb161-2"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb161-2" tabindex="-1"></a>    delta         <span class="op">=</span> <span class="va">self</span>.prev_stress <span class="op">-</span> <span class="va">self</span>.stress</span>
+<span id="cb161-3"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb161-3" tabindex="-1"></a>    support_bonus <span class="op">=</span> <span class="va">self</span>.perceived_support <span class="op">*</span> <span class="fl">0.02</span></span>
+<span id="cb161-4"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb161-4" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span><span class="va">self</span>.stress <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> delta <span class="op">+</span> support_bonus</span></code></pre></div>
+<p>The 0.02 coefficient is small but meaningful. It means agents now have an intrinsic motivation to maintain high perceived support — not just to reduce stress. Over time, this nudges the learned policy toward actions that build social capital (healthy coping, seek support) relative to avoidance, which provides stress relief but contributes nothing to the support dimension and incurs the familiar rebound cost. The support bonus interacts with stress contagion in a subtle way: agents in supportive neighbourhoods receive a support lift passively, which raises their reward signal, which in turn shapes Q-value estimates across states. The social environment seeps into the agent’s learned model of the world.</p>
 </div>
-<div id="when-to-do-abm" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> When to do ABM<a href="index.html#when-to-do-abm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>As a conclusion we put forward some insights on distinct advantages of ABM compared to conventional simulation approaches. Several reasons have been highlighted as advantages of agent-based modeling compared to traditional approaches to modeling dynamic systems, including the capacity to captures emergent phenomena, providing a naturalistic description of a system and the inherent flexibility of ABM. More specifically, ABS relevant when a problem has a natural representation as being comprised of agents, with behaviors that can be well-defined, where agents adapt/change their behaviors and engage in dynamic strategic interactions such as dynamic relationships with other agents. It is possible to do an ABS using specially designed ABS toolkits and software or using all-purpose general, programming or languages software. In the same vein, ABS can be performed on a regular desktop computer, or using large-scale computing clusters, or it can be done at any scale in-between. Projects often begin from a small scale, using all-purpose general programming language or desktop ABS tools. The initial prototype ABS then grows in stages into a larger-scale agent-based model, often using dedicated ABS toolkits. Over the years, numerous agent-based modelling and simulation tools have been developed each with a somewhat unique motive for its presence such generality, usability, modifiability, scalability and performance. In our next post we will go through an example of ABS using MESA framework in python.</p>
+<div id="peer-q-learning-observational-learning-as-a-computational-mechanism" class="section level2 hasAnchor" number="18.4">
+<h2><span class="header-section-number">18.4</span> Peer Q-Learning: Observational Learning as a Computational Mechanism<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#peer-q-learning-observational-learning-as-a-computational-mechanism" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The most novel mechanism is the Q-table soft-update from better-performing neighbours:</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb162-1"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-1" tabindex="-1"></a><span class="kw">def</span> social_interact(<span class="va">self</span>):</span>
+<span id="cb162-2"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-2" tabindex="-1"></a>    ql_neighbours <span class="op">=</span> [n <span class="cf">for</span> n <span class="kw">in</span> <span class="va">self</span>.neighbours <span class="cf">if</span> <span class="bu">isinstance</span>(n, QLearningCopingAgent)]</span>
+<span id="cb162-3"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-3" tabindex="-1"></a>    <span class="cf">if</span> ql_neighbours:</span>
+<span id="cb162-4"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-4" tabindex="-1"></a>        best_nbr <span class="op">=</span> <span class="bu">max</span>(ql_neighbours, key<span class="op">=</span><span class="kw">lambda</span> n: n.cumulative_reward)</span>
+<span id="cb162-5"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-5" tabindex="-1"></a>        <span class="cf">if</span> best_nbr.cumulative_reward <span class="op">&gt;</span> <span class="va">self</span>.cumulative_reward:</span>
+<span id="cb162-6"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-6" tabindex="-1"></a>            <span class="cf">for</span> key, nbr_q <span class="kw">in</span> best_nbr.q_table.items():</span>
+<span id="cb162-7"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-7" tabindex="-1"></a>                own_q <span class="op">=</span> <span class="va">self</span>.q_table.get(key, <span class="fl">0.0</span>)</span>
+<span id="cb162-8"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb162-8" tabindex="-1"></a>                <span class="va">self</span>.q_table[key] <span class="op">=</span> own_q <span class="op">+</span> PEER_LEARNING_RATE <span class="op">*</span> (nbr_q <span class="op">-</span> own_q)</span></code></pre></div>
+<p>This implements a soft-update analogous to Polyak averaging in deep RL target networks. Rather than wholesale copying a neighbour’s policy, each agent slowly blends toward it — preserving its own experience while incorporating vicarious information. The gating condition (<code>best_nbr.cumulative_reward &gt; self.cumulative_reward</code>) ensures that only upward learning occurs; agents do not regress toward worse performers. <a href="https://smythos.com/developers/agent-development/agent-based-modeling-and-reinforcement-learning/">smythos</a></p>
+<p>The mechanism has a meaningful psychological analogue. Bandura’s social learning theory holds that humans learn coping strategies partly through observation — watching how others manage stress and updating their own behavioral repertoire accordingly. The peer Q-learning update formalizes this as a weighted average in value-function space, producing a computational account of observational learning that operates in parallel with direct experience. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10030380/">pmc.ncbi.nlm.nih</a></p>
 </div>
-<div id="references" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> References<a href="index.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><p><a href="http://simulation.su/uploads/files/default/2014-macal-north.pdf">Introductory tutorial: agent-based modeling and simulation</a></p></li>
-<li><p><a href="https://link.springer.com/article/10.1057/jos.2010.3">Tutorial on agent-based modelling and simulation</a></p></li>
-<li><p><a href="https://www.pnas.org/content/pnas/99/suppl_3/7280.full.pdf">Agent-based modeling: Methods and techniques for simulating human systems</a></p></li>
-<li><p><a href="https://www.carsonhlbao.com/post/filling-in-the-missing-data-of-theory-driven-agent-based-simulation-in-social-sciences/">The Missing Data of Theory and Metaphor-driven Agent-based Evolutionary Social Simulation</a></p></li>
-<li><p><a href="https://www.sciencedirect.com/science/article/pii/S1574013716301198?casa_token=_zSawSxRC1AAAAAA:UxWt1a36Wrh8q3liF5KyIj7FqjtZUoDnM9eCBeS3iTyfUpWF01inDSHGUzAZ70uYBsZ1dDTuVx8a">Agent Based Modelling and Simulation tools: A review of the state-of-art software</a></p></li>
-</ul>
+<div id="stress-contagion-when-social-networks-hurt-and-help" class="section level2 hasAnchor" number="18.5">
+<h2><span class="header-section-number">18.5</span> Stress Contagion: When Social Networks Hurt and Help<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#stress-contagion-when-social-networks-hurt-and-help" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Stress contagion is bidirectional in the model: if your neighbours are more stressed than you, your stress rises; if they are calmer, yours falls. The net effect on a population depends critically on the distribution of initial stress and the topology of the network.</p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb163-1"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb163-1" tabindex="-1"></a>stress_delta <span class="op">=</span> (avg_nbr_stress <span class="op">-</span> <span class="va">self</span>.stress)</span>
+<span id="cb163-2"><a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#cb163-2" tabindex="-1"></a><span class="va">self</span>.stress <span class="op">+=</span> STRESS_CONTAGION <span class="op">*</span> stress_delta</span></code></pre></div>
+<p>This creates a homogenization pressure. Over time, agents within the same social neighbourhood tend toward similar stress levels — a computational analogue of emotional contagion documented in empirical network studies. A key observable consequence is <strong>stress variance reduction</strong>: as the simulation progresses, the within-group variance of stress levels should decline, particularly in populations where agents share neighbourhoods and respond similarly. The dashboard’s Panel 5 tracks this directly through <code>StressVar_QL</code> and <code>StressVar_Fixed</code>. <a href="https://www.nature.com/articles/s41598-020-68447-8">nature</a></p>
+<p>The contagion coefficient of 0.08 is deliberately modest. At this level, social influence shapes trajectories over dozens of steps without overwhelming individual action dynamics. A higher coefficient would produce rapid convergence to a single population stress level, erasing the individual differences that make the agent comparison meaningful. A lower coefficient would make social effects invisible in a 200-step simulation. The parameter choice reflects a calibration judgment about the timescale at which social influences operate relative to individual coping.</p>
+</div>
+<div id="what-the-six-panel-dashboard-reveals" class="section level2 hasAnchor" number="18.6">
+<h2><span class="header-section-number">18.6</span> What the Six-Panel Dashboard Reveals<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#what-the-six-panel-dashboard-reveals" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The visualization expands from four to six panels to capture the new social metrics:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Panel</th>
+<th>What It Shows</th>
+<th>New in v2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avg Stress (QL vs Fixed)</td>
+<td>Core stress trajectories</td>
+<td>No, but now shaped by contagion</td>
+</tr>
+<tr class="even">
+<td>Perceived Support</td>
+<td>Support levels over time</td>
+<td>No, but now shaped by sharing</td>
+</tr>
+<tr class="odd">
+<td>Daily Stress &amp; ε</td>
+<td>External stress + exploration decay</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Adaptive Advantage</td>
+<td>Fixed − QL stress gap</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Stress Variance</td>
+<td>Within-group spread over time</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr class="even">
+<td>Cumulative Reward</td>
+<td>Lifetime wellbeing score</td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Panel 5 is particularly diagnostic. A declining stress variance among Q-learners suggests that peer Q-learning and contagion are synchronizing the population — agents converging toward similar learned policies and similar stress equilibria. If variance among fixed agents declines faster, it implies that contagion dominates over policy learning as a homogenization force. If Q-learner variance declines more slowly, it may reflect the diversity-preserving effect of different ε trajectories: agents in different parts of their exploration-exploitation schedule receiving different peer signals.</p>
+<p>Panel 6 tracks cumulative reward — the running sum of <span class="math inline">\(r_t\)</span> across all steps. This serves as a proxy for lifetime psychological wellbeing under the model’s reward structure. Because the reward now includes the support bonus, agents who successfully build and maintain perceived support (through seek_support or healthy_coping) accumulate reward faster than those who repeatedly choose avoidance. The cumulative reward gap between Q-learners and fixed agents tells a more complete story than instantaneous stress alone: even if stress levels converge at some point, the path-dependent accumulated wellbeing may diverge substantially.</p>
+</div>
+<div id="emergent-dynamics-clustering-and-cascades" class="section level2 hasAnchor" number="18.7">
+<h2><span class="header-section-number">18.7</span> Emergent Dynamics: Clustering and Cascades<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#emergent-dynamics-clustering-and-cascades" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The interaction of contagion, support sharing, and peer Q-learning can produce emergent dynamics that neither mechanism generates alone. Consider a cluster of Q-learners who have independently converged on healthy coping as their dominant strategy. Their stress levels are moderate and declining. Through contagion, they exert a calming influence on neighbouring fixed agents. Those fixed agents, with lower stress, experience less environmental pressure and may select avoidance less frequently (since their stress levels now rarely cross thresholds that make immediate relief urgent). Meanwhile, the Q-learning cluster exchanges Q-table entries, accelerating convergence to similar policies.</p>
+<p>This dynamic has the structure of a <strong>positive feedback loop in social health</strong>: adaptive individuals who find effective strategies partially extend those benefits to their social neighbours through contagion and support, even without explicit imitation. The reverse can also emerge: a cluster of avoidance-dominant fixed agents generates elevated ambient stress through contagion, which raises the effective environmental stress experienced by neighbouring Q-learners, making their optimization problem harder and potentially slowing convergence to optimal policies. <a href="https://www.scirp.org/journal/paperinformation?paperid=143159">scirp</a></p>
+<p>These cascade dynamics — beneficial or harmful — are invisible when agents are modelled in isolation. They are the principal scientific contribution of the social extension.</p>
+</div>
+<div id="the-asymmetry-of-social-learning" class="section level2 hasAnchor" number="18.8">
+<h2><span class="header-section-number">18.8</span> The Asymmetry of Social Learning<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#the-asymmetry-of-social-learning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Fixed agents participate in contagion and support sharing but cannot perform peer Q-learning. This asymmetry is intentional and psychologically meaningful. It models the difference between <strong>passive social influence</strong> (absorbing others’ emotional states, benefiting from their support) and <strong>active behavioral learning</strong> (consciously updating one’s coping strategies by observing what works for others).</p>
+<p>The asymmetry creates a testable prediction: Q-learners embedded in neighbourhoods with other Q-learners should outperform Q-learners isolated in fixed-agent clusters, even controlling for their individual learning rates. The peer Q-learning mechanism provides an accelerant — it lets agents shortcut the exploration phase by inheriting partially-learned Q-values from better-performing social contacts. An isolated Q-learner must discover through trial and error that healthy coping outperforms avoidance in moderate-stress states; a connected Q-learner may learn this faster by observing a high-performing neighbour’s Q-table.</p>
+<p>This suggests an intervention logic: in populations where some individuals struggle to discover effective coping strategies (slow convergence due to high environmental noise, low exploration, or maladaptive initialization), strategic social connections to already-adapted individuals could accelerate learning. Group therapy, peer support programs, and mentorship relationships all have this structure — connecting struggling individuals to those who have already developed effective coping repertoires. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480686/">pmc.ncbi.nlm.nih</a></p>
+</div>
+<div id="methodological-considerations" class="section level2 hasAnchor" number="18.9">
+<h2><span class="header-section-number">18.9</span> Methodological Considerations<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#methodological-considerations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Several modeling choices warrant scrutiny. The fixed neighbourhood assumption — agents maintain the same three connections for all 200 steps — ignores the dynamics of real social networks, where relationships form, strengthen, weaken, and dissolve. In reality, people often gravitate toward others with similar stress levels (homophily) or seek out resilient individuals when distressed; both processes would alter the contagion and peer learning dynamics substantially.</p>
+<p>The symmetric contagion model assumes equal bidirectional influence. In practice, emotional contagion is asymmetric: high-distress individuals tend to have a disproportionate influence on their social environment relative to low-distress individuals. Implementing asymmetric contagion coefficients — where stressed agents transmit more than they receive — would produce more realistic cascade dynamics. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10030380/">pmc.ncbi.nlm.nih</a></p>
+<p>The peer Q-learning mechanism uses cumulative reward as the selection criterion for whose Q-table to copy. Cumulative reward is a global quantity that agents cannot directly observe in most real settings — people observe outcomes, not utility totals. A more cognitively realistic version might use recent stress trajectory or explicit wellbeing signals as the comparison criterion, making the observational learning mechanism more locally informed.</p>
+</div>
+<div id="connections-to-computational-social-science" class="section level2 hasAnchor" number="18.10">
+<h2><span class="header-section-number">18.10</span> Connections to Computational Social Science<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#connections-to-computational-social-science" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The model now sits at the intersection of three research traditions. From computational psychiatry, it inherits the RL framework for modeling adaptive coping and the MDP formalization of psychological states. From agent-based social simulation, it inherits the emphasis on emergent population-level dynamics from local interaction rules. And from network science, it inherits the recognition that social topology shapes the diffusion of both stress and adaptive strategies. <a href="https://www.psychomodels.org/models/pessimistic-q-learning-model/">psychomodels</a></p>
+<p>This convergence is increasingly characteristic of serious mental health modeling efforts. Real clinical interventions do not target isolated individuals but individuals embedded in families, peer networks, communities, and institutions. A model that treats agents as socially embedded — even in the minimal form implemented here — generates richer and more clinically relevant hypotheses than one that does not. Whether the social extension’s complexity earns its keep in explanatory power, predictive accuracy, or intervention insight is ultimately an empirical question. But it is a question the v1 model could not even ask.</p>
+</div>
+<div id="from-isolated-learners-to-a-social-ecology-of-coping" class="section level2 hasAnchor" number="18.11">
+<h2><span class="header-section-number">18.11</span> From Isolated Learners to a Social Ecology of Coping<a href="connected-to-cope-social-contagion-and-peer-learning-in-mental-health-agent-based-models.html#from-isolated-learners-to-a-social-ecology-of-coping" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Version 1 demonstrated that adaptive agents outperform rigid ones when both face the same environment. Version 2 shows that the environment itself is partly constituted by other agents. Q-learners no longer face a stationary background; they face a social ecology whose properties depend on who their neighbours are, what strategies those neighbours have learned, and how effectively stress and support flow through the network.</p>
+<p>This shift echoes a broader movement in behavioral science away from models of the isolated individual and toward models of the socially embedded agent. Coping is not just a skill that individuals develop in response to adversity; it is a capacity that is socially distributed, transmitted, and amplified or undermined by the networks in which people are embedded. Agent-based models with social interaction mechanisms provide one of the few computational tools capable of capturing this embeddedness while retaining the individual-level resolution necessary to study learning and adaptation. <a href="https://smythos.com/developers/agent-development/agent-based-modeling-and-reinforcement-learning/">smythos</a></p>
+<p>The journey from random walks through Schelling preferences to individual Q-learning to socially networked adaptive agents traces an arc of increasing realism. Each step has added complexity, but each has also added explanatory reach — revealing dynamics that the simpler model was constitutionally unable to produce. The question for future development is not whether to add more complexity, but which complexities most constrain and enrich our understanding of how people — and the communities they form — learn to cope.</p>
+<pre><code># ============================================================
+# MENTAL HEALTH COPING SIMULATION — v2
+# Mesa ABM + Q-Learning (MDP) + Agent-Agent Interaction
+# Run as a single cell in Google Colab
+# ============================================================
+
+# ---- 1. Install / imports ----
+# !pip install mesa -q   # uncomment in Colab if needed
+
+import random
+import math
+import collections
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import mesa
+
+print(&quot;Mesa version:&quot;, mesa.__version__)
+
+# ============================================================
+# 2. GLOBAL SETTINGS
+# ============================================================
+ACTIONS        = [&quot;healthy_coping&quot;, &quot;avoidance&quot;, &quot;seek_support&quot;]
+LEARNING_RATE  = 0.15
+DISCOUNT       = 0.95
+EPSILON_START  = 1.0
+EPSILON_MIN    = 0.05
+EPSILON_DECAY  = 0.995
+
+# Social-interaction parameters
+STRESS_CONTAGION   = 0.08   # fraction of neighbour stress gap transmitted each step
+SUPPORT_SHARING    = 0.05   # fraction of neighbour perceived_support shared
+PEER_LEARNING_RATE = 0.05   # blending weight when copying a better neighbour Q-value
+N_NEIGHBOURS       = 3      # how many social connections each agent maintains
+
+def discretize(value, bin_size, max_bin=4):
+    return max(0, min(int(value / bin_size), max_bin))
+
+
+# ============================================================
+# 3. Q-LEARNING COPING AGENT  (with social interaction)
+# ============================================================
+class QLearningCopingAgent(mesa.Agent):
+    &quot;&quot;&quot;
+    State:  (stress_bin, daily_stress_bin, support_bin)
+    Action: healthy_coping | avoidance | seek_support
+    Reward: –stress + improvement bonus + social support bonus
+
+    Social mechanisms
+    -----------------
+    * Stress contagion   – neighbour stress bleeds in/out
+    * Support sharing    – neighbours partially lift perceived support
+    * Peer Q-learning    – observe a better-performing neighbour and
+                           soft-update own Q-values toward theirs
+    &quot;&quot;&quot;
+
+    def __init__(self, model, learning_rate=LEARNING_RATE,
+                 discount=DISCOUNT, epsilon=EPSILON_START):
+        super().__init__(model)
+        self.stress            = random.uniform(30, 70)
+        self.perceived_support = random.uniform(30, 70)
+        self.actions           = ACTIONS
+        self.q_table           = {}
+        self.learning_rate     = learning_rate
+        self.discount          = discount
+        self.epsilon           = epsilon
+        self.memory            = collections.deque(maxlen=100)
+        self.agent_type        = &quot;Q-Learner&quot;
+        self.last_action       = None
+        self.prev_stress       = self.stress
+        self.neighbours        = []      # filled after all agents created
+        self.cumulative_reward = 0.0     # tracks lifetime reward for peer comparison
+
+    # ---------- MDP ----------
+    def get_state(self):
+        s_bin   = discretize(self.stress, 20)
+        d_bin   = discretize(self.model.daily_stress, 5)
+        sup_bin = discretize(self.perceived_support, 20)
+        return (s_bin, d_bin, sup_bin)
+
+    def update_q_value(self, state, action, reward, next_state):
+        old_q    = self.q_table.get((state, action), 0.0)
+        next_max = max(self.q_table.get((next_state, a), 0.0) for a in self.actions)
+        new_q    = old_q + self.learning_rate * (reward + self.discount * next_max - old_q)
+        self.q_table[(state, action)] = new_q
+
+    def choose_action(self, state):
+        if random.random() &lt; self.epsilon:
+            return random.choice(self.actions)
+        q_vals = {a: self.q_table.get((state, a), 0.0) for a in self.actions}
+        return max(q_vals, key=q_vals.get)
+
+    def compute_reward(self):
+        delta         = self.prev_stress - self.stress          # positive = stress reduced
+        support_bonus = self.perceived_support * 0.02           # reward high support
+        return -self.stress + 0.5 * delta + support_bonus
+
+    # ---------- Action dynamics ----------
+    def _execute_action(self, action):
+        env_stress = self.model.daily_stress
+        if action == &quot;healthy_coping&quot;:
+            self.stress            -= random.uniform(8, 15) + random.uniform(-3, 3)
+            self.perceived_support += random.uniform(1, 3)
+        elif action == &quot;avoidance&quot;:
+            self.stress -= random.uniform(4, 8)
+            self.model.rebound_pool.append((self, random.uniform(2, 10)))
+        elif action == &quot;seek_support&quot;:
+            if self.model.support_availability &gt; 0.2:
+                self.stress            -= random.uniform(10, 18)
+                self.perceived_support += random.uniform(5, 10)
+            else:
+                self.stress += random.uniform(0, 6)
+        self.stress            += env_stress * random.uniform(0.4, 1.0)
+        self.stress             = max(0, min(self.stress, 100))
+        self.perceived_support  = max(0, min(self.perceived_support, 100))
+
+    # ---------- Social interaction ----------
+    def social_interact(self):
+        &quot;&quot;&quot;
+        Three agent-level social mechanisms:
+        1. Stress contagion  – bidirectional: if a neighbour is more stressed,
+           some of that stress rubs off (and vice-versa).
+        2. Support sharing   – neighbours with higher perceived support lift yours.
+        3. Peer Q-learning   – if a neighbour has higher cumulative reward, blend
+           their Q-values into your own (observational learning).
+        &quot;&quot;&quot;
+        if not self.neighbours:
+            return
+
+        # --- 1 &amp; 2: stress contagion + support sharing ---
+        avg_nbr_stress   = sum(n.stress            for n in self.neighbours) / len(self.neighbours)
+        avg_nbr_support  = sum(n.perceived_support for n in self.neighbours) / len(self.neighbours)
+
+        stress_delta   = (avg_nbr_stress  - self.stress)            # pos = neighbours more stressed
+        support_delta  = (avg_nbr_support - self.perceived_support) # pos = neighbours more supported
+
+        self.stress            += STRESS_CONTAGION * stress_delta
+        self.perceived_support += SUPPORT_SHARING  * support_delta
+        self.stress            = max(0, min(self.stress, 100))
+        self.perceived_support = max(0, min(self.perceived_support, 100))
+
+        # --- 3: peer Q-learning (observe the best neighbour) ---
+        ql_neighbours = [n for n in self.neighbours if isinstance(n, QLearningCopingAgent)]
+        if ql_neighbours:
+            best_nbr = max(ql_neighbours, key=lambda n: n.cumulative_reward)
+            if best_nbr.cumulative_reward &gt; self.cumulative_reward:
+                # Soft-update: blend best neighbour&#39;s Q-values into own table
+                for key, nbr_q in best_nbr.q_table.items():
+                    own_q = self.q_table.get(key, 0.0)
+                    self.q_table[key] = own_q + PEER_LEARNING_RATE * (nbr_q - own_q)
+
+    # ---------- Mesa step ----------
+    def step(self):
+        state  = self.get_state()
+        action = self.choose_action(state)
+
+        self.prev_stress = self.stress
+        self._execute_action(action)
+        self.social_interact()          # &lt;-- agent-agent interaction
+
+        reward     = self.compute_reward()
+        next_state = self.get_state()
+
+        self.cumulative_reward += reward
+        self.memory.append((state, action, reward, next_state))
+        self.update_q_value(state, action, reward, next_state)
+
+        self.epsilon     = max(EPSILON_MIN, self.epsilon * EPSILON_DECAY)
+        self.last_action = action
+
+
+# ============================================================
+# 4. FIXED COPING AGENT  (with passive social interaction)
+# ============================================================
+class FixedCopingAgent(mesa.Agent):
+    &quot;&quot;&quot;
+    Non-learning baseline. Still subject to stress contagion and support
+    sharing from neighbours, but does NOT do peer Q-learning.
+    &quot;&quot;&quot;
+
+    def __init__(self, model, strategy=&quot;mostly_avoidance&quot;):
+        super().__init__(model)
+        self.stress            = random.uniform(30, 70)
+        self.perceived_support = random.uniform(30, 70)
+        self.strategy          = strategy
+        self.agent_type        = f&quot;Fixed-{strategy}&quot;
+        self.neighbours        = []
+        self.cumulative_reward = 0.0
+
+    def choose_action(self):
+        probs_map = {
+            &quot;mostly_avoidance&quot;: [0.1, 0.7, 0.2],
+            &quot;mostly_healthy&quot;:   [0.7, 0.1, 0.2],
+            &quot;mostly_support&quot;:   [0.2, 0.2, 0.6],
+        }
+        probs = probs_map.get(self.strategy, [1/3, 1/3, 1/3])
+        r = random.random()
+        if r &lt; probs[0]:             return &quot;healthy_coping&quot;
+        elif r &lt; probs[0]+probs[1]:  return &quot;avoidance&quot;
+        else:                        return &quot;seek_support&quot;
+
+    def _execute_action(self, action):
+        env_stress = self.model.daily_stress
+        if action == &quot;healthy_coping&quot;:
+            self.stress            -= random.uniform(5, 10)
+            self.perceived_support += random.uniform(0, 2)
+        elif action == &quot;avoidance&quot;:
+            self.stress -= random.uniform(3, 7)
+            self.model.rebound_pool.append((self, random.uniform(1, 8)))
+        elif action == &quot;seek_support&quot;:
+            if self.model.support_availability &gt; 0.2:
+                self.stress            -= random.uniform(8, 14)
+                self.perceived_support += random.uniform(2, 6)
+            else:
+                self.stress += random.uniform(0, 4)
+        self.stress            += env_stress * random.uniform(0.4, 1.0)
+        self.stress             = max(0, min(self.stress, 100))
+        self.perceived_support  = max(0, min(self.perceived_support, 100))
+
+    def social_interact(self):
+        &quot;&quot;&quot;Stress contagion + support sharing only (no Q-learning).&quot;&quot;&quot;
+        if not self.neighbours:
+            return
+        avg_nbr_stress  = sum(n.stress            for n in self.neighbours) / len(self.neighbours)
+        avg_nbr_support = sum(n.perceived_support for n in self.neighbours) / len(self.neighbours)
+        self.stress            += STRESS_CONTAGION * (avg_nbr_stress  - self.stress)
+        self.perceived_support += SUPPORT_SHARING  * (avg_nbr_support - self.perceived_support)
+        self.stress             = max(0, min(self.stress, 100))
+        self.perceived_support  = max(0, min(self.perceived_support, 100))
+
+    def step(self):
+        action = self.choose_action()
+        prev   = self.stress
+        self._execute_action(action)
+        self.social_interact()          # &lt;-- agent-agent interaction
+        reward = -(self.stress) + 0.5 * (prev - self.stress)
+        self.cumulative_reward += reward
+
+
+# ============================================================
+# 5. MODEL
+# ============================================================
+class MentalHealthModel(mesa.Model):
+    &quot;&quot;&quot;
+    Environment + social network.
+    After creating agents, build a random social network (Erdős–Rényi style)
+    with each agent having exactly N_NEIGHBOURS connections.
+    &quot;&quot;&quot;
+
+    def __init__(self, n_qlearners=10, n_fixed=10, seed=42):
+        super().__init__(seed=seed)
+        self.daily_stress         = 5.0
+        self.support_availability = 0.6
+        self.rebound_pool         = []
+
+        for _ in range(n_qlearners):
+            QLearningCopingAgent(self)
+
+        strategies = [&quot;mostly_avoidance&quot;, &quot;mostly_healthy&quot;, &quot;mostly_support&quot;]
+        for i in range(n_fixed):
+            FixedCopingAgent(self, strategy=strategies[i % len(strategies)])
+
+        # Build social network: each agent gets N_NEIGHBOURS random neighbours
+        all_agents = list(self.agents)
+        for agent in all_agents:
+            candidates = [a for a in all_agents if a is not agent]
+            agent.neighbours = random.sample(candidates, min(N_NEIGHBOURS, len(candidates)))
+
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                &quot;Avg_Stress_QL&quot;: lambda m: round(
+                    sum(a.stress for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 2),
+                &quot;Avg_Stress_Fixed&quot;: lambda m: round(
+                    sum(a.stress for a in m.agents if isinstance(a, FixedCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, FixedCopingAgent))), 2),
+                &quot;Avg_Support_QL&quot;: lambda m: round(
+                    sum(a.perceived_support for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 2),
+                &quot;Avg_Support_Fixed&quot;: lambda m: round(
+                    sum(a.perceived_support for a in m.agents if isinstance(a, FixedCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, FixedCopingAgent))), 2),
+                &quot;Daily_Stress&quot;:   lambda m: round(m.daily_stress, 2),
+                &quot;Avg_Epsilon&quot;:    lambda m: round(
+                    sum(a.epsilon for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 3),
+                # NEW: social metrics
+                &quot;Avg_CumRew_QL&quot;: lambda m: round(
+                    sum(a.cumulative_reward for a in m.agents if isinstance(a, QLearningCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, QLearningCopingAgent))), 2),
+                &quot;Avg_CumRew_Fixed&quot;: lambda m: round(
+                    sum(a.cumulative_reward for a in m.agents if isinstance(a, FixedCopingAgent))
+                    / max(1, sum(1 for a in m.agents if isinstance(a, FixedCopingAgent))), 2),
+                # Variance in stress (captures social clustering effects)
+                &quot;StressVar_QL&quot;: lambda m: round(
+                    (lambda vals: sum((v - sum(vals)/len(vals))**2 for v in vals)/len(vals) if vals else 0)(
+                        [a.stress for a in m.agents if isinstance(a, QLearningCopingAgent)]), 2),
+                &quot;StressVar_Fixed&quot;: lambda m: round(
+                    (lambda vals: sum((v - sum(vals)/len(vals))**2 for v in vals)/len(vals) if vals else 0)(
+                        [a.stress for a in m.agents if isinstance(a, FixedCopingAgent)]), 2),
+            }
+        )
+
+    def _update_environment(self):
+        mean_level = 5.0
+        shock = random.gauss(0, 1.5)
+        self.daily_stress += 0.3 * (mean_level - self.daily_stress) + shock
+        self.daily_stress  = max(0, min(self.daily_stress, 12))
+
+        # Support availability with seasonality
+        t = getattr(self, &quot;_step_count&quot;, 0)
+        seasonality = 0.1 * math.sin(t / 30.0)
+        self.support_availability += random.gauss(0, 0.05) + seasonality
+        self.support_availability  = max(0.0, min(self.support_availability, 1.0))
+        self._step_count = t + 1
+
+        for agent, rebound in self.rebound_pool:
+            agent.stress = max(0, min(agent.stress + rebound, 100))
+        self.rebound_pool = []
+
+    def step(self):
+        self.agents.shuffle_do(&quot;step&quot;)
+        self._update_environment()
+        self.datacollector.collect(self)
+
+
+# ============================================================
+# 6. RUN
+# ============================================================
+N_STEPS     = 200
+N_QLEARNERS = 12
+N_FIXED     = 12
+
+model = MentalHealthModel(n_qlearners=N_QLEARNERS, n_fixed=N_FIXED, seed=3)
+print(&quot;Running simulation (with agent-agent interaction)...&quot;)
+
+for t in range(N_STEPS):
+    model.step()
+    if (t + 1) % 50 == 0:
+        row = model.datacollector.get_model_vars_dataframe().iloc[-1]
+        print(f&quot;  Step {t+1:3d} | DailyStress={row.Daily_Stress:4.1f} &quot;
+              f&quot;| StressQL={row.Avg_Stress_QL:5.1f} | StressFx={row.Avg_Stress_Fixed:5.1f} &quot;
+              f&quot;| ε={row.Avg_Epsilon:.3f} | SuppQL={row.Avg_Support_QL:5.1f}&quot;)
+
+df = model.datacollector.get_model_vars_dataframe()
+print(&quot;\nLast 5 rows:&quot;)
+print(df.tail(5).to_string())
+
+
+# ============================================================
+# 7. VISUALISE — 6-panel dashboard
+# ============================================================
+fig = plt.figure(figsize=(18, 13))
+fig.patch.set_facecolor(&quot;#081018&quot;)
+gs  = gridspec.GridSpec(3, 2, figure=fig, hspace=0.52, wspace=0.35)
+
+BG  = &quot;#111827&quot;
+COL = dict(
+    stress_ql   = &quot;#00d4ff&quot;,
+    stress_fx   = &quot;#ff6b6b&quot;,
+    support_ql  = &quot;#7dff7a&quot;,
+    support_fx  = &quot;#ffd166&quot;,
+    daily       = &quot;#c792ea&quot;,
+    eps         = &quot;#a8ff78&quot;,
+    var_ql      = &quot;#38bdf8&quot;,
+    var_fx      = &quot;#fb923c&quot;,
+    rew_ql      = &quot;#a78bfa&quot;,
+    rew_fx      = &quot;#f472b6&quot;,
+)
+steps = range(len(df))
+
+def style_ax(ax, title):
+    ax.set_facecolor(BG)
+    ax.set_title(title, color=&quot;white&quot;, fontsize=10, pad=7)
+    ax.tick_params(colors=&quot;#aaa&quot;)
+    for s in ax.spines.values():
+        s.set_edgecolor(&quot;#444&quot;)
+
+# --- Panel 1: Stress (adaptive vs fixed) ---
+ax1 = fig.add_subplot(gs[0, 0])
+style_ax(ax1, &quot;Average Stress: Adaptive vs Fixed&quot;)
+ax1.plot(steps, df.Avg_Stress_QL,    color=COL[&quot;stress_ql&quot;], lw=2,   label=&quot;Q-Learner&quot;)
+ax1.plot(steps, df.Avg_Stress_Fixed, color=COL[&quot;stress_fx&quot;], lw=2, ls=&quot;--&quot;, label=&quot;Fixed&quot;)
+ax1.set_ylabel(&quot;Stress (0–100)&quot;, color=&quot;#aaa&quot;)
+ax1.legend(facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=9)
+
+# --- Panel 2: Perceived support ---
+ax2 = fig.add_subplot(gs[0, 1])
+style_ax(ax2, &quot;Perceived Social Support&quot;)
+ax2.plot(steps, df.Avg_Support_QL,    color=COL[&quot;support_ql&quot;], lw=2,   label=&quot;Q-Learner&quot;)
+ax2.plot(steps, df.Avg_Support_Fixed, color=COL[&quot;support_fx&quot;], lw=2, ls=&quot;--&quot;, label=&quot;Fixed&quot;)
+ax2.set_ylabel(&quot;Support (0–100)&quot;, color=&quot;#aaa&quot;)
+ax2.legend(facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=9)
+
+# --- Panel 3: External daily stress + epsilon ---
+ax3 = fig.add_subplot(gs[1, 0])
+style_ax(ax3, &quot;Daily External Stress &amp; Exploration (ε)&quot;)
+ax3.plot(steps, df.Daily_Stress, color=COL[&quot;daily&quot;], lw=2, label=&quot;Daily Stress&quot;)
+ax3.set_ylabel(&quot;Daily Stress&quot;, color=&quot;#aaa&quot;)
+ax3_r = ax3.twinx()
+ax3_r.plot(steps, df.Avg_Epsilon, color=COL[&quot;eps&quot;], lw=1.5, ls=&quot;--&quot;, label=&quot;Avg ε&quot;)
+ax3_r.set_ylabel(&quot;ε&quot;, color=COL[&quot;eps&quot;])
+ax3_r.tick_params(colors=COL[&quot;eps&quot;])
+lines = ax3.get_lines() + ax3_r.get_lines()
+ax3.legend(lines, [l.get_label() for l in lines], facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=8)
+
+# --- Panel 4: Stress gap (adaptive advantage) ---
+ax4 = fig.add_subplot(gs[1, 1])
+style_ax(ax4, &quot;Adaptive Advantage  (Fixed − QL Stress)&quot;)
+gap = df.Avg_Stress_Fixed - df.Avg_Stress_QL
+ax4.fill_between(steps, gap, where=gap &gt;= 0, color=COL[&quot;stress_ql&quot;], alpha=0.6, label=&quot;QL lower stress&quot;)
+ax4.fill_between(steps, gap, where=gap &lt; 0,  color=COL[&quot;stress_fx&quot;], alpha=0.6, label=&quot;Fixed lower stress&quot;)
+ax4.axhline(0, color=&quot;#888&quot;, lw=1)
+ax4.set_ylabel(&quot;Δ Stress&quot;, color=&quot;#aaa&quot;)
+ax4.legend(facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=9)
+
+# --- Panel 5: Stress variance (social homogenisation) ---
+ax5 = fig.add_subplot(gs[2, 0])
+style_ax(ax5, &quot;Stress Variance (Social Homogenisation Effect)&quot;)
+ax5.plot(steps, df.StressVar_QL,    color=COL[&quot;var_ql&quot;], lw=2,   label=&quot;Q-Learner variance&quot;)
+ax5.plot(steps, df.StressVar_Fixed, color=COL[&quot;var_fx&quot;], lw=2, ls=&quot;--&quot;, label=&quot;Fixed variance&quot;)
+ax5.set_xlabel(&quot;Step&quot;, color=&quot;#aaa&quot;)
+ax5.set_ylabel(&quot;Variance&quot;, color=&quot;#aaa&quot;)
+ax5.legend(facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=9)
+
+# --- Panel 6: Cumulative reward ---
+ax6 = fig.add_subplot(gs[2, 1])
+style_ax(ax6, &quot;Cumulative Reward (Lifetime Wellbeing Score)&quot;)
+ax6.plot(steps, df.Avg_CumRew_QL,    color=COL[&quot;rew_ql&quot;], lw=2,   label=&quot;Q-Learner&quot;)
+ax6.plot(steps, df.Avg_CumRew_Fixed, color=COL[&quot;rew_fx&quot;], lw=2, ls=&quot;--&quot;, label=&quot;Fixed&quot;)
+ax6.set_xlabel(&quot;Step&quot;, color=&quot;#aaa&quot;)
+ax6.set_ylabel(&quot;Cumulative Reward&quot;, color=&quot;#aaa&quot;)
+ax6.legend(facecolor=&quot;#222&quot;, labelcolor=&quot;white&quot;, fontsize=9)
+
+fig.suptitle(
+    &quot;Mental-Health Coping Simulation  v2\n&quot;
+    &quot;Mesa ABM · Q-Learning (MDP) · Agent-Agent Social Interaction&quot;,
+    color=&quot;white&quot;, fontsize=13, y=1.01)
+
+plt.savefig(&quot;mental_health_v2.png&quot;, dpi=130, bbox_inches=&quot;tight&quot;,
+            facecolor=fig.get_facecolor())
+plt.show()
+print(&quot;Chart saved → mental_health_v2.png&quot;)
+
+
+# ============================================================
+# 8. Q-TABLE + SOCIAL NETWORK SUMMARY
+# ============================================================
+ql_agents = [a for a in model.agents if isinstance(a, QLearningCopingAgent)]
+if ql_agents:
+    sample = ql_agents[0]
+    print(f&quot;\n--- Learned Q-Table (Agent uid={sample.unique_id}) ---&quot;)
+    print(f&quot;{&#39;State&#39;:&lt;22} {&#39;Action&#39;:&lt;16} {&#39;Q-Value&#39;:&gt;8}&quot;)
+    print(&quot;-&quot; * 50)
+    for (state, action), q in sorted(sample.q_table.items(), key=lambda x: -x[1])[:12]:
+        print(f&quot;{str(state):&lt;22} {action:&lt;16} {q:&gt;8.3f}&quot;)
+    print(f&quot;\nTotal Q-entries : {len(sample.q_table)}&quot;)
+    print(f&quot;Final epsilon   : {sample.epsilon:.4f}&quot;)
+    print(f&quot;Neighbours      : {[n.unique_id for n in sample.neighbours]}&quot;)
+
+print(&quot;\n--- Social Network Summary ---&quot;)
+all_agents = list(model.agents)
+avg_nbr = sum(len(a.neighbours) for a in all_agents) / len(all_agents)
+ql_to_ql  = sum(sum(1 for n in a.neighbours if isinstance(n, QLearningCopingAgent))
+                for a in ql_agents) / max(1, len(ql_agents))
+print(f&quot;Avg neighbours per agent : {avg_nbr:.1f}&quot;)
+print(f&quot;Avg QL-to-QL connections : {ql_to_ql:.1f} (peer learning links per Q-Learner)&quot;)</code></pre>
 
 </div>
 </div>
@@ -555,8 +1096,8 @@ An agent is an identifiable, discrete entity with a set of characteristics or at
           </div>
         </div>
       </div>
+<a href="learning-to-cope-reinforcement-learning-in-mental-health-agent-based-models.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="random-walks-i.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -587,7 +1128,7 @@ gitbook.start({
     "size": 2
   },
   "edit": {
-    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/edit/main/17-QRL2.Rmd",
     "text": "Edit"
   },
   "history": {
@@ -595,7 +1136,7 @@ gitbook.start({
     "text": null
   },
   "view": {
-    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Agent-Based-Modelling/blob/main/17-QRL2.Rmd",
     "text": null
   },
   "download": null,
