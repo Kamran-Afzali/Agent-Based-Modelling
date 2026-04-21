@@ -279,3 +279,616 @@ Incorporating information quality would distinguish true beliefs from misinforma
 Strategic behavior represents another frontier. If agents anticipate how their expressed opinions influence others, they might strategically misrepresent their true beliefs to shift collective outcomes. Such strategic dynamics introduce game-theoretic complexity that could dramatically alter equilibrium opinion distributions.
 
 The opinion dynamics model thus serves multiple purposes—as a tool for understanding real social phenomena, as a platform for exploring intervention strategies, and as a foundation for increasingly sophisticated models of collective belief formation. Like the random walk and Schelling models before it, it demonstrates how agent-based approaches can illuminate complex social dynamics through careful attention to individual behavior, interaction structures, and emergent collective patterns. The journey from particles wandering randomly to agents coordinating opinions across networks reveals the expanding scope and deepening insight that agent-based modeling brings to social science.
+
+## Code
+```python
+"""
+Information Cascades: Opinion Dynamics - ANIMATED VISUALIZATION
+Dynamic animation showing opinion spread in real-time across the network
+Compatible with Mesa 3.x API and Google Colab
+"""
+
+# Install required packages
+try:
+    import mesa
+except ImportError:
+    import subprocess
+    import sys
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "mesa", "networkx"])
+    import mesa
+
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+from mesa import Agent, Model
+from mesa.space import NetworkGrid
+from mesa.datacollection import DataCollector
+from matplotlib.animation import FuncAnimation
+from IPython.display import HTML
+import warnings
+warnings.filterwarnings('ignore')
+
+
+class OpinionAgent(Agent):
+    """Agent with opinion that updates based on social influence."""
+
+    def __init__(self, model, initial_opinion=None, influence_rate=0.3, stubbornness=0.0):
+        super().__init__(model)
+        self.opinion = initial_opinion if initial_opinion is not None else self.random.uniform(0, 1)
+        self.initial_opinion = self.opinion
+        self.influence_rate = influence_rate
+        self.stubbornness = stubbornness
+        self.is_influencer = False
+
+    def step(self):
+        """Agent updates their opinion based on neighbors' opinions."""
+        self.update_opinion()
+
+    def update_opinion(self):
+        """Update opinion based on neighbors' average opinion."""
+        neighbors = self.model.grid.get_neighbors(self.pos, include_center=False)
+
+        if neighbors:
+            neighbor_opinions = [n.opinion for n in neighbors]
+            avg_opinion = np.mean(neighbor_opinions)
+
+            effective_influence = self.influence_rate * (1 - self.stubbornness)
+            self.opinion += effective_influence * (avg_opinion - self.opinion)
+            self.opinion = np.clip(self.opinion, 0, 1)
+
+
+class InfluencerAgent(OpinionAgent):
+    """Opinion leader who influences others but doesn't change opinion."""
+
+    def __init__(self, model, initial_opinion, influence_rate=0.5):
+        super().__init__(model, initial_opinion, influence_rate, stubbornness=1.0)
+        self.is_influencer = True
+
+    def update_opinion(self):
+        """Influencers maintain fixed opinion."""
+        pass
+
+
+class InformationCascadeModel(Model):
+    """Model simulating information cascades on social networks."""
+
+    def __init__(self,
+                 n_agents=100,
+                 network_type='scale_free',
+                 avg_degree=4,
+                 influence_rate=0.3,
+                 stubbornness_mean=0.1,
+                 stubbornness_std=0.05,
+                 n_influencers=2,
+                 influencer_opinions='polarized',
+                 seed=None):
+
+        super().__init__(seed=seed)
+        self.num_agents = n_agents
+        self.network_type = network_type
+        self.avg_degree = avg_degree
+        self.influence_rate = influence_rate
+        self.n_influencers = n_influencers
+
+        # Create network
+        self.G = self._create_network(network_type, n_agents, avg_degree)
+        self.grid = NetworkGrid(self.G)
+
+        # Store network layout for consistent animation
+        self.pos_layout = nx.spring_layout(self.G, seed=42, k=0.5, iterations=50)
+
+        # Create regular agents
+        for i in range(n_agents - n_influencers):
+            stubbornness = np.clip(self.random.gauss(stubbornness_mean, stubbornness_std), 0, 1)
+            agent = OpinionAgent(
+                model=self,
+                influence_rate=influence_rate,
+                stubbornness=stubbornness
+            )
+            self.grid.place_agent(agent, i)
+
+        # Create influencer agents
+        if n_influencers > 0:
+            if influencer_opinions == 'polarized':
+                opinions = np.linspace(0, 1, n_influencers)
+            elif isinstance(influencer_opinions, (list, tuple, np.ndarray)):
+                opinions = influencer_opinions
+            else:
+                opinions = [0.5] * n_influencers
+
+            for i in range(n_influencers):
+                node_id = n_agents - n_influencers + i
+                influencer = InfluencerAgent(
+                    model=self,
+                    initial_opinion=opinions[i],
+                    influence_rate=influence_rate
+                )
+                self.grid.place_agent(influencer, node_id)
+
+        # Data collection
+        self.datacollector = DataCollector(
+            model_reporters={
+                "Mean Opinion": lambda m: np.mean([a.opinion for a in m.agents]),
+                "Opinion Variance": lambda m: np.var([a.opinion for a in m.agents]),
+                "Polarization": lambda m: np.mean([abs(a.opinion - 0.5) for a in m.agents]),
+                "Consensus": lambda m: 1 - np.var([a.opinion for a in m.agents]),
+            }
+        )
+        self.datacollector.collect(self)
+
+    def _create_network(self, network_type, n, avg_degree):
+        """Create network topology."""
+        if network_type == 'scale_free':
+            m = max(1, avg_degree // 2)
+            G = nx.barabasi_albert_graph(n, m, seed=self.random.randint(0, 1000000))
+        elif network_type == 'small_world':
+            k = avg_degree
+            p = 0.1
+            G = nx.watts_strogatz_graph(n, k, p, seed=self.random.randint(0, 1000000))
+        elif network_type == 'random':
+            p = avg_degree / (n - 1)
+            G = nx.erdos_renyi_graph(n, p, seed=self.random.randint(0, 1000000))
+        else:
+            m = max(1, avg_degree // 2)
+            G = nx.barabasi_albert_graph(n, m, seed=self.random.randint(0, 1000000))
+        return G
+
+    def step(self):
+        """Advance model by one step."""
+        self.agents.shuffle_do("step")
+        self.datacollector.collect(self)
+
+
+def create_animation(model, steps=100, interval=100, figsize=(16, 6)):
+    """
+    Create animated visualization of opinion dynamics.
+
+    Parameters:
+        model: InformationCascadeModel instance
+        steps: Number of simulation steps
+        interval: Milliseconds between frames
+        figsize: Figure size
+
+    Returns:
+        animation: FuncAnimation object
+    """
+
+    # Setup figure with subplots
+    fig = plt.figure(figsize=figsize)
+    gs = fig.add_gridspec(2, 3, hspace=0.3, wspace=0.3)
+
+    ax_network = fig.add_subplot(gs[:, 0])  # Network visualization (left, full height)
+    ax_time = fig.add_subplot(gs[0, 1:])     # Time series (top right)
+    ax_hist = fig.add_subplot(gs[1, 1])      # Histogram (bottom left)
+    ax_metrics = fig.add_subplot(gs[1, 2])   # Metrics (bottom right)
+
+    # Store data for plotting
+    history = {
+        'mean': [],
+        'variance': [],
+        'polarization': [],
+        'consensus': []
+    }
+
+    # Get initial opinions
+    opinions = [agent.opinion for agent in model.agents]
+    influencer_nodes = [agent.pos for agent in model.agents if agent.is_influencer]
+
+    # Network plot elements
+    edges = nx.draw_networkx_edges(model.G, model.pos_layout, alpha=0.2, ax=ax_network)
+    nodes = nx.draw_networkx_nodes(
+        model.G,
+        model.pos_layout,
+        node_color=opinions,
+        cmap='RdYlBu',
+        vmin=0,
+        vmax=1,
+        node_size=100,
+        ax=ax_network
+    )
+
+    # Highlight influencers
+    if influencer_nodes:
+        nx.draw_networkx_nodes(
+            model.G,
+            model.pos_layout,
+            nodelist=influencer_nodes,
+            node_color='black',
+            node_size=200,
+            node_shape='s',
+            ax=ax_network
+        )
+
+    ax_network.set_title('Network Opinion Spread', fontsize=14, fontweight='bold')
+    ax_network.axis('off')
+
+    # Colorbar for network
+    sm = plt.cm.ScalarMappable(cmap='RdYlBu', norm=plt.Normalize(vmin=0, vmax=1))
+    sm.set_array([])
+    cbar = plt.colorbar(sm, ax=ax_network, fraction=0.046, pad=0.04)
+    cbar.set_label('Opinion', rotation=270, labelpad=15)
+
+    # Time series plot
+    line_mean, = ax_time.plot([], [], 'b-', linewidth=2, label='Mean Opinion')
+    line_var, = ax_time.plot([], [], 'r-', linewidth=2, label='Variance')
+    ax_time.set_xlim(0, steps)
+    ax_time.set_ylim(0, 1)
+    ax_time.set_xlabel('Time Step', fontsize=11)
+    ax_time.set_ylabel('Value', fontsize=11)
+    ax_time.set_title('Opinion Dynamics Over Time', fontsize=12, fontweight='bold')
+    ax_time.legend(loc='upper right')
+    ax_time.grid(True, alpha=0.3)
+
+    # Histogram
+    ax_hist.set_xlim(0, 1)
+    ax_hist.set_ylim(0, model.num_agents * 0.5)
+    ax_hist.set_xlabel('Opinion', fontsize=11)
+    ax_hist.set_ylabel('Frequency', fontsize=11)
+    ax_hist.set_title('Opinion Distribution', fontsize=12, fontweight='bold')
+    ax_hist.grid(True, alpha=0.3, axis='y')
+
+    # Metrics text
+    ax_metrics.axis('off')
+    ax_metrics.set_xlim(0, 1)
+    ax_metrics.set_ylim(0, 1)
+    text_step = ax_metrics.text(0.1, 0.9, '', fontsize=11, fontweight='bold')
+    text_mean = ax_metrics.text(0.1, 0.75, '', fontsize=10)
+    text_var = ax_metrics.text(0.1, 0.65, '', fontsize=10)
+    text_polar = ax_metrics.text(0.1, 0.55, '', fontsize=10)
+    text_consensus = ax_metrics.text(0.1, 0.45, '', fontsize=10)
+    text_status = ax_metrics.text(0.1, 0.25, '', fontsize=10, style='italic', color='green')
+    ax_metrics.set_title('Metrics', fontsize=12, fontweight='bold')
+
+    def init():
+        """Initialize animation."""
+        line_mean.set_data([], [])
+        line_var.set_data([], [])
+        return nodes, line_mean, line_var
+
+    def animate(frame):
+        """Update animation frame."""
+        # Run model step
+        if frame > 0:
+            model.step()
+
+        # Get current opinions
+        opinions = [agent.opinion for agent in model.agents]
+
+        # Update network colors
+        nodes.set_array(np.array(opinions))
+
+        # Update history
+        data = model.datacollector.get_model_vars_dataframe()
+        history['mean'] = data['Mean Opinion'].tolist()
+        history['variance'] = data['Opinion Variance'].tolist()
+        history['polarization'] = data['Polarization'].tolist()
+        history['consensus'] = data['Consensus'].tolist()
+
+        # Update time series
+        steps_so_far = list(range(len(history['mean'])))
+        line_mean.set_data(steps_so_far, history['mean'])
+        line_var.set_data(steps_so_far, history['variance'])
+
+        # Update histogram
+        ax_hist.clear()
+        ax_hist.hist(opinions, bins=20, alpha=0.7, color='blue', edgecolor='black')
+        ax_hist.set_xlim(0, 1)
+        ax_hist.set_ylim(0, model.num_agents * 0.5)
+        ax_hist.set_xlabel('Opinion', fontsize=11)
+        ax_hist.set_ylabel('Frequency', fontsize=11)
+        ax_hist.set_title('Opinion Distribution', fontsize=12, fontweight='bold')
+        ax_hist.grid(True, alpha=0.3, axis='y')
+        ax_hist.axvline(np.mean(opinions), color='red', linestyle='--', linewidth=2, label='Mean')
+        ax_hist.legend()
+
+        # Update metrics text
+        text_step.set_text(f'Step: {frame}/{steps}')
+        text_mean.set_text(f'Mean Opinion: {history["mean"][-1]:.3f}')
+        text_var.set_text(f'Variance: {history["variance"][-1]:.3f}')
+        text_polar.set_text(f'Polarization: {history["polarization"][-1]:.3f}')
+        text_consensus.set_text(f'Consensus: {history["consensus"][-1]:.3f}')
+
+        # Determine status
+        if history['variance'][-1] < 0.05:
+            status = "✓ Strong Consensus"
+            text_status.set_color('green')
+        elif history['polarization'][-1] > 0.3:
+            status = "⚠ Polarized"
+            text_status.set_color('red')
+        else:
+            status = "⟳ Converging..."
+            text_status.set_color('orange')
+        text_status.set_text(status)
+
+        return nodes, line_mean, line_var
+
+    # Create animation
+    anim = FuncAnimation(
+        fig,
+        animate,
+        init_func=init,
+        frames=steps + 1,
+        interval=interval,
+        blit=False,
+        repeat=False
+    )
+
+    return anim
+
+
+def create_comparison_animation(steps=100, interval=150, figsize=(18, 10)):
+    """
+    Create side-by-side comparison of different network types.
+
+    Parameters:
+        steps: Number of simulation steps
+        interval: Milliseconds between frames
+        figsize: Figure size
+    """
+
+    # Create models for different network types
+    network_types = ['scale_free', 'small_world', 'random']
+    models = {}
+
+    for net_type in network_types:
+        models[net_type] = InformationCascadeModel(
+            n_agents=80,
+            network_type=net_type,
+            avg_degree=4,
+            influence_rate=0.3,
+            stubbornness_mean=0.1,
+            n_influencers=2,
+            influencer_opinions=[0.1, 0.9],
+            seed=42
+        )
+
+    # Setup figure
+    fig, axes = plt.subplots(2, 3, figsize=figsize)
+    fig.suptitle('Opinion Cascade Comparison: Different Network Types',
+                 fontsize=16, fontweight='bold', y=0.98)
+
+    # Network visualizations (top row)
+    network_elements = {}
+    for idx, (net_type, model) in enumerate(models.items()):
+        ax = axes[0, idx]
+
+        opinions = [agent.opinion for agent in model.agents]
+        influencer_nodes = [agent.pos for agent in model.agents if agent.is_influencer]
+
+        nx.draw_networkx_edges(model.G, model.pos_layout, alpha=0.2, ax=ax)
+        nodes = nx.draw_networkx_nodes(
+            model.G,
+            model.pos_layout,
+            node_color=opinions,
+            cmap='RdYlBu',
+            vmin=0,
+            vmax=1,
+            node_size=80,
+            ax=ax
+        )
+
+        if influencer_nodes:
+            nx.draw_networkx_nodes(
+                model.G,
+                model.pos_layout,
+                nodelist=influencer_nodes,
+                node_color='black',
+                node_size=150,
+                node_shape='s',
+                ax=ax
+            )
+
+        ax.set_title(f'{net_type.replace("_", " ").title()}', fontsize=12, fontweight='bold')
+        ax.axis('off')
+
+        network_elements[net_type] = nodes
+
+    # Time series plots (bottom row)
+    lines = {}
+    for idx, (net_type, model) in enumerate(models.items()):
+        ax = axes[1, idx]
+
+        line, = ax.plot([], [], 'b-', linewidth=2, label='Mean')
+        ax.fill_between([], [], [], alpha=0.3)
+        ax.set_xlim(0, steps)
+        ax.set_ylim(0, 1)
+        ax.set_xlabel('Time Step', fontsize=10)
+        ax.set_ylabel('Opinion', fontsize=10)
+        ax.legend(loc='upper right', fontsize=9)
+        ax.grid(True, alpha=0.3)
+
+        lines[net_type] = {'line': line, 'ax': ax, 'history': []}
+
+    plt.tight_layout()
+
+    def init():
+        """Initialize animation."""
+        return list(network_elements.values())
+
+    def animate(frame):
+        """Update animation frame."""
+        # Update all models
+        if frame > 0:
+            for model in models.values():
+                model.step()
+
+        # Update visualizations
+        for net_type, model in models.items():
+            # Update network colors
+            opinions = [agent.opinion for agent in model.agents]
+            network_elements[net_type].set_array(np.array(opinions))
+
+            # Update time series
+            data = model.datacollector.get_model_vars_dataframe()
+            mean_opinions = data['Mean Opinion'].tolist()
+            std_opinions = data['Opinion Std'].tolist()
+
+            lines[net_type]['history'] = mean_opinions
+            steps_so_far = list(range(len(mean_opinions)))
+
+            lines[net_type]['line'].set_data(steps_so_far, mean_opinions)
+
+            # Update fill_between
+            ax = lines[net_type]['ax']
+            ax.collections.clear()  # Clear previous fills
+
+            if len(mean_opinions) > 0:
+                upper = np.array(mean_opinions) + np.array(std_opinions)
+                lower = np.array(mean_opinions) - np.array(std_opinions)
+                ax.fill_between(steps_so_far, lower, upper, alpha=0.3, color='blue')
+
+        return list(network_elements.values())
+
+    # Create animation
+    anim = FuncAnimation(
+        fig,
+        animate,
+        init_func=init,
+        frames=steps + 1,
+        interval=interval,
+        blit=False,
+        repeat=False
+    )
+
+    return anim
+
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+print("="*70)
+print("Information Cascades - ANIMATED VISUALIZATION")
+print("="*70)
+print()
+
+# Animation 1: Single network detailed view
+print("Creating Animation 1: Detailed Opinion Cascade...")
+print("Network: Scale-Free with Polarized Influencers")
+print()
+
+model1 = InformationCascadeModel(
+    n_agents=100,
+    network_type='scale_free',
+    avg_degree=4,
+    influence_rate=0.3,
+    stubbornness_mean=0.1,
+    n_influencers=2,
+    influencer_opinions=[0.1, 0.9],
+    seed=42
+)
+
+anim1 = create_animation(model1, steps=100, interval=100, figsize=(16, 6))
+
+# Save or display animation
+print("✓ Animation 1 created!")
+print("  Displaying animation...")
+plt.show()
+
+print()
+print("-"*70)
+print()
+
+# Animation 2: Network comparison
+print("Creating Animation 2: Network Type Comparison...")
+print("Comparing: Scale-Free, Small-World, and Random networks")
+print()
+
+anim2 = create_comparison_animation(steps=100, interval=150, figsize=(18, 10))
+
+print("✓ Animation 2 created!")
+print("  Displaying animation...")
+plt.show()
+
+print()
+print("="*70)
+print("ANIMATION TIPS:")
+print("="*70)
+print("1. Watch how opinions spread from influencers (black squares)")
+print("2. Red/Blue = Polarized opinions, Yellow = Middle ground")
+print("3. Observe consensus (low variance) vs polarization (high variance)")
+print("4. Scale-free networks: Faster cascades through hubs")
+print("5. Small-world: Balanced local and global spread")
+print("6. Random: Uniform diffusion pattern")
+print()
+print("To save animations:")
+print("  anim.save('opinion_cascade.mp4', writer='ffmpeg', fps=10)")
+print("  anim.save('opinion_cascade.gif', writer='pillow', fps=10)")
+print()
+print("="*70)
+
+# Optional: Create a simple pulse animation showing cascade waves
+print()
+print("Creating Animation 3: Cascade Wave Visualization...")
+print()
+
+def create_cascade_wave_animation(steps=50, interval=200):
+    """Create animation showing cascade waves spreading."""
+
+    model = InformationCascadeModel(
+        n_agents=100,
+        network_type='scale_free',
+        avg_degree=4,
+        influence_rate=0.5,  # Faster spread
+        stubbornness_mean=0.05,  # Low resistance
+        n_influencers=1,
+        influencer_opinions=[1.0],
+        seed=42
+    )
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    influencer_node = [agent.pos for agent in model.agents if agent.is_influencer][0]
+
+    def animate(frame):
+        if frame > 0:
+            model.step()
+
+        ax.clear()
+
+        opinions = [agent.opinion for agent in model.agents]
+
+        # Draw edges
+        nx.draw_networkx_edges(model.G, model.pos_layout, alpha=0.1, ax=ax)
+
+        # Draw nodes with size based on opinion change
+        node_sizes = [50 + 200 * op for op in opinions]
+        nx.draw_networkx_nodes(
+            model.G,
+            model.pos_layout,
+            node_color=opinions,
+            cmap='YlOrRd',
+            vmin=0,
+            vmax=1,
+            node_size=node_sizes,
+            ax=ax
+        )
+
+        # Highlight influencer
+        nx.draw_networkx_nodes(
+            model.G,
+            model.pos_layout,
+            nodelist=[influencer_node],
+            node_color='red',
+            node_size=400,
+            node_shape='*',
+            ax=ax
+        )
+
+        ax.set_title(f'Cascade Wave - Step {frame}\nRed Star = Influencer, Size = Opinion Strength',
+                    fontsize=14, fontweight='bold')
+        ax.axis('off')
+
+    anim = FuncAnimation(fig, animate, frames=steps, interval=interval, blit=False, repeat=False)
+    return anim
+
+anim3 = create_cascade_wave_animation(steps=50, interval=200)
+print("✓ Animation 3 created!")
+print("  Watch the cascade wave spread from the influencer (red star)!")
+plt.show()
+
+print()
+print("="*70)
+print("All animations complete! 🎉")
+print("="*70)
+```
