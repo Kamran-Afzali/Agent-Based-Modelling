@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2026-04-17" />
+<meta name="date" content="2026-05-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -423,6 +423,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.8" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#information-cascades-and-tipping-points"><i class="fa fa-check"></i><b>15.8</b> Information Cascades and Tipping Points</a></li>
 <li class="chapter" data-level="15.9" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#implications-for-social-systems"><i class="fa fa-check"></i><b>15.9</b> Implications for Social Systems</a></li>
 <li class="chapter" data-level="15.10" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#extensions-and-future-directions-2"><i class="fa fa-check"></i><b>15.10</b> Extensions and Future Directions</a></li>
+<li class="chapter" data-level="15.11" data-path="opinion-dynamics-and-information-cascades.html"><a href="opinion-dynamics-and-information-cascades.html#code"><i class="fa fa-check"></i><b>15.11</b> Code</a></li>
 </ul></li>
 <li class="chapter" data-level="16" data-path="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><a href="strategic-interactions-the-evolution-of-cooperation-in-the-prisoners-dilemma.html"><i class="fa fa-check"></i><b>16</b> Strategic Interactions: The Evolution of Cooperation in the Prisoner’s Dilemma</a>
 <ul>
@@ -682,6 +683,618 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Incorporating information quality would distinguish true beliefs from misinformation. Agents might receive signals of varying accuracy, with influence depending not just on neighbor opinions but on perceived reliability and expertise. This extension could model how false information spreads and how correction mechanisms might contain or reverse misleading cascades.</p>
 <p>Strategic behavior represents another frontier. If agents anticipate how their expressed opinions influence others, they might strategically misrepresent their true beliefs to shift collective outcomes. Such strategic dynamics introduce game-theoretic complexity that could dramatically alter equilibrium opinion distributions.</p>
 <p>The opinion dynamics model thus serves multiple purposes—as a tool for understanding real social phenomena, as a platform for exploring intervention strategies, and as a foundation for increasingly sophisticated models of collective belief formation. Like the random walk and Schelling models before it, it demonstrates how agent-based approaches can illuminate complex social dynamics through careful attention to individual behavior, interaction structures, and emergent collective patterns. The journey from particles wandering randomly to agents coordinating opinions across networks reveals the expanding scope and deepening insight that agent-based modeling brings to social science.</p>
+</div>
+<div id="code" class="section level2 hasAnchor" number="15.11">
+<h2><span class="header-section-number">15.11</span> Code<a href="opinion-dynamics-and-information-cascades.html#code" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb128"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb128-1"><a href="opinion-dynamics-and-information-cascades.html#cb128-1" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb128-2"><a href="opinion-dynamics-and-information-cascades.html#cb128-2" tabindex="-1"></a><span class="co">Information Cascades: Opinion Dynamics - ANIMATED VISUALIZATION</span></span>
+<span id="cb128-3"><a href="opinion-dynamics-and-information-cascades.html#cb128-3" tabindex="-1"></a><span class="co">Dynamic animation showing opinion spread in real-time across the network</span></span>
+<span id="cb128-4"><a href="opinion-dynamics-and-information-cascades.html#cb128-4" tabindex="-1"></a><span class="co">Compatible with Mesa 3.x API and Google Colab</span></span>
+<span id="cb128-5"><a href="opinion-dynamics-and-information-cascades.html#cb128-5" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb128-6"><a href="opinion-dynamics-and-information-cascades.html#cb128-6" tabindex="-1"></a></span>
+<span id="cb128-7"><a href="opinion-dynamics-and-information-cascades.html#cb128-7" tabindex="-1"></a><span class="co"># Install required packages</span></span>
+<span id="cb128-8"><a href="opinion-dynamics-and-information-cascades.html#cb128-8" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb128-9"><a href="opinion-dynamics-and-information-cascades.html#cb128-9" tabindex="-1"></a>    <span class="im">import</span> mesa</span>
+<span id="cb128-10"><a href="opinion-dynamics-and-information-cascades.html#cb128-10" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb128-11"><a href="opinion-dynamics-and-information-cascades.html#cb128-11" tabindex="-1"></a>    <span class="im">import</span> subprocess</span>
+<span id="cb128-12"><a href="opinion-dynamics-and-information-cascades.html#cb128-12" tabindex="-1"></a>    <span class="im">import</span> sys</span>
+<span id="cb128-13"><a href="opinion-dynamics-and-information-cascades.html#cb128-13" tabindex="-1"></a>    subprocess.check_call([sys.executable, <span class="st">&quot;-m&quot;</span>, <span class="st">&quot;pip&quot;</span>, <span class="st">&quot;install&quot;</span>, <span class="st">&quot;-q&quot;</span>, <span class="st">&quot;mesa&quot;</span>, <span class="st">&quot;networkx&quot;</span>])</span>
+<span id="cb128-14"><a href="opinion-dynamics-and-information-cascades.html#cb128-14" tabindex="-1"></a>    <span class="im">import</span> mesa</span>
+<span id="cb128-15"><a href="opinion-dynamics-and-information-cascades.html#cb128-15" tabindex="-1"></a></span>
+<span id="cb128-16"><a href="opinion-dynamics-and-information-cascades.html#cb128-16" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb128-17"><a href="opinion-dynamics-and-information-cascades.html#cb128-17" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb128-18"><a href="opinion-dynamics-and-information-cascades.html#cb128-18" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb128-19"><a href="opinion-dynamics-and-information-cascades.html#cb128-19" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Agent, Model</span>
+<span id="cb128-20"><a href="opinion-dynamics-and-information-cascades.html#cb128-20" tabindex="-1"></a><span class="im">from</span> mesa.space <span class="im">import</span> NetworkGrid</span>
+<span id="cb128-21"><a href="opinion-dynamics-and-information-cascades.html#cb128-21" tabindex="-1"></a><span class="im">from</span> mesa.datacollection <span class="im">import</span> DataCollector</span>
+<span id="cb128-22"><a href="opinion-dynamics-and-information-cascades.html#cb128-22" tabindex="-1"></a><span class="im">from</span> matplotlib.animation <span class="im">import</span> FuncAnimation</span>
+<span id="cb128-23"><a href="opinion-dynamics-and-information-cascades.html#cb128-23" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML</span>
+<span id="cb128-24"><a href="opinion-dynamics-and-information-cascades.html#cb128-24" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb128-25"><a href="opinion-dynamics-and-information-cascades.html#cb128-25" tabindex="-1"></a>warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span>
+<span id="cb128-26"><a href="opinion-dynamics-and-information-cascades.html#cb128-26" tabindex="-1"></a></span>
+<span id="cb128-27"><a href="opinion-dynamics-and-information-cascades.html#cb128-27" tabindex="-1"></a></span>
+<span id="cb128-28"><a href="opinion-dynamics-and-information-cascades.html#cb128-28" tabindex="-1"></a><span class="kw">class</span> OpinionAgent(Agent):</span>
+<span id="cb128-29"><a href="opinion-dynamics-and-information-cascades.html#cb128-29" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Agent with opinion that updates based on social influence.&quot;&quot;&quot;</span></span>
+<span id="cb128-30"><a href="opinion-dynamics-and-information-cascades.html#cb128-30" tabindex="-1"></a></span>
+<span id="cb128-31"><a href="opinion-dynamics-and-information-cascades.html#cb128-31" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model, initial_opinion<span class="op">=</span><span class="va">None</span>, influence_rate<span class="op">=</span><span class="fl">0.3</span>, stubbornness<span class="op">=</span><span class="fl">0.0</span>):</span>
+<span id="cb128-32"><a href="opinion-dynamics-and-information-cascades.html#cb128-32" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb128-33"><a href="opinion-dynamics-and-information-cascades.html#cb128-33" tabindex="-1"></a>        <span class="va">self</span>.opinion <span class="op">=</span> initial_opinion <span class="cf">if</span> initial_opinion <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="va">self</span>.random.uniform(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-34"><a href="opinion-dynamics-and-information-cascades.html#cb128-34" tabindex="-1"></a>        <span class="va">self</span>.initial_opinion <span class="op">=</span> <span class="va">self</span>.opinion</span>
+<span id="cb128-35"><a href="opinion-dynamics-and-information-cascades.html#cb128-35" tabindex="-1"></a>        <span class="va">self</span>.influence_rate <span class="op">=</span> influence_rate</span>
+<span id="cb128-36"><a href="opinion-dynamics-and-information-cascades.html#cb128-36" tabindex="-1"></a>        <span class="va">self</span>.stubbornness <span class="op">=</span> stubbornness</span>
+<span id="cb128-37"><a href="opinion-dynamics-and-information-cascades.html#cb128-37" tabindex="-1"></a>        <span class="va">self</span>.is_influencer <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb128-38"><a href="opinion-dynamics-and-information-cascades.html#cb128-38" tabindex="-1"></a></span>
+<span id="cb128-39"><a href="opinion-dynamics-and-information-cascades.html#cb128-39" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb128-40"><a href="opinion-dynamics-and-information-cascades.html#cb128-40" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Agent updates their opinion based on neighbors&#39; opinions.&quot;&quot;&quot;</span></span>
+<span id="cb128-41"><a href="opinion-dynamics-and-information-cascades.html#cb128-41" tabindex="-1"></a>        <span class="va">self</span>.update_opinion()</span>
+<span id="cb128-42"><a href="opinion-dynamics-and-information-cascades.html#cb128-42" tabindex="-1"></a></span>
+<span id="cb128-43"><a href="opinion-dynamics-and-information-cascades.html#cb128-43" tabindex="-1"></a>    <span class="kw">def</span> update_opinion(<span class="va">self</span>):</span>
+<span id="cb128-44"><a href="opinion-dynamics-and-information-cascades.html#cb128-44" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Update opinion based on neighbors&#39; average opinion.&quot;&quot;&quot;</span></span>
+<span id="cb128-45"><a href="opinion-dynamics-and-information-cascades.html#cb128-45" tabindex="-1"></a>        neighbors <span class="op">=</span> <span class="va">self</span>.model.grid.get_neighbors(<span class="va">self</span>.pos, include_center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb128-46"><a href="opinion-dynamics-and-information-cascades.html#cb128-46" tabindex="-1"></a></span>
+<span id="cb128-47"><a href="opinion-dynamics-and-information-cascades.html#cb128-47" tabindex="-1"></a>        <span class="cf">if</span> neighbors:</span>
+<span id="cb128-48"><a href="opinion-dynamics-and-information-cascades.html#cb128-48" tabindex="-1"></a>            neighbor_opinions <span class="op">=</span> [n.opinion <span class="cf">for</span> n <span class="kw">in</span> neighbors]</span>
+<span id="cb128-49"><a href="opinion-dynamics-and-information-cascades.html#cb128-49" tabindex="-1"></a>            avg_opinion <span class="op">=</span> np.mean(neighbor_opinions)</span>
+<span id="cb128-50"><a href="opinion-dynamics-and-information-cascades.html#cb128-50" tabindex="-1"></a></span>
+<span id="cb128-51"><a href="opinion-dynamics-and-information-cascades.html#cb128-51" tabindex="-1"></a>            effective_influence <span class="op">=</span> <span class="va">self</span>.influence_rate <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> <span class="va">self</span>.stubbornness)</span>
+<span id="cb128-52"><a href="opinion-dynamics-and-information-cascades.html#cb128-52" tabindex="-1"></a>            <span class="va">self</span>.opinion <span class="op">+=</span> effective_influence <span class="op">*</span> (avg_opinion <span class="op">-</span> <span class="va">self</span>.opinion)</span>
+<span id="cb128-53"><a href="opinion-dynamics-and-information-cascades.html#cb128-53" tabindex="-1"></a>            <span class="va">self</span>.opinion <span class="op">=</span> np.clip(<span class="va">self</span>.opinion, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-54"><a href="opinion-dynamics-and-information-cascades.html#cb128-54" tabindex="-1"></a></span>
+<span id="cb128-55"><a href="opinion-dynamics-and-information-cascades.html#cb128-55" tabindex="-1"></a></span>
+<span id="cb128-56"><a href="opinion-dynamics-and-information-cascades.html#cb128-56" tabindex="-1"></a><span class="kw">class</span> InfluencerAgent(OpinionAgent):</span>
+<span id="cb128-57"><a href="opinion-dynamics-and-information-cascades.html#cb128-57" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Opinion leader who influences others but doesn&#39;t change opinion.&quot;&quot;&quot;</span></span>
+<span id="cb128-58"><a href="opinion-dynamics-and-information-cascades.html#cb128-58" tabindex="-1"></a></span>
+<span id="cb128-59"><a href="opinion-dynamics-and-information-cascades.html#cb128-59" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model, initial_opinion, influence_rate<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb128-60"><a href="opinion-dynamics-and-information-cascades.html#cb128-60" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(model, initial_opinion, influence_rate, stubbornness<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb128-61"><a href="opinion-dynamics-and-information-cascades.html#cb128-61" tabindex="-1"></a>        <span class="va">self</span>.is_influencer <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb128-62"><a href="opinion-dynamics-and-information-cascades.html#cb128-62" tabindex="-1"></a></span>
+<span id="cb128-63"><a href="opinion-dynamics-and-information-cascades.html#cb128-63" tabindex="-1"></a>    <span class="kw">def</span> update_opinion(<span class="va">self</span>):</span>
+<span id="cb128-64"><a href="opinion-dynamics-and-information-cascades.html#cb128-64" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Influencers maintain fixed opinion.&quot;&quot;&quot;</span></span>
+<span id="cb128-65"><a href="opinion-dynamics-and-information-cascades.html#cb128-65" tabindex="-1"></a>        <span class="cf">pass</span></span>
+<span id="cb128-66"><a href="opinion-dynamics-and-information-cascades.html#cb128-66" tabindex="-1"></a></span>
+<span id="cb128-67"><a href="opinion-dynamics-and-information-cascades.html#cb128-67" tabindex="-1"></a></span>
+<span id="cb128-68"><a href="opinion-dynamics-and-information-cascades.html#cb128-68" tabindex="-1"></a><span class="kw">class</span> InformationCascadeModel(Model):</span>
+<span id="cb128-69"><a href="opinion-dynamics-and-information-cascades.html#cb128-69" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Model simulating information cascades on social networks.&quot;&quot;&quot;</span></span>
+<span id="cb128-70"><a href="opinion-dynamics-and-information-cascades.html#cb128-70" tabindex="-1"></a></span>
+<span id="cb128-71"><a href="opinion-dynamics-and-information-cascades.html#cb128-71" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,</span>
+<span id="cb128-72"><a href="opinion-dynamics-and-information-cascades.html#cb128-72" tabindex="-1"></a>                 n_agents<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb128-73"><a href="opinion-dynamics-and-information-cascades.html#cb128-73" tabindex="-1"></a>                 network_type<span class="op">=</span><span class="st">&#39;scale_free&#39;</span>,</span>
+<span id="cb128-74"><a href="opinion-dynamics-and-information-cascades.html#cb128-74" tabindex="-1"></a>                 avg_degree<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb128-75"><a href="opinion-dynamics-and-information-cascades.html#cb128-75" tabindex="-1"></a>                 influence_rate<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb128-76"><a href="opinion-dynamics-and-information-cascades.html#cb128-76" tabindex="-1"></a>                 stubbornness_mean<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb128-77"><a href="opinion-dynamics-and-information-cascades.html#cb128-77" tabindex="-1"></a>                 stubbornness_std<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb128-78"><a href="opinion-dynamics-and-information-cascades.html#cb128-78" tabindex="-1"></a>                 n_influencers<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb128-79"><a href="opinion-dynamics-and-information-cascades.html#cb128-79" tabindex="-1"></a>                 influencer_opinions<span class="op">=</span><span class="st">&#39;polarized&#39;</span>,</span>
+<span id="cb128-80"><a href="opinion-dynamics-and-information-cascades.html#cb128-80" tabindex="-1"></a>                 seed<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb128-81"><a href="opinion-dynamics-and-information-cascades.html#cb128-81" tabindex="-1"></a></span>
+<span id="cb128-82"><a href="opinion-dynamics-and-information-cascades.html#cb128-82" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(seed<span class="op">=</span>seed)</span>
+<span id="cb128-83"><a href="opinion-dynamics-and-information-cascades.html#cb128-83" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> n_agents</span>
+<span id="cb128-84"><a href="opinion-dynamics-and-information-cascades.html#cb128-84" tabindex="-1"></a>        <span class="va">self</span>.network_type <span class="op">=</span> network_type</span>
+<span id="cb128-85"><a href="opinion-dynamics-and-information-cascades.html#cb128-85" tabindex="-1"></a>        <span class="va">self</span>.avg_degree <span class="op">=</span> avg_degree</span>
+<span id="cb128-86"><a href="opinion-dynamics-and-information-cascades.html#cb128-86" tabindex="-1"></a>        <span class="va">self</span>.influence_rate <span class="op">=</span> influence_rate</span>
+<span id="cb128-87"><a href="opinion-dynamics-and-information-cascades.html#cb128-87" tabindex="-1"></a>        <span class="va">self</span>.n_influencers <span class="op">=</span> n_influencers</span>
+<span id="cb128-88"><a href="opinion-dynamics-and-information-cascades.html#cb128-88" tabindex="-1"></a></span>
+<span id="cb128-89"><a href="opinion-dynamics-and-information-cascades.html#cb128-89" tabindex="-1"></a>        <span class="co"># Create network</span></span>
+<span id="cb128-90"><a href="opinion-dynamics-and-information-cascades.html#cb128-90" tabindex="-1"></a>        <span class="va">self</span>.G <span class="op">=</span> <span class="va">self</span>._create_network(network_type, n_agents, avg_degree)</span>
+<span id="cb128-91"><a href="opinion-dynamics-and-information-cascades.html#cb128-91" tabindex="-1"></a>        <span class="va">self</span>.grid <span class="op">=</span> NetworkGrid(<span class="va">self</span>.G)</span>
+<span id="cb128-92"><a href="opinion-dynamics-and-information-cascades.html#cb128-92" tabindex="-1"></a></span>
+<span id="cb128-93"><a href="opinion-dynamics-and-information-cascades.html#cb128-93" tabindex="-1"></a>        <span class="co"># Store network layout for consistent animation</span></span>
+<span id="cb128-94"><a href="opinion-dynamics-and-information-cascades.html#cb128-94" tabindex="-1"></a>        <span class="va">self</span>.pos_layout <span class="op">=</span> nx.spring_layout(<span class="va">self</span>.G, seed<span class="op">=</span><span class="dv">42</span>, k<span class="op">=</span><span class="fl">0.5</span>, iterations<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb128-95"><a href="opinion-dynamics-and-information-cascades.html#cb128-95" tabindex="-1"></a></span>
+<span id="cb128-96"><a href="opinion-dynamics-and-information-cascades.html#cb128-96" tabindex="-1"></a>        <span class="co"># Create regular agents</span></span>
+<span id="cb128-97"><a href="opinion-dynamics-and-information-cascades.html#cb128-97" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_agents <span class="op">-</span> n_influencers):</span>
+<span id="cb128-98"><a href="opinion-dynamics-and-information-cascades.html#cb128-98" tabindex="-1"></a>            stubbornness <span class="op">=</span> np.clip(<span class="va">self</span>.random.gauss(stubbornness_mean, stubbornness_std), <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-99"><a href="opinion-dynamics-and-information-cascades.html#cb128-99" tabindex="-1"></a>            agent <span class="op">=</span> OpinionAgent(</span>
+<span id="cb128-100"><a href="opinion-dynamics-and-information-cascades.html#cb128-100" tabindex="-1"></a>                model<span class="op">=</span><span class="va">self</span>,</span>
+<span id="cb128-101"><a href="opinion-dynamics-and-information-cascades.html#cb128-101" tabindex="-1"></a>                influence_rate<span class="op">=</span>influence_rate,</span>
+<span id="cb128-102"><a href="opinion-dynamics-and-information-cascades.html#cb128-102" tabindex="-1"></a>                stubbornness<span class="op">=</span>stubbornness</span>
+<span id="cb128-103"><a href="opinion-dynamics-and-information-cascades.html#cb128-103" tabindex="-1"></a>            )</span>
+<span id="cb128-104"><a href="opinion-dynamics-and-information-cascades.html#cb128-104" tabindex="-1"></a>            <span class="va">self</span>.grid.place_agent(agent, i)</span>
+<span id="cb128-105"><a href="opinion-dynamics-and-information-cascades.html#cb128-105" tabindex="-1"></a></span>
+<span id="cb128-106"><a href="opinion-dynamics-and-information-cascades.html#cb128-106" tabindex="-1"></a>        <span class="co"># Create influencer agents</span></span>
+<span id="cb128-107"><a href="opinion-dynamics-and-information-cascades.html#cb128-107" tabindex="-1"></a>        <span class="cf">if</span> n_influencers <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb128-108"><a href="opinion-dynamics-and-information-cascades.html#cb128-108" tabindex="-1"></a>            <span class="cf">if</span> influencer_opinions <span class="op">==</span> <span class="st">&#39;polarized&#39;</span>:</span>
+<span id="cb128-109"><a href="opinion-dynamics-and-information-cascades.html#cb128-109" tabindex="-1"></a>                opinions <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, n_influencers)</span>
+<span id="cb128-110"><a href="opinion-dynamics-and-information-cascades.html#cb128-110" tabindex="-1"></a>            <span class="cf">elif</span> <span class="bu">isinstance</span>(influencer_opinions, (<span class="bu">list</span>, <span class="bu">tuple</span>, np.ndarray)):</span>
+<span id="cb128-111"><a href="opinion-dynamics-and-information-cascades.html#cb128-111" tabindex="-1"></a>                opinions <span class="op">=</span> influencer_opinions</span>
+<span id="cb128-112"><a href="opinion-dynamics-and-information-cascades.html#cb128-112" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb128-113"><a href="opinion-dynamics-and-information-cascades.html#cb128-113" tabindex="-1"></a>                opinions <span class="op">=</span> [<span class="fl">0.5</span>] <span class="op">*</span> n_influencers</span>
+<span id="cb128-114"><a href="opinion-dynamics-and-information-cascades.html#cb128-114" tabindex="-1"></a></span>
+<span id="cb128-115"><a href="opinion-dynamics-and-information-cascades.html#cb128-115" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_influencers):</span>
+<span id="cb128-116"><a href="opinion-dynamics-and-information-cascades.html#cb128-116" tabindex="-1"></a>                node_id <span class="op">=</span> n_agents <span class="op">-</span> n_influencers <span class="op">+</span> i</span>
+<span id="cb128-117"><a href="opinion-dynamics-and-information-cascades.html#cb128-117" tabindex="-1"></a>                influencer <span class="op">=</span> InfluencerAgent(</span>
+<span id="cb128-118"><a href="opinion-dynamics-and-information-cascades.html#cb128-118" tabindex="-1"></a>                    model<span class="op">=</span><span class="va">self</span>,</span>
+<span id="cb128-119"><a href="opinion-dynamics-and-information-cascades.html#cb128-119" tabindex="-1"></a>                    initial_opinion<span class="op">=</span>opinions[i],</span>
+<span id="cb128-120"><a href="opinion-dynamics-and-information-cascades.html#cb128-120" tabindex="-1"></a>                    influence_rate<span class="op">=</span>influence_rate</span>
+<span id="cb128-121"><a href="opinion-dynamics-and-information-cascades.html#cb128-121" tabindex="-1"></a>                )</span>
+<span id="cb128-122"><a href="opinion-dynamics-and-information-cascades.html#cb128-122" tabindex="-1"></a>                <span class="va">self</span>.grid.place_agent(influencer, node_id)</span>
+<span id="cb128-123"><a href="opinion-dynamics-and-information-cascades.html#cb128-123" tabindex="-1"></a></span>
+<span id="cb128-124"><a href="opinion-dynamics-and-information-cascades.html#cb128-124" tabindex="-1"></a>        <span class="co"># Data collection</span></span>
+<span id="cb128-125"><a href="opinion-dynamics-and-information-cascades.html#cb128-125" tabindex="-1"></a>        <span class="va">self</span>.datacollector <span class="op">=</span> DataCollector(</span>
+<span id="cb128-126"><a href="opinion-dynamics-and-information-cascades.html#cb128-126" tabindex="-1"></a>            model_reporters<span class="op">=</span>{</span>
+<span id="cb128-127"><a href="opinion-dynamics-and-information-cascades.html#cb128-127" tabindex="-1"></a>                <span class="st">&quot;Mean Opinion&quot;</span>: <span class="kw">lambda</span> m: np.mean([a.opinion <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb128-128"><a href="opinion-dynamics-and-information-cascades.html#cb128-128" tabindex="-1"></a>                <span class="st">&quot;Opinion Variance&quot;</span>: <span class="kw">lambda</span> m: np.var([a.opinion <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb128-129"><a href="opinion-dynamics-and-information-cascades.html#cb128-129" tabindex="-1"></a>                <span class="st">&quot;Polarization&quot;</span>: <span class="kw">lambda</span> m: np.mean([<span class="bu">abs</span>(a.opinion <span class="op">-</span> <span class="fl">0.5</span>) <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb128-130"><a href="opinion-dynamics-and-information-cascades.html#cb128-130" tabindex="-1"></a>                <span class="st">&quot;Consensus&quot;</span>: <span class="kw">lambda</span> m: <span class="dv">1</span> <span class="op">-</span> np.var([a.opinion <span class="cf">for</span> a <span class="kw">in</span> m.agents]),</span>
+<span id="cb128-131"><a href="opinion-dynamics-and-information-cascades.html#cb128-131" tabindex="-1"></a>            }</span>
+<span id="cb128-132"><a href="opinion-dynamics-and-information-cascades.html#cb128-132" tabindex="-1"></a>        )</span>
+<span id="cb128-133"><a href="opinion-dynamics-and-information-cascades.html#cb128-133" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb128-134"><a href="opinion-dynamics-and-information-cascades.html#cb128-134" tabindex="-1"></a></span>
+<span id="cb128-135"><a href="opinion-dynamics-and-information-cascades.html#cb128-135" tabindex="-1"></a>    <span class="kw">def</span> _create_network(<span class="va">self</span>, network_type, n, avg_degree):</span>
+<span id="cb128-136"><a href="opinion-dynamics-and-information-cascades.html#cb128-136" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Create network topology.&quot;&quot;&quot;</span></span>
+<span id="cb128-137"><a href="opinion-dynamics-and-information-cascades.html#cb128-137" tabindex="-1"></a>        <span class="cf">if</span> network_type <span class="op">==</span> <span class="st">&#39;scale_free&#39;</span>:</span>
+<span id="cb128-138"><a href="opinion-dynamics-and-information-cascades.html#cb128-138" tabindex="-1"></a>            m <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, avg_degree <span class="op">//</span> <span class="dv">2</span>)</span>
+<span id="cb128-139"><a href="opinion-dynamics-and-information-cascades.html#cb128-139" tabindex="-1"></a>            G <span class="op">=</span> nx.barabasi_albert_graph(n, m, seed<span class="op">=</span><span class="va">self</span>.random.randint(<span class="dv">0</span>, <span class="dv">1000000</span>))</span>
+<span id="cb128-140"><a href="opinion-dynamics-and-information-cascades.html#cb128-140" tabindex="-1"></a>        <span class="cf">elif</span> network_type <span class="op">==</span> <span class="st">&#39;small_world&#39;</span>:</span>
+<span id="cb128-141"><a href="opinion-dynamics-and-information-cascades.html#cb128-141" tabindex="-1"></a>            k <span class="op">=</span> avg_degree</span>
+<span id="cb128-142"><a href="opinion-dynamics-and-information-cascades.html#cb128-142" tabindex="-1"></a>            p <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb128-143"><a href="opinion-dynamics-and-information-cascades.html#cb128-143" tabindex="-1"></a>            G <span class="op">=</span> nx.watts_strogatz_graph(n, k, p, seed<span class="op">=</span><span class="va">self</span>.random.randint(<span class="dv">0</span>, <span class="dv">1000000</span>))</span>
+<span id="cb128-144"><a href="opinion-dynamics-and-information-cascades.html#cb128-144" tabindex="-1"></a>        <span class="cf">elif</span> network_type <span class="op">==</span> <span class="st">&#39;random&#39;</span>:</span>
+<span id="cb128-145"><a href="opinion-dynamics-and-information-cascades.html#cb128-145" tabindex="-1"></a>            p <span class="op">=</span> avg_degree <span class="op">/</span> (n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb128-146"><a href="opinion-dynamics-and-information-cascades.html#cb128-146" tabindex="-1"></a>            G <span class="op">=</span> nx.erdos_renyi_graph(n, p, seed<span class="op">=</span><span class="va">self</span>.random.randint(<span class="dv">0</span>, <span class="dv">1000000</span>))</span>
+<span id="cb128-147"><a href="opinion-dynamics-and-information-cascades.html#cb128-147" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb128-148"><a href="opinion-dynamics-and-information-cascades.html#cb128-148" tabindex="-1"></a>            m <span class="op">=</span> <span class="bu">max</span>(<span class="dv">1</span>, avg_degree <span class="op">//</span> <span class="dv">2</span>)</span>
+<span id="cb128-149"><a href="opinion-dynamics-and-information-cascades.html#cb128-149" tabindex="-1"></a>            G <span class="op">=</span> nx.barabasi_albert_graph(n, m, seed<span class="op">=</span><span class="va">self</span>.random.randint(<span class="dv">0</span>, <span class="dv">1000000</span>))</span>
+<span id="cb128-150"><a href="opinion-dynamics-and-information-cascades.html#cb128-150" tabindex="-1"></a>        <span class="cf">return</span> G</span>
+<span id="cb128-151"><a href="opinion-dynamics-and-information-cascades.html#cb128-151" tabindex="-1"></a></span>
+<span id="cb128-152"><a href="opinion-dynamics-and-information-cascades.html#cb128-152" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb128-153"><a href="opinion-dynamics-and-information-cascades.html#cb128-153" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Advance model by one step.&quot;&quot;&quot;</span></span>
+<span id="cb128-154"><a href="opinion-dynamics-and-information-cascades.html#cb128-154" tabindex="-1"></a>        <span class="va">self</span>.agents.shuffle_do(<span class="st">&quot;step&quot;</span>)</span>
+<span id="cb128-155"><a href="opinion-dynamics-and-information-cascades.html#cb128-155" tabindex="-1"></a>        <span class="va">self</span>.datacollector.collect(<span class="va">self</span>)</span>
+<span id="cb128-156"><a href="opinion-dynamics-and-information-cascades.html#cb128-156" tabindex="-1"></a></span>
+<span id="cb128-157"><a href="opinion-dynamics-and-information-cascades.html#cb128-157" tabindex="-1"></a></span>
+<span id="cb128-158"><a href="opinion-dynamics-and-information-cascades.html#cb128-158" tabindex="-1"></a><span class="kw">def</span> create_animation(model, steps<span class="op">=</span><span class="dv">100</span>, interval<span class="op">=</span><span class="dv">100</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>)):</span>
+<span id="cb128-159"><a href="opinion-dynamics-and-information-cascades.html#cb128-159" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb128-160"><a href="opinion-dynamics-and-information-cascades.html#cb128-160" tabindex="-1"></a><span class="co">    Create animated visualization of opinion dynamics.</span></span>
+<span id="cb128-161"><a href="opinion-dynamics-and-information-cascades.html#cb128-161" tabindex="-1"></a></span>
+<span id="cb128-162"><a href="opinion-dynamics-and-information-cascades.html#cb128-162" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb128-163"><a href="opinion-dynamics-and-information-cascades.html#cb128-163" tabindex="-1"></a><span class="co">        model: InformationCascadeModel instance</span></span>
+<span id="cb128-164"><a href="opinion-dynamics-and-information-cascades.html#cb128-164" tabindex="-1"></a><span class="co">        steps: Number of simulation steps</span></span>
+<span id="cb128-165"><a href="opinion-dynamics-and-information-cascades.html#cb128-165" tabindex="-1"></a><span class="co">        interval: Milliseconds between frames</span></span>
+<span id="cb128-166"><a href="opinion-dynamics-and-information-cascades.html#cb128-166" tabindex="-1"></a><span class="co">        figsize: Figure size</span></span>
+<span id="cb128-167"><a href="opinion-dynamics-and-information-cascades.html#cb128-167" tabindex="-1"></a></span>
+<span id="cb128-168"><a href="opinion-dynamics-and-information-cascades.html#cb128-168" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb128-169"><a href="opinion-dynamics-and-information-cascades.html#cb128-169" tabindex="-1"></a><span class="co">        animation: FuncAnimation object</span></span>
+<span id="cb128-170"><a href="opinion-dynamics-and-information-cascades.html#cb128-170" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb128-171"><a href="opinion-dynamics-and-information-cascades.html#cb128-171" tabindex="-1"></a></span>
+<span id="cb128-172"><a href="opinion-dynamics-and-information-cascades.html#cb128-172" tabindex="-1"></a>    <span class="co"># Setup figure with subplots</span></span>
+<span id="cb128-173"><a href="opinion-dynamics-and-information-cascades.html#cb128-173" tabindex="-1"></a>    fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>figsize)</span>
+<span id="cb128-174"><a href="opinion-dynamics-and-information-cascades.html#cb128-174" tabindex="-1"></a>    gs <span class="op">=</span> fig.add_gridspec(<span class="dv">2</span>, <span class="dv">3</span>, hspace<span class="op">=</span><span class="fl">0.3</span>, wspace<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb128-175"><a href="opinion-dynamics-and-information-cascades.html#cb128-175" tabindex="-1"></a></span>
+<span id="cb128-176"><a href="opinion-dynamics-and-information-cascades.html#cb128-176" tabindex="-1"></a>    ax_network <span class="op">=</span> fig.add_subplot(gs[:, <span class="dv">0</span>])  <span class="co"># Network visualization (left, full height)</span></span>
+<span id="cb128-177"><a href="opinion-dynamics-and-information-cascades.html#cb128-177" tabindex="-1"></a>    ax_time <span class="op">=</span> fig.add_subplot(gs[<span class="dv">0</span>, <span class="dv">1</span>:])     <span class="co"># Time series (top right)</span></span>
+<span id="cb128-178"><a href="opinion-dynamics-and-information-cascades.html#cb128-178" tabindex="-1"></a>    ax_hist <span class="op">=</span> fig.add_subplot(gs[<span class="dv">1</span>, <span class="dv">1</span>])      <span class="co"># Histogram (bottom left)</span></span>
+<span id="cb128-179"><a href="opinion-dynamics-and-information-cascades.html#cb128-179" tabindex="-1"></a>    ax_metrics <span class="op">=</span> fig.add_subplot(gs[<span class="dv">1</span>, <span class="dv">2</span>])   <span class="co"># Metrics (bottom right)</span></span>
+<span id="cb128-180"><a href="opinion-dynamics-and-information-cascades.html#cb128-180" tabindex="-1"></a></span>
+<span id="cb128-181"><a href="opinion-dynamics-and-information-cascades.html#cb128-181" tabindex="-1"></a>    <span class="co"># Store data for plotting</span></span>
+<span id="cb128-182"><a href="opinion-dynamics-and-information-cascades.html#cb128-182" tabindex="-1"></a>    history <span class="op">=</span> {</span>
+<span id="cb128-183"><a href="opinion-dynamics-and-information-cascades.html#cb128-183" tabindex="-1"></a>        <span class="st">&#39;mean&#39;</span>: [],</span>
+<span id="cb128-184"><a href="opinion-dynamics-and-information-cascades.html#cb128-184" tabindex="-1"></a>        <span class="st">&#39;variance&#39;</span>: [],</span>
+<span id="cb128-185"><a href="opinion-dynamics-and-information-cascades.html#cb128-185" tabindex="-1"></a>        <span class="st">&#39;polarization&#39;</span>: [],</span>
+<span id="cb128-186"><a href="opinion-dynamics-and-information-cascades.html#cb128-186" tabindex="-1"></a>        <span class="st">&#39;consensus&#39;</span>: []</span>
+<span id="cb128-187"><a href="opinion-dynamics-and-information-cascades.html#cb128-187" tabindex="-1"></a>    }</span>
+<span id="cb128-188"><a href="opinion-dynamics-and-information-cascades.html#cb128-188" tabindex="-1"></a></span>
+<span id="cb128-189"><a href="opinion-dynamics-and-information-cascades.html#cb128-189" tabindex="-1"></a>    <span class="co"># Get initial opinions</span></span>
+<span id="cb128-190"><a href="opinion-dynamics-and-information-cascades.html#cb128-190" tabindex="-1"></a>    opinions <span class="op">=</span> [agent.opinion <span class="cf">for</span> agent <span class="kw">in</span> model.agents]</span>
+<span id="cb128-191"><a href="opinion-dynamics-and-information-cascades.html#cb128-191" tabindex="-1"></a>    influencer_nodes <span class="op">=</span> [agent.pos <span class="cf">for</span> agent <span class="kw">in</span> model.agents <span class="cf">if</span> agent.is_influencer]</span>
+<span id="cb128-192"><a href="opinion-dynamics-and-information-cascades.html#cb128-192" tabindex="-1"></a></span>
+<span id="cb128-193"><a href="opinion-dynamics-and-information-cascades.html#cb128-193" tabindex="-1"></a>    <span class="co"># Network plot elements</span></span>
+<span id="cb128-194"><a href="opinion-dynamics-and-information-cascades.html#cb128-194" tabindex="-1"></a>    edges <span class="op">=</span> nx.draw_networkx_edges(model.G, model.pos_layout, alpha<span class="op">=</span><span class="fl">0.2</span>, ax<span class="op">=</span>ax_network)</span>
+<span id="cb128-195"><a href="opinion-dynamics-and-information-cascades.html#cb128-195" tabindex="-1"></a>    nodes <span class="op">=</span> nx.draw_networkx_nodes(</span>
+<span id="cb128-196"><a href="opinion-dynamics-and-information-cascades.html#cb128-196" tabindex="-1"></a>        model.G,</span>
+<span id="cb128-197"><a href="opinion-dynamics-and-information-cascades.html#cb128-197" tabindex="-1"></a>        model.pos_layout,</span>
+<span id="cb128-198"><a href="opinion-dynamics-and-information-cascades.html#cb128-198" tabindex="-1"></a>        node_color<span class="op">=</span>opinions,</span>
+<span id="cb128-199"><a href="opinion-dynamics-and-information-cascades.html#cb128-199" tabindex="-1"></a>        cmap<span class="op">=</span><span class="st">&#39;RdYlBu&#39;</span>,</span>
+<span id="cb128-200"><a href="opinion-dynamics-and-information-cascades.html#cb128-200" tabindex="-1"></a>        vmin<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb128-201"><a href="opinion-dynamics-and-information-cascades.html#cb128-201" tabindex="-1"></a>        vmax<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb128-202"><a href="opinion-dynamics-and-information-cascades.html#cb128-202" tabindex="-1"></a>        node_size<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb128-203"><a href="opinion-dynamics-and-information-cascades.html#cb128-203" tabindex="-1"></a>        ax<span class="op">=</span>ax_network</span>
+<span id="cb128-204"><a href="opinion-dynamics-and-information-cascades.html#cb128-204" tabindex="-1"></a>    )</span>
+<span id="cb128-205"><a href="opinion-dynamics-and-information-cascades.html#cb128-205" tabindex="-1"></a></span>
+<span id="cb128-206"><a href="opinion-dynamics-and-information-cascades.html#cb128-206" tabindex="-1"></a>    <span class="co"># Highlight influencers</span></span>
+<span id="cb128-207"><a href="opinion-dynamics-and-information-cascades.html#cb128-207" tabindex="-1"></a>    <span class="cf">if</span> influencer_nodes:</span>
+<span id="cb128-208"><a href="opinion-dynamics-and-information-cascades.html#cb128-208" tabindex="-1"></a>        nx.draw_networkx_nodes(</span>
+<span id="cb128-209"><a href="opinion-dynamics-and-information-cascades.html#cb128-209" tabindex="-1"></a>            model.G,</span>
+<span id="cb128-210"><a href="opinion-dynamics-and-information-cascades.html#cb128-210" tabindex="-1"></a>            model.pos_layout,</span>
+<span id="cb128-211"><a href="opinion-dynamics-and-information-cascades.html#cb128-211" tabindex="-1"></a>            nodelist<span class="op">=</span>influencer_nodes,</span>
+<span id="cb128-212"><a href="opinion-dynamics-and-information-cascades.html#cb128-212" tabindex="-1"></a>            node_color<span class="op">=</span><span class="st">&#39;black&#39;</span>,</span>
+<span id="cb128-213"><a href="opinion-dynamics-and-information-cascades.html#cb128-213" tabindex="-1"></a>            node_size<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb128-214"><a href="opinion-dynamics-and-information-cascades.html#cb128-214" tabindex="-1"></a>            node_shape<span class="op">=</span><span class="st">&#39;s&#39;</span>,</span>
+<span id="cb128-215"><a href="opinion-dynamics-and-information-cascades.html#cb128-215" tabindex="-1"></a>            ax<span class="op">=</span>ax_network</span>
+<span id="cb128-216"><a href="opinion-dynamics-and-information-cascades.html#cb128-216" tabindex="-1"></a>        )</span>
+<span id="cb128-217"><a href="opinion-dynamics-and-information-cascades.html#cb128-217" tabindex="-1"></a></span>
+<span id="cb128-218"><a href="opinion-dynamics-and-information-cascades.html#cb128-218" tabindex="-1"></a>    ax_network.set_title(<span class="st">&#39;Network Opinion Spread&#39;</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-219"><a href="opinion-dynamics-and-information-cascades.html#cb128-219" tabindex="-1"></a>    ax_network.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb128-220"><a href="opinion-dynamics-and-information-cascades.html#cb128-220" tabindex="-1"></a></span>
+<span id="cb128-221"><a href="opinion-dynamics-and-information-cascades.html#cb128-221" tabindex="-1"></a>    <span class="co"># Colorbar for network</span></span>
+<span id="cb128-222"><a href="opinion-dynamics-and-information-cascades.html#cb128-222" tabindex="-1"></a>    sm <span class="op">=</span> plt.cm.ScalarMappable(cmap<span class="op">=</span><span class="st">&#39;RdYlBu&#39;</span>, norm<span class="op">=</span>plt.Normalize(vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb128-223"><a href="opinion-dynamics-and-information-cascades.html#cb128-223" tabindex="-1"></a>    sm.set_array([])</span>
+<span id="cb128-224"><a href="opinion-dynamics-and-information-cascades.html#cb128-224" tabindex="-1"></a>    cbar <span class="op">=</span> plt.colorbar(sm, ax<span class="op">=</span>ax_network, fraction<span class="op">=</span><span class="fl">0.046</span>, pad<span class="op">=</span><span class="fl">0.04</span>)</span>
+<span id="cb128-225"><a href="opinion-dynamics-and-information-cascades.html#cb128-225" tabindex="-1"></a>    cbar.set_label(<span class="st">&#39;Opinion&#39;</span>, rotation<span class="op">=</span><span class="dv">270</span>, labelpad<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb128-226"><a href="opinion-dynamics-and-information-cascades.html#cb128-226" tabindex="-1"></a></span>
+<span id="cb128-227"><a href="opinion-dynamics-and-information-cascades.html#cb128-227" tabindex="-1"></a>    <span class="co"># Time series plot</span></span>
+<span id="cb128-228"><a href="opinion-dynamics-and-information-cascades.html#cb128-228" tabindex="-1"></a>    line_mean, <span class="op">=</span> ax_time.plot([], [], <span class="st">&#39;b-&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">&#39;Mean Opinion&#39;</span>)</span>
+<span id="cb128-229"><a href="opinion-dynamics-and-information-cascades.html#cb128-229" tabindex="-1"></a>    line_var, <span class="op">=</span> ax_time.plot([], [], <span class="st">&#39;r-&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">&#39;Variance&#39;</span>)</span>
+<span id="cb128-230"><a href="opinion-dynamics-and-information-cascades.html#cb128-230" tabindex="-1"></a>    ax_time.set_xlim(<span class="dv">0</span>, steps)</span>
+<span id="cb128-231"><a href="opinion-dynamics-and-information-cascades.html#cb128-231" tabindex="-1"></a>    ax_time.set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-232"><a href="opinion-dynamics-and-information-cascades.html#cb128-232" tabindex="-1"></a>    ax_time.set_xlabel(<span class="st">&#39;Time Step&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-233"><a href="opinion-dynamics-and-information-cascades.html#cb128-233" tabindex="-1"></a>    ax_time.set_ylabel(<span class="st">&#39;Value&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-234"><a href="opinion-dynamics-and-information-cascades.html#cb128-234" tabindex="-1"></a>    ax_time.set_title(<span class="st">&#39;Opinion Dynamics Over Time&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-235"><a href="opinion-dynamics-and-information-cascades.html#cb128-235" tabindex="-1"></a>    ax_time.legend(loc<span class="op">=</span><span class="st">&#39;upper right&#39;</span>)</span>
+<span id="cb128-236"><a href="opinion-dynamics-and-information-cascades.html#cb128-236" tabindex="-1"></a>    ax_time.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb128-237"><a href="opinion-dynamics-and-information-cascades.html#cb128-237" tabindex="-1"></a></span>
+<span id="cb128-238"><a href="opinion-dynamics-and-information-cascades.html#cb128-238" tabindex="-1"></a>    <span class="co"># Histogram</span></span>
+<span id="cb128-239"><a href="opinion-dynamics-and-information-cascades.html#cb128-239" tabindex="-1"></a>    ax_hist.set_xlim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-240"><a href="opinion-dynamics-and-information-cascades.html#cb128-240" tabindex="-1"></a>    ax_hist.set_ylim(<span class="dv">0</span>, model.num_agents <span class="op">*</span> <span class="fl">0.5</span>)</span>
+<span id="cb128-241"><a href="opinion-dynamics-and-information-cascades.html#cb128-241" tabindex="-1"></a>    ax_hist.set_xlabel(<span class="st">&#39;Opinion&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-242"><a href="opinion-dynamics-and-information-cascades.html#cb128-242" tabindex="-1"></a>    ax_hist.set_ylabel(<span class="st">&#39;Frequency&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-243"><a href="opinion-dynamics-and-information-cascades.html#cb128-243" tabindex="-1"></a>    ax_hist.set_title(<span class="st">&#39;Opinion Distribution&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-244"><a href="opinion-dynamics-and-information-cascades.html#cb128-244" tabindex="-1"></a>    ax_hist.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">&#39;y&#39;</span>)</span>
+<span id="cb128-245"><a href="opinion-dynamics-and-information-cascades.html#cb128-245" tabindex="-1"></a></span>
+<span id="cb128-246"><a href="opinion-dynamics-and-information-cascades.html#cb128-246" tabindex="-1"></a>    <span class="co"># Metrics text</span></span>
+<span id="cb128-247"><a href="opinion-dynamics-and-information-cascades.html#cb128-247" tabindex="-1"></a>    ax_metrics.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb128-248"><a href="opinion-dynamics-and-information-cascades.html#cb128-248" tabindex="-1"></a>    ax_metrics.set_xlim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-249"><a href="opinion-dynamics-and-information-cascades.html#cb128-249" tabindex="-1"></a>    ax_metrics.set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-250"><a href="opinion-dynamics-and-information-cascades.html#cb128-250" tabindex="-1"></a>    text_step <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-251"><a href="opinion-dynamics-and-information-cascades.html#cb128-251" tabindex="-1"></a>    text_mean <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.75</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-252"><a href="opinion-dynamics-and-information-cascades.html#cb128-252" tabindex="-1"></a>    text_var <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.65</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-253"><a href="opinion-dynamics-and-information-cascades.html#cb128-253" tabindex="-1"></a>    text_polar <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.55</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-254"><a href="opinion-dynamics-and-information-cascades.html#cb128-254" tabindex="-1"></a>    text_consensus <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.45</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-255"><a href="opinion-dynamics-and-information-cascades.html#cb128-255" tabindex="-1"></a>    text_status <span class="op">=</span> ax_metrics.text(<span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="st">&#39;&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>, style<span class="op">=</span><span class="st">&#39;italic&#39;</span>, color<span class="op">=</span><span class="st">&#39;green&#39;</span>)</span>
+<span id="cb128-256"><a href="opinion-dynamics-and-information-cascades.html#cb128-256" tabindex="-1"></a>    ax_metrics.set_title(<span class="st">&#39;Metrics&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-257"><a href="opinion-dynamics-and-information-cascades.html#cb128-257" tabindex="-1"></a></span>
+<span id="cb128-258"><a href="opinion-dynamics-and-information-cascades.html#cb128-258" tabindex="-1"></a>    <span class="kw">def</span> init():</span>
+<span id="cb128-259"><a href="opinion-dynamics-and-information-cascades.html#cb128-259" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Initialize animation.&quot;&quot;&quot;</span></span>
+<span id="cb128-260"><a href="opinion-dynamics-and-information-cascades.html#cb128-260" tabindex="-1"></a>        line_mean.set_data([], [])</span>
+<span id="cb128-261"><a href="opinion-dynamics-and-information-cascades.html#cb128-261" tabindex="-1"></a>        line_var.set_data([], [])</span>
+<span id="cb128-262"><a href="opinion-dynamics-and-information-cascades.html#cb128-262" tabindex="-1"></a>        <span class="cf">return</span> nodes, line_mean, line_var</span>
+<span id="cb128-263"><a href="opinion-dynamics-and-information-cascades.html#cb128-263" tabindex="-1"></a></span>
+<span id="cb128-264"><a href="opinion-dynamics-and-information-cascades.html#cb128-264" tabindex="-1"></a>    <span class="kw">def</span> animate(frame):</span>
+<span id="cb128-265"><a href="opinion-dynamics-and-information-cascades.html#cb128-265" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Update animation frame.&quot;&quot;&quot;</span></span>
+<span id="cb128-266"><a href="opinion-dynamics-and-information-cascades.html#cb128-266" tabindex="-1"></a>        <span class="co"># Run model step</span></span>
+<span id="cb128-267"><a href="opinion-dynamics-and-information-cascades.html#cb128-267" tabindex="-1"></a>        <span class="cf">if</span> frame <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb128-268"><a href="opinion-dynamics-and-information-cascades.html#cb128-268" tabindex="-1"></a>            model.step()</span>
+<span id="cb128-269"><a href="opinion-dynamics-and-information-cascades.html#cb128-269" tabindex="-1"></a></span>
+<span id="cb128-270"><a href="opinion-dynamics-and-information-cascades.html#cb128-270" tabindex="-1"></a>        <span class="co"># Get current opinions</span></span>
+<span id="cb128-271"><a href="opinion-dynamics-and-information-cascades.html#cb128-271" tabindex="-1"></a>        opinions <span class="op">=</span> [agent.opinion <span class="cf">for</span> agent <span class="kw">in</span> model.agents]</span>
+<span id="cb128-272"><a href="opinion-dynamics-and-information-cascades.html#cb128-272" tabindex="-1"></a></span>
+<span id="cb128-273"><a href="opinion-dynamics-and-information-cascades.html#cb128-273" tabindex="-1"></a>        <span class="co"># Update network colors</span></span>
+<span id="cb128-274"><a href="opinion-dynamics-and-information-cascades.html#cb128-274" tabindex="-1"></a>        nodes.set_array(np.array(opinions))</span>
+<span id="cb128-275"><a href="opinion-dynamics-and-information-cascades.html#cb128-275" tabindex="-1"></a></span>
+<span id="cb128-276"><a href="opinion-dynamics-and-information-cascades.html#cb128-276" tabindex="-1"></a>        <span class="co"># Update history</span></span>
+<span id="cb128-277"><a href="opinion-dynamics-and-information-cascades.html#cb128-277" tabindex="-1"></a>        data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb128-278"><a href="opinion-dynamics-and-information-cascades.html#cb128-278" tabindex="-1"></a>        history[<span class="st">&#39;mean&#39;</span>] <span class="op">=</span> data[<span class="st">&#39;Mean Opinion&#39;</span>].tolist()</span>
+<span id="cb128-279"><a href="opinion-dynamics-and-information-cascades.html#cb128-279" tabindex="-1"></a>        history[<span class="st">&#39;variance&#39;</span>] <span class="op">=</span> data[<span class="st">&#39;Opinion Variance&#39;</span>].tolist()</span>
+<span id="cb128-280"><a href="opinion-dynamics-and-information-cascades.html#cb128-280" tabindex="-1"></a>        history[<span class="st">&#39;polarization&#39;</span>] <span class="op">=</span> data[<span class="st">&#39;Polarization&#39;</span>].tolist()</span>
+<span id="cb128-281"><a href="opinion-dynamics-and-information-cascades.html#cb128-281" tabindex="-1"></a>        history[<span class="st">&#39;consensus&#39;</span>] <span class="op">=</span> data[<span class="st">&#39;Consensus&#39;</span>].tolist()</span>
+<span id="cb128-282"><a href="opinion-dynamics-and-information-cascades.html#cb128-282" tabindex="-1"></a></span>
+<span id="cb128-283"><a href="opinion-dynamics-and-information-cascades.html#cb128-283" tabindex="-1"></a>        <span class="co"># Update time series</span></span>
+<span id="cb128-284"><a href="opinion-dynamics-and-information-cascades.html#cb128-284" tabindex="-1"></a>        steps_so_far <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(history[<span class="st">&#39;mean&#39;</span>])))</span>
+<span id="cb128-285"><a href="opinion-dynamics-and-information-cascades.html#cb128-285" tabindex="-1"></a>        line_mean.set_data(steps_so_far, history[<span class="st">&#39;mean&#39;</span>])</span>
+<span id="cb128-286"><a href="opinion-dynamics-and-information-cascades.html#cb128-286" tabindex="-1"></a>        line_var.set_data(steps_so_far, history[<span class="st">&#39;variance&#39;</span>])</span>
+<span id="cb128-287"><a href="opinion-dynamics-and-information-cascades.html#cb128-287" tabindex="-1"></a></span>
+<span id="cb128-288"><a href="opinion-dynamics-and-information-cascades.html#cb128-288" tabindex="-1"></a>        <span class="co"># Update histogram</span></span>
+<span id="cb128-289"><a href="opinion-dynamics-and-information-cascades.html#cb128-289" tabindex="-1"></a>        ax_hist.clear()</span>
+<span id="cb128-290"><a href="opinion-dynamics-and-information-cascades.html#cb128-290" tabindex="-1"></a>        ax_hist.hist(opinions, bins<span class="op">=</span><span class="dv">20</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, color<span class="op">=</span><span class="st">&#39;blue&#39;</span>, edgecolor<span class="op">=</span><span class="st">&#39;black&#39;</span>)</span>
+<span id="cb128-291"><a href="opinion-dynamics-and-information-cascades.html#cb128-291" tabindex="-1"></a>        ax_hist.set_xlim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-292"><a href="opinion-dynamics-and-information-cascades.html#cb128-292" tabindex="-1"></a>        ax_hist.set_ylim(<span class="dv">0</span>, model.num_agents <span class="op">*</span> <span class="fl">0.5</span>)</span>
+<span id="cb128-293"><a href="opinion-dynamics-and-information-cascades.html#cb128-293" tabindex="-1"></a>        ax_hist.set_xlabel(<span class="st">&#39;Opinion&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-294"><a href="opinion-dynamics-and-information-cascades.html#cb128-294" tabindex="-1"></a>        ax_hist.set_ylabel(<span class="st">&#39;Frequency&#39;</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb128-295"><a href="opinion-dynamics-and-information-cascades.html#cb128-295" tabindex="-1"></a>        ax_hist.set_title(<span class="st">&#39;Opinion Distribution&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-296"><a href="opinion-dynamics-and-information-cascades.html#cb128-296" tabindex="-1"></a>        ax_hist.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">&#39;y&#39;</span>)</span>
+<span id="cb128-297"><a href="opinion-dynamics-and-information-cascades.html#cb128-297" tabindex="-1"></a>        ax_hist.axvline(np.mean(opinions), color<span class="op">=</span><span class="st">&#39;red&#39;</span>, linestyle<span class="op">=</span><span class="st">&#39;--&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">&#39;Mean&#39;</span>)</span>
+<span id="cb128-298"><a href="opinion-dynamics-and-information-cascades.html#cb128-298" tabindex="-1"></a>        ax_hist.legend()</span>
+<span id="cb128-299"><a href="opinion-dynamics-and-information-cascades.html#cb128-299" tabindex="-1"></a></span>
+<span id="cb128-300"><a href="opinion-dynamics-and-information-cascades.html#cb128-300" tabindex="-1"></a>        <span class="co"># Update metrics text</span></span>
+<span id="cb128-301"><a href="opinion-dynamics-and-information-cascades.html#cb128-301" tabindex="-1"></a>        text_step.set_text(<span class="ss">f&#39;Step: </span><span class="sc">{</span>frame<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>steps<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb128-302"><a href="opinion-dynamics-and-information-cascades.html#cb128-302" tabindex="-1"></a>        text_mean.set_text(<span class="ss">f&#39;Mean Opinion: </span><span class="sc">{</span>history[<span class="st">&quot;mean&quot;</span>][<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&#39;</span>)</span>
+<span id="cb128-303"><a href="opinion-dynamics-and-information-cascades.html#cb128-303" tabindex="-1"></a>        text_var.set_text(<span class="ss">f&#39;Variance: </span><span class="sc">{</span>history[<span class="st">&quot;variance&quot;</span>][<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&#39;</span>)</span>
+<span id="cb128-304"><a href="opinion-dynamics-and-information-cascades.html#cb128-304" tabindex="-1"></a>        text_polar.set_text(<span class="ss">f&#39;Polarization: </span><span class="sc">{</span>history[<span class="st">&quot;polarization&quot;</span>][<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&#39;</span>)</span>
+<span id="cb128-305"><a href="opinion-dynamics-and-information-cascades.html#cb128-305" tabindex="-1"></a>        text_consensus.set_text(<span class="ss">f&#39;Consensus: </span><span class="sc">{</span>history[<span class="st">&quot;consensus&quot;</span>][<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">&#39;</span>)</span>
+<span id="cb128-306"><a href="opinion-dynamics-and-information-cascades.html#cb128-306" tabindex="-1"></a></span>
+<span id="cb128-307"><a href="opinion-dynamics-and-information-cascades.html#cb128-307" tabindex="-1"></a>        <span class="co"># Determine status</span></span>
+<span id="cb128-308"><a href="opinion-dynamics-and-information-cascades.html#cb128-308" tabindex="-1"></a>        <span class="cf">if</span> history[<span class="st">&#39;variance&#39;</span>][<span class="op">-</span><span class="dv">1</span>] <span class="op">&lt;</span> <span class="fl">0.05</span>:</span>
+<span id="cb128-309"><a href="opinion-dynamics-and-information-cascades.html#cb128-309" tabindex="-1"></a>            status <span class="op">=</span> <span class="st">&quot;✓ Strong Consensus&quot;</span></span>
+<span id="cb128-310"><a href="opinion-dynamics-and-information-cascades.html#cb128-310" tabindex="-1"></a>            text_status.set_color(<span class="st">&#39;green&#39;</span>)</span>
+<span id="cb128-311"><a href="opinion-dynamics-and-information-cascades.html#cb128-311" tabindex="-1"></a>        <span class="cf">elif</span> history[<span class="st">&#39;polarization&#39;</span>][<span class="op">-</span><span class="dv">1</span>] <span class="op">&gt;</span> <span class="fl">0.3</span>:</span>
+<span id="cb128-312"><a href="opinion-dynamics-and-information-cascades.html#cb128-312" tabindex="-1"></a>            status <span class="op">=</span> <span class="st">&quot;⚠ Polarized&quot;</span></span>
+<span id="cb128-313"><a href="opinion-dynamics-and-information-cascades.html#cb128-313" tabindex="-1"></a>            text_status.set_color(<span class="st">&#39;red&#39;</span>)</span>
+<span id="cb128-314"><a href="opinion-dynamics-and-information-cascades.html#cb128-314" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb128-315"><a href="opinion-dynamics-and-information-cascades.html#cb128-315" tabindex="-1"></a>            status <span class="op">=</span> <span class="st">&quot;⟳ Converging...&quot;</span></span>
+<span id="cb128-316"><a href="opinion-dynamics-and-information-cascades.html#cb128-316" tabindex="-1"></a>            text_status.set_color(<span class="st">&#39;orange&#39;</span>)</span>
+<span id="cb128-317"><a href="opinion-dynamics-and-information-cascades.html#cb128-317" tabindex="-1"></a>        text_status.set_text(status)</span>
+<span id="cb128-318"><a href="opinion-dynamics-and-information-cascades.html#cb128-318" tabindex="-1"></a></span>
+<span id="cb128-319"><a href="opinion-dynamics-and-information-cascades.html#cb128-319" tabindex="-1"></a>        <span class="cf">return</span> nodes, line_mean, line_var</span>
+<span id="cb128-320"><a href="opinion-dynamics-and-information-cascades.html#cb128-320" tabindex="-1"></a></span>
+<span id="cb128-321"><a href="opinion-dynamics-and-information-cascades.html#cb128-321" tabindex="-1"></a>    <span class="co"># Create animation</span></span>
+<span id="cb128-322"><a href="opinion-dynamics-and-information-cascades.html#cb128-322" tabindex="-1"></a>    anim <span class="op">=</span> FuncAnimation(</span>
+<span id="cb128-323"><a href="opinion-dynamics-and-information-cascades.html#cb128-323" tabindex="-1"></a>        fig,</span>
+<span id="cb128-324"><a href="opinion-dynamics-and-information-cascades.html#cb128-324" tabindex="-1"></a>        animate,</span>
+<span id="cb128-325"><a href="opinion-dynamics-and-information-cascades.html#cb128-325" tabindex="-1"></a>        init_func<span class="op">=</span>init,</span>
+<span id="cb128-326"><a href="opinion-dynamics-and-information-cascades.html#cb128-326" tabindex="-1"></a>        frames<span class="op">=</span>steps <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb128-327"><a href="opinion-dynamics-and-information-cascades.html#cb128-327" tabindex="-1"></a>        interval<span class="op">=</span>interval,</span>
+<span id="cb128-328"><a href="opinion-dynamics-and-information-cascades.html#cb128-328" tabindex="-1"></a>        blit<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb128-329"><a href="opinion-dynamics-and-information-cascades.html#cb128-329" tabindex="-1"></a>        repeat<span class="op">=</span><span class="va">False</span></span>
+<span id="cb128-330"><a href="opinion-dynamics-and-information-cascades.html#cb128-330" tabindex="-1"></a>    )</span>
+<span id="cb128-331"><a href="opinion-dynamics-and-information-cascades.html#cb128-331" tabindex="-1"></a></span>
+<span id="cb128-332"><a href="opinion-dynamics-and-information-cascades.html#cb128-332" tabindex="-1"></a>    <span class="cf">return</span> anim</span>
+<span id="cb128-333"><a href="opinion-dynamics-and-information-cascades.html#cb128-333" tabindex="-1"></a></span>
+<span id="cb128-334"><a href="opinion-dynamics-and-information-cascades.html#cb128-334" tabindex="-1"></a></span>
+<span id="cb128-335"><a href="opinion-dynamics-and-information-cascades.html#cb128-335" tabindex="-1"></a><span class="kw">def</span> create_comparison_animation(steps<span class="op">=</span><span class="dv">100</span>, interval<span class="op">=</span><span class="dv">150</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">10</span>)):</span>
+<span id="cb128-336"><a href="opinion-dynamics-and-information-cascades.html#cb128-336" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb128-337"><a href="opinion-dynamics-and-information-cascades.html#cb128-337" tabindex="-1"></a><span class="co">    Create side-by-side comparison of different network types.</span></span>
+<span id="cb128-338"><a href="opinion-dynamics-and-information-cascades.html#cb128-338" tabindex="-1"></a></span>
+<span id="cb128-339"><a href="opinion-dynamics-and-information-cascades.html#cb128-339" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb128-340"><a href="opinion-dynamics-and-information-cascades.html#cb128-340" tabindex="-1"></a><span class="co">        steps: Number of simulation steps</span></span>
+<span id="cb128-341"><a href="opinion-dynamics-and-information-cascades.html#cb128-341" tabindex="-1"></a><span class="co">        interval: Milliseconds between frames</span></span>
+<span id="cb128-342"><a href="opinion-dynamics-and-information-cascades.html#cb128-342" tabindex="-1"></a><span class="co">        figsize: Figure size</span></span>
+<span id="cb128-343"><a href="opinion-dynamics-and-information-cascades.html#cb128-343" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb128-344"><a href="opinion-dynamics-and-information-cascades.html#cb128-344" tabindex="-1"></a></span>
+<span id="cb128-345"><a href="opinion-dynamics-and-information-cascades.html#cb128-345" tabindex="-1"></a>    <span class="co"># Create models for different network types</span></span>
+<span id="cb128-346"><a href="opinion-dynamics-and-information-cascades.html#cb128-346" tabindex="-1"></a>    network_types <span class="op">=</span> [<span class="st">&#39;scale_free&#39;</span>, <span class="st">&#39;small_world&#39;</span>, <span class="st">&#39;random&#39;</span>]</span>
+<span id="cb128-347"><a href="opinion-dynamics-and-information-cascades.html#cb128-347" tabindex="-1"></a>    models <span class="op">=</span> {}</span>
+<span id="cb128-348"><a href="opinion-dynamics-and-information-cascades.html#cb128-348" tabindex="-1"></a></span>
+<span id="cb128-349"><a href="opinion-dynamics-and-information-cascades.html#cb128-349" tabindex="-1"></a>    <span class="cf">for</span> net_type <span class="kw">in</span> network_types:</span>
+<span id="cb128-350"><a href="opinion-dynamics-and-information-cascades.html#cb128-350" tabindex="-1"></a>        models[net_type] <span class="op">=</span> InformationCascadeModel(</span>
+<span id="cb128-351"><a href="opinion-dynamics-and-information-cascades.html#cb128-351" tabindex="-1"></a>            n_agents<span class="op">=</span><span class="dv">80</span>,</span>
+<span id="cb128-352"><a href="opinion-dynamics-and-information-cascades.html#cb128-352" tabindex="-1"></a>            network_type<span class="op">=</span>net_type,</span>
+<span id="cb128-353"><a href="opinion-dynamics-and-information-cascades.html#cb128-353" tabindex="-1"></a>            avg_degree<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb128-354"><a href="opinion-dynamics-and-information-cascades.html#cb128-354" tabindex="-1"></a>            influence_rate<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb128-355"><a href="opinion-dynamics-and-information-cascades.html#cb128-355" tabindex="-1"></a>            stubbornness_mean<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb128-356"><a href="opinion-dynamics-and-information-cascades.html#cb128-356" tabindex="-1"></a>            n_influencers<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb128-357"><a href="opinion-dynamics-and-information-cascades.html#cb128-357" tabindex="-1"></a>            influencer_opinions<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.9</span>],</span>
+<span id="cb128-358"><a href="opinion-dynamics-and-information-cascades.html#cb128-358" tabindex="-1"></a>            seed<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb128-359"><a href="opinion-dynamics-and-information-cascades.html#cb128-359" tabindex="-1"></a>        )</span>
+<span id="cb128-360"><a href="opinion-dynamics-and-information-cascades.html#cb128-360" tabindex="-1"></a></span>
+<span id="cb128-361"><a href="opinion-dynamics-and-information-cascades.html#cb128-361" tabindex="-1"></a>    <span class="co"># Setup figure</span></span>
+<span id="cb128-362"><a href="opinion-dynamics-and-information-cascades.html#cb128-362" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>figsize)</span>
+<span id="cb128-363"><a href="opinion-dynamics-and-information-cascades.html#cb128-363" tabindex="-1"></a>    fig.suptitle(<span class="st">&#39;Opinion Cascade Comparison: Different Network Types&#39;</span>,</span>
+<span id="cb128-364"><a href="opinion-dynamics-and-information-cascades.html#cb128-364" tabindex="-1"></a>                 fontsize<span class="op">=</span><span class="dv">16</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>, y<span class="op">=</span><span class="fl">0.98</span>)</span>
+<span id="cb128-365"><a href="opinion-dynamics-and-information-cascades.html#cb128-365" tabindex="-1"></a></span>
+<span id="cb128-366"><a href="opinion-dynamics-and-information-cascades.html#cb128-366" tabindex="-1"></a>    <span class="co"># Network visualizations (top row)</span></span>
+<span id="cb128-367"><a href="opinion-dynamics-and-information-cascades.html#cb128-367" tabindex="-1"></a>    network_elements <span class="op">=</span> {}</span>
+<span id="cb128-368"><a href="opinion-dynamics-and-information-cascades.html#cb128-368" tabindex="-1"></a>    <span class="cf">for</span> idx, (net_type, model) <span class="kw">in</span> <span class="bu">enumerate</span>(models.items()):</span>
+<span id="cb128-369"><a href="opinion-dynamics-and-information-cascades.html#cb128-369" tabindex="-1"></a>        ax <span class="op">=</span> axes[<span class="dv">0</span>, idx]</span>
+<span id="cb128-370"><a href="opinion-dynamics-and-information-cascades.html#cb128-370" tabindex="-1"></a></span>
+<span id="cb128-371"><a href="opinion-dynamics-and-information-cascades.html#cb128-371" tabindex="-1"></a>        opinions <span class="op">=</span> [agent.opinion <span class="cf">for</span> agent <span class="kw">in</span> model.agents]</span>
+<span id="cb128-372"><a href="opinion-dynamics-and-information-cascades.html#cb128-372" tabindex="-1"></a>        influencer_nodes <span class="op">=</span> [agent.pos <span class="cf">for</span> agent <span class="kw">in</span> model.agents <span class="cf">if</span> agent.is_influencer]</span>
+<span id="cb128-373"><a href="opinion-dynamics-and-information-cascades.html#cb128-373" tabindex="-1"></a></span>
+<span id="cb128-374"><a href="opinion-dynamics-and-information-cascades.html#cb128-374" tabindex="-1"></a>        nx.draw_networkx_edges(model.G, model.pos_layout, alpha<span class="op">=</span><span class="fl">0.2</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb128-375"><a href="opinion-dynamics-and-information-cascades.html#cb128-375" tabindex="-1"></a>        nodes <span class="op">=</span> nx.draw_networkx_nodes(</span>
+<span id="cb128-376"><a href="opinion-dynamics-and-information-cascades.html#cb128-376" tabindex="-1"></a>            model.G,</span>
+<span id="cb128-377"><a href="opinion-dynamics-and-information-cascades.html#cb128-377" tabindex="-1"></a>            model.pos_layout,</span>
+<span id="cb128-378"><a href="opinion-dynamics-and-information-cascades.html#cb128-378" tabindex="-1"></a>            node_color<span class="op">=</span>opinions,</span>
+<span id="cb128-379"><a href="opinion-dynamics-and-information-cascades.html#cb128-379" tabindex="-1"></a>            cmap<span class="op">=</span><span class="st">&#39;RdYlBu&#39;</span>,</span>
+<span id="cb128-380"><a href="opinion-dynamics-and-information-cascades.html#cb128-380" tabindex="-1"></a>            vmin<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb128-381"><a href="opinion-dynamics-and-information-cascades.html#cb128-381" tabindex="-1"></a>            vmax<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb128-382"><a href="opinion-dynamics-and-information-cascades.html#cb128-382" tabindex="-1"></a>            node_size<span class="op">=</span><span class="dv">80</span>,</span>
+<span id="cb128-383"><a href="opinion-dynamics-and-information-cascades.html#cb128-383" tabindex="-1"></a>            ax<span class="op">=</span>ax</span>
+<span id="cb128-384"><a href="opinion-dynamics-and-information-cascades.html#cb128-384" tabindex="-1"></a>        )</span>
+<span id="cb128-385"><a href="opinion-dynamics-and-information-cascades.html#cb128-385" tabindex="-1"></a></span>
+<span id="cb128-386"><a href="opinion-dynamics-and-information-cascades.html#cb128-386" tabindex="-1"></a>        <span class="cf">if</span> influencer_nodes:</span>
+<span id="cb128-387"><a href="opinion-dynamics-and-information-cascades.html#cb128-387" tabindex="-1"></a>            nx.draw_networkx_nodes(</span>
+<span id="cb128-388"><a href="opinion-dynamics-and-information-cascades.html#cb128-388" tabindex="-1"></a>                model.G,</span>
+<span id="cb128-389"><a href="opinion-dynamics-and-information-cascades.html#cb128-389" tabindex="-1"></a>                model.pos_layout,</span>
+<span id="cb128-390"><a href="opinion-dynamics-and-information-cascades.html#cb128-390" tabindex="-1"></a>                nodelist<span class="op">=</span>influencer_nodes,</span>
+<span id="cb128-391"><a href="opinion-dynamics-and-information-cascades.html#cb128-391" tabindex="-1"></a>                node_color<span class="op">=</span><span class="st">&#39;black&#39;</span>,</span>
+<span id="cb128-392"><a href="opinion-dynamics-and-information-cascades.html#cb128-392" tabindex="-1"></a>                node_size<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb128-393"><a href="opinion-dynamics-and-information-cascades.html#cb128-393" tabindex="-1"></a>                node_shape<span class="op">=</span><span class="st">&#39;s&#39;</span>,</span>
+<span id="cb128-394"><a href="opinion-dynamics-and-information-cascades.html#cb128-394" tabindex="-1"></a>                ax<span class="op">=</span>ax</span>
+<span id="cb128-395"><a href="opinion-dynamics-and-information-cascades.html#cb128-395" tabindex="-1"></a>            )</span>
+<span id="cb128-396"><a href="opinion-dynamics-and-information-cascades.html#cb128-396" tabindex="-1"></a></span>
+<span id="cb128-397"><a href="opinion-dynamics-and-information-cascades.html#cb128-397" tabindex="-1"></a>        ax.set_title(<span class="ss">f&#39;</span><span class="sc">{</span>net_type<span class="sc">.</span>replace(<span class="st">&quot;_&quot;</span>, <span class="st">&quot; &quot;</span>)<span class="sc">.</span>title()<span class="sc">}</span><span class="ss">&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-398"><a href="opinion-dynamics-and-information-cascades.html#cb128-398" tabindex="-1"></a>        ax.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb128-399"><a href="opinion-dynamics-and-information-cascades.html#cb128-399" tabindex="-1"></a></span>
+<span id="cb128-400"><a href="opinion-dynamics-and-information-cascades.html#cb128-400" tabindex="-1"></a>        network_elements[net_type] <span class="op">=</span> nodes</span>
+<span id="cb128-401"><a href="opinion-dynamics-and-information-cascades.html#cb128-401" tabindex="-1"></a></span>
+<span id="cb128-402"><a href="opinion-dynamics-and-information-cascades.html#cb128-402" tabindex="-1"></a>    <span class="co"># Time series plots (bottom row)</span></span>
+<span id="cb128-403"><a href="opinion-dynamics-and-information-cascades.html#cb128-403" tabindex="-1"></a>    lines <span class="op">=</span> {}</span>
+<span id="cb128-404"><a href="opinion-dynamics-and-information-cascades.html#cb128-404" tabindex="-1"></a>    <span class="cf">for</span> idx, (net_type, model) <span class="kw">in</span> <span class="bu">enumerate</span>(models.items()):</span>
+<span id="cb128-405"><a href="opinion-dynamics-and-information-cascades.html#cb128-405" tabindex="-1"></a>        ax <span class="op">=</span> axes[<span class="dv">1</span>, idx]</span>
+<span id="cb128-406"><a href="opinion-dynamics-and-information-cascades.html#cb128-406" tabindex="-1"></a></span>
+<span id="cb128-407"><a href="opinion-dynamics-and-information-cascades.html#cb128-407" tabindex="-1"></a>        line, <span class="op">=</span> ax.plot([], [], <span class="st">&#39;b-&#39;</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">&#39;Mean&#39;</span>)</span>
+<span id="cb128-408"><a href="opinion-dynamics-and-information-cascades.html#cb128-408" tabindex="-1"></a>        ax.fill_between([], [], [], alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb128-409"><a href="opinion-dynamics-and-information-cascades.html#cb128-409" tabindex="-1"></a>        ax.set_xlim(<span class="dv">0</span>, steps)</span>
+<span id="cb128-410"><a href="opinion-dynamics-and-information-cascades.html#cb128-410" tabindex="-1"></a>        ax.set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb128-411"><a href="opinion-dynamics-and-information-cascades.html#cb128-411" tabindex="-1"></a>        ax.set_xlabel(<span class="st">&#39;Time Step&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-412"><a href="opinion-dynamics-and-information-cascades.html#cb128-412" tabindex="-1"></a>        ax.set_ylabel(<span class="st">&#39;Opinion&#39;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb128-413"><a href="opinion-dynamics-and-information-cascades.html#cb128-413" tabindex="-1"></a>        ax.legend(loc<span class="op">=</span><span class="st">&#39;upper right&#39;</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb128-414"><a href="opinion-dynamics-and-information-cascades.html#cb128-414" tabindex="-1"></a>        ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb128-415"><a href="opinion-dynamics-and-information-cascades.html#cb128-415" tabindex="-1"></a></span>
+<span id="cb128-416"><a href="opinion-dynamics-and-information-cascades.html#cb128-416" tabindex="-1"></a>        lines[net_type] <span class="op">=</span> {<span class="st">&#39;line&#39;</span>: line, <span class="st">&#39;ax&#39;</span>: ax, <span class="st">&#39;history&#39;</span>: []}</span>
+<span id="cb128-417"><a href="opinion-dynamics-and-information-cascades.html#cb128-417" tabindex="-1"></a></span>
+<span id="cb128-418"><a href="opinion-dynamics-and-information-cascades.html#cb128-418" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb128-419"><a href="opinion-dynamics-and-information-cascades.html#cb128-419" tabindex="-1"></a></span>
+<span id="cb128-420"><a href="opinion-dynamics-and-information-cascades.html#cb128-420" tabindex="-1"></a>    <span class="kw">def</span> init():</span>
+<span id="cb128-421"><a href="opinion-dynamics-and-information-cascades.html#cb128-421" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Initialize animation.&quot;&quot;&quot;</span></span>
+<span id="cb128-422"><a href="opinion-dynamics-and-information-cascades.html#cb128-422" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(network_elements.values())</span>
+<span id="cb128-423"><a href="opinion-dynamics-and-information-cascades.html#cb128-423" tabindex="-1"></a></span>
+<span id="cb128-424"><a href="opinion-dynamics-and-information-cascades.html#cb128-424" tabindex="-1"></a>    <span class="kw">def</span> animate(frame):</span>
+<span id="cb128-425"><a href="opinion-dynamics-and-information-cascades.html#cb128-425" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Update animation frame.&quot;&quot;&quot;</span></span>
+<span id="cb128-426"><a href="opinion-dynamics-and-information-cascades.html#cb128-426" tabindex="-1"></a>        <span class="co"># Update all models</span></span>
+<span id="cb128-427"><a href="opinion-dynamics-and-information-cascades.html#cb128-427" tabindex="-1"></a>        <span class="cf">if</span> frame <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb128-428"><a href="opinion-dynamics-and-information-cascades.html#cb128-428" tabindex="-1"></a>            <span class="cf">for</span> model <span class="kw">in</span> models.values():</span>
+<span id="cb128-429"><a href="opinion-dynamics-and-information-cascades.html#cb128-429" tabindex="-1"></a>                model.step()</span>
+<span id="cb128-430"><a href="opinion-dynamics-and-information-cascades.html#cb128-430" tabindex="-1"></a></span>
+<span id="cb128-431"><a href="opinion-dynamics-and-information-cascades.html#cb128-431" tabindex="-1"></a>        <span class="co"># Update visualizations</span></span>
+<span id="cb128-432"><a href="opinion-dynamics-and-information-cascades.html#cb128-432" tabindex="-1"></a>        <span class="cf">for</span> net_type, model <span class="kw">in</span> models.items():</span>
+<span id="cb128-433"><a href="opinion-dynamics-and-information-cascades.html#cb128-433" tabindex="-1"></a>            <span class="co"># Update network colors</span></span>
+<span id="cb128-434"><a href="opinion-dynamics-and-information-cascades.html#cb128-434" tabindex="-1"></a>            opinions <span class="op">=</span> [agent.opinion <span class="cf">for</span> agent <span class="kw">in</span> model.agents]</span>
+<span id="cb128-435"><a href="opinion-dynamics-and-information-cascades.html#cb128-435" tabindex="-1"></a>            network_elements[net_type].set_array(np.array(opinions))</span>
+<span id="cb128-436"><a href="opinion-dynamics-and-information-cascades.html#cb128-436" tabindex="-1"></a></span>
+<span id="cb128-437"><a href="opinion-dynamics-and-information-cascades.html#cb128-437" tabindex="-1"></a>            <span class="co"># Update time series</span></span>
+<span id="cb128-438"><a href="opinion-dynamics-and-information-cascades.html#cb128-438" tabindex="-1"></a>            data <span class="op">=</span> model.datacollector.get_model_vars_dataframe()</span>
+<span id="cb128-439"><a href="opinion-dynamics-and-information-cascades.html#cb128-439" tabindex="-1"></a>            mean_opinions <span class="op">=</span> data[<span class="st">&#39;Mean Opinion&#39;</span>].tolist()</span>
+<span id="cb128-440"><a href="opinion-dynamics-and-information-cascades.html#cb128-440" tabindex="-1"></a>            std_opinions <span class="op">=</span> data[<span class="st">&#39;Opinion Std&#39;</span>].tolist()</span>
+<span id="cb128-441"><a href="opinion-dynamics-and-information-cascades.html#cb128-441" tabindex="-1"></a></span>
+<span id="cb128-442"><a href="opinion-dynamics-and-information-cascades.html#cb128-442" tabindex="-1"></a>            lines[net_type][<span class="st">&#39;history&#39;</span>] <span class="op">=</span> mean_opinions</span>
+<span id="cb128-443"><a href="opinion-dynamics-and-information-cascades.html#cb128-443" tabindex="-1"></a>            steps_so_far <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(mean_opinions)))</span>
+<span id="cb128-444"><a href="opinion-dynamics-and-information-cascades.html#cb128-444" tabindex="-1"></a></span>
+<span id="cb128-445"><a href="opinion-dynamics-and-information-cascades.html#cb128-445" tabindex="-1"></a>            lines[net_type][<span class="st">&#39;line&#39;</span>].set_data(steps_so_far, mean_opinions)</span>
+<span id="cb128-446"><a href="opinion-dynamics-and-information-cascades.html#cb128-446" tabindex="-1"></a></span>
+<span id="cb128-447"><a href="opinion-dynamics-and-information-cascades.html#cb128-447" tabindex="-1"></a>            <span class="co"># Update fill_between</span></span>
+<span id="cb128-448"><a href="opinion-dynamics-and-information-cascades.html#cb128-448" tabindex="-1"></a>            ax <span class="op">=</span> lines[net_type][<span class="st">&#39;ax&#39;</span>]</span>
+<span id="cb128-449"><a href="opinion-dynamics-and-information-cascades.html#cb128-449" tabindex="-1"></a>            ax.collections.clear()  <span class="co"># Clear previous fills</span></span>
+<span id="cb128-450"><a href="opinion-dynamics-and-information-cascades.html#cb128-450" tabindex="-1"></a></span>
+<span id="cb128-451"><a href="opinion-dynamics-and-information-cascades.html#cb128-451" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(mean_opinions) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb128-452"><a href="opinion-dynamics-and-information-cascades.html#cb128-452" tabindex="-1"></a>                upper <span class="op">=</span> np.array(mean_opinions) <span class="op">+</span> np.array(std_opinions)</span>
+<span id="cb128-453"><a href="opinion-dynamics-and-information-cascades.html#cb128-453" tabindex="-1"></a>                lower <span class="op">=</span> np.array(mean_opinions) <span class="op">-</span> np.array(std_opinions)</span>
+<span id="cb128-454"><a href="opinion-dynamics-and-information-cascades.html#cb128-454" tabindex="-1"></a>                ax.fill_between(steps_so_far, lower, upper, alpha<span class="op">=</span><span class="fl">0.3</span>, color<span class="op">=</span><span class="st">&#39;blue&#39;</span>)</span>
+<span id="cb128-455"><a href="opinion-dynamics-and-information-cascades.html#cb128-455" tabindex="-1"></a></span>
+<span id="cb128-456"><a href="opinion-dynamics-and-information-cascades.html#cb128-456" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(network_elements.values())</span>
+<span id="cb128-457"><a href="opinion-dynamics-and-information-cascades.html#cb128-457" tabindex="-1"></a></span>
+<span id="cb128-458"><a href="opinion-dynamics-and-information-cascades.html#cb128-458" tabindex="-1"></a>    <span class="co"># Create animation</span></span>
+<span id="cb128-459"><a href="opinion-dynamics-and-information-cascades.html#cb128-459" tabindex="-1"></a>    anim <span class="op">=</span> FuncAnimation(</span>
+<span id="cb128-460"><a href="opinion-dynamics-and-information-cascades.html#cb128-460" tabindex="-1"></a>        fig,</span>
+<span id="cb128-461"><a href="opinion-dynamics-and-information-cascades.html#cb128-461" tabindex="-1"></a>        animate,</span>
+<span id="cb128-462"><a href="opinion-dynamics-and-information-cascades.html#cb128-462" tabindex="-1"></a>        init_func<span class="op">=</span>init,</span>
+<span id="cb128-463"><a href="opinion-dynamics-and-information-cascades.html#cb128-463" tabindex="-1"></a>        frames<span class="op">=</span>steps <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb128-464"><a href="opinion-dynamics-and-information-cascades.html#cb128-464" tabindex="-1"></a>        interval<span class="op">=</span>interval,</span>
+<span id="cb128-465"><a href="opinion-dynamics-and-information-cascades.html#cb128-465" tabindex="-1"></a>        blit<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb128-466"><a href="opinion-dynamics-and-information-cascades.html#cb128-466" tabindex="-1"></a>        repeat<span class="op">=</span><span class="va">False</span></span>
+<span id="cb128-467"><a href="opinion-dynamics-and-information-cascades.html#cb128-467" tabindex="-1"></a>    )</span>
+<span id="cb128-468"><a href="opinion-dynamics-and-information-cascades.html#cb128-468" tabindex="-1"></a></span>
+<span id="cb128-469"><a href="opinion-dynamics-and-information-cascades.html#cb128-469" tabindex="-1"></a>    <span class="cf">return</span> anim</span>
+<span id="cb128-470"><a href="opinion-dynamics-and-information-cascades.html#cb128-470" tabindex="-1"></a></span>
+<span id="cb128-471"><a href="opinion-dynamics-and-information-cascades.html#cb128-471" tabindex="-1"></a></span>
+<span id="cb128-472"><a href="opinion-dynamics-and-information-cascades.html#cb128-472" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb128-473"><a href="opinion-dynamics-and-information-cascades.html#cb128-473" tabindex="-1"></a><span class="co"># MAIN EXECUTION</span></span>
+<span id="cb128-474"><a href="opinion-dynamics-and-information-cascades.html#cb128-474" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb128-475"><a href="opinion-dynamics-and-information-cascades.html#cb128-475" tabindex="-1"></a></span>
+<span id="cb128-476"><a href="opinion-dynamics-and-information-cascades.html#cb128-476" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-477"><a href="opinion-dynamics-and-information-cascades.html#cb128-477" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Information Cascades - ANIMATED VISUALIZATION&quot;</span>)</span>
+<span id="cb128-478"><a href="opinion-dynamics-and-information-cascades.html#cb128-478" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-479"><a href="opinion-dynamics-and-information-cascades.html#cb128-479" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-480"><a href="opinion-dynamics-and-information-cascades.html#cb128-480" tabindex="-1"></a></span>
+<span id="cb128-481"><a href="opinion-dynamics-and-information-cascades.html#cb128-481" tabindex="-1"></a><span class="co"># Animation 1: Single network detailed view</span></span>
+<span id="cb128-482"><a href="opinion-dynamics-and-information-cascades.html#cb128-482" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Creating Animation 1: Detailed Opinion Cascade...&quot;</span>)</span>
+<span id="cb128-483"><a href="opinion-dynamics-and-information-cascades.html#cb128-483" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Network: Scale-Free with Polarized Influencers&quot;</span>)</span>
+<span id="cb128-484"><a href="opinion-dynamics-and-information-cascades.html#cb128-484" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-485"><a href="opinion-dynamics-and-information-cascades.html#cb128-485" tabindex="-1"></a></span>
+<span id="cb128-486"><a href="opinion-dynamics-and-information-cascades.html#cb128-486" tabindex="-1"></a>model1 <span class="op">=</span> InformationCascadeModel(</span>
+<span id="cb128-487"><a href="opinion-dynamics-and-information-cascades.html#cb128-487" tabindex="-1"></a>    n_agents<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb128-488"><a href="opinion-dynamics-and-information-cascades.html#cb128-488" tabindex="-1"></a>    network_type<span class="op">=</span><span class="st">&#39;scale_free&#39;</span>,</span>
+<span id="cb128-489"><a href="opinion-dynamics-and-information-cascades.html#cb128-489" tabindex="-1"></a>    avg_degree<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb128-490"><a href="opinion-dynamics-and-information-cascades.html#cb128-490" tabindex="-1"></a>    influence_rate<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb128-491"><a href="opinion-dynamics-and-information-cascades.html#cb128-491" tabindex="-1"></a>    stubbornness_mean<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb128-492"><a href="opinion-dynamics-and-information-cascades.html#cb128-492" tabindex="-1"></a>    n_influencers<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb128-493"><a href="opinion-dynamics-and-information-cascades.html#cb128-493" tabindex="-1"></a>    influencer_opinions<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.9</span>],</span>
+<span id="cb128-494"><a href="opinion-dynamics-and-information-cascades.html#cb128-494" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb128-495"><a href="opinion-dynamics-and-information-cascades.html#cb128-495" tabindex="-1"></a>)</span>
+<span id="cb128-496"><a href="opinion-dynamics-and-information-cascades.html#cb128-496" tabindex="-1"></a></span>
+<span id="cb128-497"><a href="opinion-dynamics-and-information-cascades.html#cb128-497" tabindex="-1"></a>anim1 <span class="op">=</span> create_animation(model1, steps<span class="op">=</span><span class="dv">100</span>, interval<span class="op">=</span><span class="dv">100</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
+<span id="cb128-498"><a href="opinion-dynamics-and-information-cascades.html#cb128-498" tabindex="-1"></a></span>
+<span id="cb128-499"><a href="opinion-dynamics-and-information-cascades.html#cb128-499" tabindex="-1"></a><span class="co"># Save or display animation</span></span>
+<span id="cb128-500"><a href="opinion-dynamics-and-information-cascades.html#cb128-500" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;✓ Animation 1 created!&quot;</span>)</span>
+<span id="cb128-501"><a href="opinion-dynamics-and-information-cascades.html#cb128-501" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;  Displaying animation...&quot;</span>)</span>
+<span id="cb128-502"><a href="opinion-dynamics-and-information-cascades.html#cb128-502" tabindex="-1"></a>plt.show()</span>
+<span id="cb128-503"><a href="opinion-dynamics-and-information-cascades.html#cb128-503" tabindex="-1"></a></span>
+<span id="cb128-504"><a href="opinion-dynamics-and-information-cascades.html#cb128-504" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-505"><a href="opinion-dynamics-and-information-cascades.html#cb128-505" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;-&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-506"><a href="opinion-dynamics-and-information-cascades.html#cb128-506" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-507"><a href="opinion-dynamics-and-information-cascades.html#cb128-507" tabindex="-1"></a></span>
+<span id="cb128-508"><a href="opinion-dynamics-and-information-cascades.html#cb128-508" tabindex="-1"></a><span class="co"># Animation 2: Network comparison</span></span>
+<span id="cb128-509"><a href="opinion-dynamics-and-information-cascades.html#cb128-509" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Creating Animation 2: Network Type Comparison...&quot;</span>)</span>
+<span id="cb128-510"><a href="opinion-dynamics-and-information-cascades.html#cb128-510" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Comparing: Scale-Free, Small-World, and Random networks&quot;</span>)</span>
+<span id="cb128-511"><a href="opinion-dynamics-and-information-cascades.html#cb128-511" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-512"><a href="opinion-dynamics-and-information-cascades.html#cb128-512" tabindex="-1"></a></span>
+<span id="cb128-513"><a href="opinion-dynamics-and-information-cascades.html#cb128-513" tabindex="-1"></a>anim2 <span class="op">=</span> create_comparison_animation(steps<span class="op">=</span><span class="dv">100</span>, interval<span class="op">=</span><span class="dv">150</span>, figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">10</span>))</span>
+<span id="cb128-514"><a href="opinion-dynamics-and-information-cascades.html#cb128-514" tabindex="-1"></a></span>
+<span id="cb128-515"><a href="opinion-dynamics-and-information-cascades.html#cb128-515" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;✓ Animation 2 created!&quot;</span>)</span>
+<span id="cb128-516"><a href="opinion-dynamics-and-information-cascades.html#cb128-516" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;  Displaying animation...&quot;</span>)</span>
+<span id="cb128-517"><a href="opinion-dynamics-and-information-cascades.html#cb128-517" tabindex="-1"></a>plt.show()</span>
+<span id="cb128-518"><a href="opinion-dynamics-and-information-cascades.html#cb128-518" tabindex="-1"></a></span>
+<span id="cb128-519"><a href="opinion-dynamics-and-information-cascades.html#cb128-519" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-520"><a href="opinion-dynamics-and-information-cascades.html#cb128-520" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-521"><a href="opinion-dynamics-and-information-cascades.html#cb128-521" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;ANIMATION TIPS:&quot;</span>)</span>
+<span id="cb128-522"><a href="opinion-dynamics-and-information-cascades.html#cb128-522" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-523"><a href="opinion-dynamics-and-information-cascades.html#cb128-523" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;1. Watch how opinions spread from influencers (black squares)&quot;</span>)</span>
+<span id="cb128-524"><a href="opinion-dynamics-and-information-cascades.html#cb128-524" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;2. Red/Blue = Polarized opinions, Yellow = Middle ground&quot;</span>)</span>
+<span id="cb128-525"><a href="opinion-dynamics-and-information-cascades.html#cb128-525" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;3. Observe consensus (low variance) vs polarization (high variance)&quot;</span>)</span>
+<span id="cb128-526"><a href="opinion-dynamics-and-information-cascades.html#cb128-526" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;4. Scale-free networks: Faster cascades through hubs&quot;</span>)</span>
+<span id="cb128-527"><a href="opinion-dynamics-and-information-cascades.html#cb128-527" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;5. Small-world: Balanced local and global spread&quot;</span>)</span>
+<span id="cb128-528"><a href="opinion-dynamics-and-information-cascades.html#cb128-528" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;6. Random: Uniform diffusion pattern&quot;</span>)</span>
+<span id="cb128-529"><a href="opinion-dynamics-and-information-cascades.html#cb128-529" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-530"><a href="opinion-dynamics-and-information-cascades.html#cb128-530" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;To save animations:&quot;</span>)</span>
+<span id="cb128-531"><a href="opinion-dynamics-and-information-cascades.html#cb128-531" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;  anim.save(&#39;opinion_cascade.mp4&#39;, writer=&#39;ffmpeg&#39;, fps=10)&quot;</span>)</span>
+<span id="cb128-532"><a href="opinion-dynamics-and-information-cascades.html#cb128-532" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;  anim.save(&#39;opinion_cascade.gif&#39;, writer=&#39;pillow&#39;, fps=10)&quot;</span>)</span>
+<span id="cb128-533"><a href="opinion-dynamics-and-information-cascades.html#cb128-533" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-534"><a href="opinion-dynamics-and-information-cascades.html#cb128-534" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-535"><a href="opinion-dynamics-and-information-cascades.html#cb128-535" tabindex="-1"></a></span>
+<span id="cb128-536"><a href="opinion-dynamics-and-information-cascades.html#cb128-536" tabindex="-1"></a><span class="co"># Optional: Create a simple pulse animation showing cascade waves</span></span>
+<span id="cb128-537"><a href="opinion-dynamics-and-information-cascades.html#cb128-537" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-538"><a href="opinion-dynamics-and-information-cascades.html#cb128-538" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Creating Animation 3: Cascade Wave Visualization...&quot;</span>)</span>
+<span id="cb128-539"><a href="opinion-dynamics-and-information-cascades.html#cb128-539" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-540"><a href="opinion-dynamics-and-information-cascades.html#cb128-540" tabindex="-1"></a></span>
+<span id="cb128-541"><a href="opinion-dynamics-and-information-cascades.html#cb128-541" tabindex="-1"></a><span class="kw">def</span> create_cascade_wave_animation(steps<span class="op">=</span><span class="dv">50</span>, interval<span class="op">=</span><span class="dv">200</span>):</span>
+<span id="cb128-542"><a href="opinion-dynamics-and-information-cascades.html#cb128-542" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Create animation showing cascade waves spreading.&quot;&quot;&quot;</span></span>
+<span id="cb128-543"><a href="opinion-dynamics-and-information-cascades.html#cb128-543" tabindex="-1"></a></span>
+<span id="cb128-544"><a href="opinion-dynamics-and-information-cascades.html#cb128-544" tabindex="-1"></a>    model <span class="op">=</span> InformationCascadeModel(</span>
+<span id="cb128-545"><a href="opinion-dynamics-and-information-cascades.html#cb128-545" tabindex="-1"></a>        n_agents<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb128-546"><a href="opinion-dynamics-and-information-cascades.html#cb128-546" tabindex="-1"></a>        network_type<span class="op">=</span><span class="st">&#39;scale_free&#39;</span>,</span>
+<span id="cb128-547"><a href="opinion-dynamics-and-information-cascades.html#cb128-547" tabindex="-1"></a>        avg_degree<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb128-548"><a href="opinion-dynamics-and-information-cascades.html#cb128-548" tabindex="-1"></a>        influence_rate<span class="op">=</span><span class="fl">0.5</span>,  <span class="co"># Faster spread</span></span>
+<span id="cb128-549"><a href="opinion-dynamics-and-information-cascades.html#cb128-549" tabindex="-1"></a>        stubbornness_mean<span class="op">=</span><span class="fl">0.05</span>,  <span class="co"># Low resistance</span></span>
+<span id="cb128-550"><a href="opinion-dynamics-and-information-cascades.html#cb128-550" tabindex="-1"></a>        n_influencers<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb128-551"><a href="opinion-dynamics-and-information-cascades.html#cb128-551" tabindex="-1"></a>        influencer_opinions<span class="op">=</span>[<span class="fl">1.0</span>],</span>
+<span id="cb128-552"><a href="opinion-dynamics-and-information-cascades.html#cb128-552" tabindex="-1"></a>        seed<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb128-553"><a href="opinion-dynamics-and-information-cascades.html#cb128-553" tabindex="-1"></a>    )</span>
+<span id="cb128-554"><a href="opinion-dynamics-and-information-cascades.html#cb128-554" tabindex="-1"></a></span>
+<span id="cb128-555"><a href="opinion-dynamics-and-information-cascades.html#cb128-555" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb128-556"><a href="opinion-dynamics-and-information-cascades.html#cb128-556" tabindex="-1"></a></span>
+<span id="cb128-557"><a href="opinion-dynamics-and-information-cascades.html#cb128-557" tabindex="-1"></a>    influencer_node <span class="op">=</span> [agent.pos <span class="cf">for</span> agent <span class="kw">in</span> model.agents <span class="cf">if</span> agent.is_influencer][<span class="dv">0</span>]</span>
+<span id="cb128-558"><a href="opinion-dynamics-and-information-cascades.html#cb128-558" tabindex="-1"></a></span>
+<span id="cb128-559"><a href="opinion-dynamics-and-information-cascades.html#cb128-559" tabindex="-1"></a>    <span class="kw">def</span> animate(frame):</span>
+<span id="cb128-560"><a href="opinion-dynamics-and-information-cascades.html#cb128-560" tabindex="-1"></a>        <span class="cf">if</span> frame <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb128-561"><a href="opinion-dynamics-and-information-cascades.html#cb128-561" tabindex="-1"></a>            model.step()</span>
+<span id="cb128-562"><a href="opinion-dynamics-and-information-cascades.html#cb128-562" tabindex="-1"></a></span>
+<span id="cb128-563"><a href="opinion-dynamics-and-information-cascades.html#cb128-563" tabindex="-1"></a>        ax.clear()</span>
+<span id="cb128-564"><a href="opinion-dynamics-and-information-cascades.html#cb128-564" tabindex="-1"></a></span>
+<span id="cb128-565"><a href="opinion-dynamics-and-information-cascades.html#cb128-565" tabindex="-1"></a>        opinions <span class="op">=</span> [agent.opinion <span class="cf">for</span> agent <span class="kw">in</span> model.agents]</span>
+<span id="cb128-566"><a href="opinion-dynamics-and-information-cascades.html#cb128-566" tabindex="-1"></a></span>
+<span id="cb128-567"><a href="opinion-dynamics-and-information-cascades.html#cb128-567" tabindex="-1"></a>        <span class="co"># Draw edges</span></span>
+<span id="cb128-568"><a href="opinion-dynamics-and-information-cascades.html#cb128-568" tabindex="-1"></a>        nx.draw_networkx_edges(model.G, model.pos_layout, alpha<span class="op">=</span><span class="fl">0.1</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb128-569"><a href="opinion-dynamics-and-information-cascades.html#cb128-569" tabindex="-1"></a></span>
+<span id="cb128-570"><a href="opinion-dynamics-and-information-cascades.html#cb128-570" tabindex="-1"></a>        <span class="co"># Draw nodes with size based on opinion change</span></span>
+<span id="cb128-571"><a href="opinion-dynamics-and-information-cascades.html#cb128-571" tabindex="-1"></a>        node_sizes <span class="op">=</span> [<span class="dv">50</span> <span class="op">+</span> <span class="dv">200</span> <span class="op">*</span> op <span class="cf">for</span> op <span class="kw">in</span> opinions]</span>
+<span id="cb128-572"><a href="opinion-dynamics-and-information-cascades.html#cb128-572" tabindex="-1"></a>        nx.draw_networkx_nodes(</span>
+<span id="cb128-573"><a href="opinion-dynamics-and-information-cascades.html#cb128-573" tabindex="-1"></a>            model.G,</span>
+<span id="cb128-574"><a href="opinion-dynamics-and-information-cascades.html#cb128-574" tabindex="-1"></a>            model.pos_layout,</span>
+<span id="cb128-575"><a href="opinion-dynamics-and-information-cascades.html#cb128-575" tabindex="-1"></a>            node_color<span class="op">=</span>opinions,</span>
+<span id="cb128-576"><a href="opinion-dynamics-and-information-cascades.html#cb128-576" tabindex="-1"></a>            cmap<span class="op">=</span><span class="st">&#39;YlOrRd&#39;</span>,</span>
+<span id="cb128-577"><a href="opinion-dynamics-and-information-cascades.html#cb128-577" tabindex="-1"></a>            vmin<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb128-578"><a href="opinion-dynamics-and-information-cascades.html#cb128-578" tabindex="-1"></a>            vmax<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb128-579"><a href="opinion-dynamics-and-information-cascades.html#cb128-579" tabindex="-1"></a>            node_size<span class="op">=</span>node_sizes,</span>
+<span id="cb128-580"><a href="opinion-dynamics-and-information-cascades.html#cb128-580" tabindex="-1"></a>            ax<span class="op">=</span>ax</span>
+<span id="cb128-581"><a href="opinion-dynamics-and-information-cascades.html#cb128-581" tabindex="-1"></a>        )</span>
+<span id="cb128-582"><a href="opinion-dynamics-and-information-cascades.html#cb128-582" tabindex="-1"></a></span>
+<span id="cb128-583"><a href="opinion-dynamics-and-information-cascades.html#cb128-583" tabindex="-1"></a>        <span class="co"># Highlight influencer</span></span>
+<span id="cb128-584"><a href="opinion-dynamics-and-information-cascades.html#cb128-584" tabindex="-1"></a>        nx.draw_networkx_nodes(</span>
+<span id="cb128-585"><a href="opinion-dynamics-and-information-cascades.html#cb128-585" tabindex="-1"></a>            model.G,</span>
+<span id="cb128-586"><a href="opinion-dynamics-and-information-cascades.html#cb128-586" tabindex="-1"></a>            model.pos_layout,</span>
+<span id="cb128-587"><a href="opinion-dynamics-and-information-cascades.html#cb128-587" tabindex="-1"></a>            nodelist<span class="op">=</span>[influencer_node],</span>
+<span id="cb128-588"><a href="opinion-dynamics-and-information-cascades.html#cb128-588" tabindex="-1"></a>            node_color<span class="op">=</span><span class="st">&#39;red&#39;</span>,</span>
+<span id="cb128-589"><a href="opinion-dynamics-and-information-cascades.html#cb128-589" tabindex="-1"></a>            node_size<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb128-590"><a href="opinion-dynamics-and-information-cascades.html#cb128-590" tabindex="-1"></a>            node_shape<span class="op">=</span><span class="st">&#39;*&#39;</span>,</span>
+<span id="cb128-591"><a href="opinion-dynamics-and-information-cascades.html#cb128-591" tabindex="-1"></a>            ax<span class="op">=</span>ax</span>
+<span id="cb128-592"><a href="opinion-dynamics-and-information-cascades.html#cb128-592" tabindex="-1"></a>        )</span>
+<span id="cb128-593"><a href="opinion-dynamics-and-information-cascades.html#cb128-593" tabindex="-1"></a></span>
+<span id="cb128-594"><a href="opinion-dynamics-and-information-cascades.html#cb128-594" tabindex="-1"></a>        ax.set_title(<span class="ss">f&#39;Cascade Wave - Step </span><span class="sc">{</span>frame<span class="sc">}</span><span class="ch">\n</span><span class="ss">Red Star = Influencer, Size = Opinion Strength&#39;</span>,</span>
+<span id="cb128-595"><a href="opinion-dynamics-and-information-cascades.html#cb128-595" tabindex="-1"></a>                    fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">&#39;bold&#39;</span>)</span>
+<span id="cb128-596"><a href="opinion-dynamics-and-information-cascades.html#cb128-596" tabindex="-1"></a>        ax.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb128-597"><a href="opinion-dynamics-and-information-cascades.html#cb128-597" tabindex="-1"></a></span>
+<span id="cb128-598"><a href="opinion-dynamics-and-information-cascades.html#cb128-598" tabindex="-1"></a>    anim <span class="op">=</span> FuncAnimation(fig, animate, frames<span class="op">=</span>steps, interval<span class="op">=</span>interval, blit<span class="op">=</span><span class="va">False</span>, repeat<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb128-599"><a href="opinion-dynamics-and-information-cascades.html#cb128-599" tabindex="-1"></a>    <span class="cf">return</span> anim</span>
+<span id="cb128-600"><a href="opinion-dynamics-and-information-cascades.html#cb128-600" tabindex="-1"></a></span>
+<span id="cb128-601"><a href="opinion-dynamics-and-information-cascades.html#cb128-601" tabindex="-1"></a>anim3 <span class="op">=</span> create_cascade_wave_animation(steps<span class="op">=</span><span class="dv">50</span>, interval<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb128-602"><a href="opinion-dynamics-and-information-cascades.html#cb128-602" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;✓ Animation 3 created!&quot;</span>)</span>
+<span id="cb128-603"><a href="opinion-dynamics-and-information-cascades.html#cb128-603" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;  Watch the cascade wave spread from the influencer (red star)!&quot;</span>)</span>
+<span id="cb128-604"><a href="opinion-dynamics-and-information-cascades.html#cb128-604" tabindex="-1"></a>plt.show()</span>
+<span id="cb128-605"><a href="opinion-dynamics-and-information-cascades.html#cb128-605" tabindex="-1"></a></span>
+<span id="cb128-606"><a href="opinion-dynamics-and-information-cascades.html#cb128-606" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb128-607"><a href="opinion-dynamics-and-information-cascades.html#cb128-607" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span>
+<span id="cb128-608"><a href="opinion-dynamics-and-information-cascades.html#cb128-608" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;All animations complete! 🎉&quot;</span>)</span>
+<span id="cb128-609"><a href="opinion-dynamics-and-information-cascades.html#cb128-609" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">70</span>)</span></code></pre></div>
 
 </div>
 </div>
