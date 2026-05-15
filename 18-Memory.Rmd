@@ -238,3 +238,380 @@ Finally, this model could be used as a teaching bridge between simple Markov-sty
 The central lesson of this model is that mental health is not just a matter of current conditions. It is a cumulative, delayed, and socially embedded process. Agents remember stress, carry its effects forward, and respond differently depending on their resilience and vulnerability. Temporary shocks can therefore produce long-lasting consequences, and populations can remain altered long after an event itself has passed.
 
 That is what makes temporal agent-based models so valuable. They help us think beyond snapshots and toward trajectories. In a system with memory, the past is never really gone; it remains encoded in the pathways agents take through time. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC10030380/)
+
+
+
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  Temporal Dynamics: Memory, Delays & Path Dependence               ║
+# ║  Mesa ABM — Psychopathology with Memory Effects  (Google Colab)    ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+# ── Cell 1: Install ──────────────────────────────────────────────────
+# !pip install mesa matplotlib pandas numpy --quiet
+
+# ── Cell 2: Imports ──────────────────────────────────────────────────
+import mesa
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from collections import deque
+import random
+
+# ── Cell 3: Constants & State Definitions ────────────────────────────
+
+HEALTHY     = "Healthy"
+AT_RISK     = "At-Risk"
+SYMPTOMATIC = "Symptomatic"
+RECOVERING  = "Recovering"
+
+STATE_VALUE = {HEALTHY: 0, AT_RISK: 1, RECOVERING: 1.5, SYMPTOMATIC: 2}
+
+# ── Cell 4: Stress Event ─────────────────────────────────────────────
+
+class StressEvent:
+    def __init__(self, severity: float, duration: int, label: str = ""):
+        self.severity = severity
+        self.duration = duration
+        self.label = label
+        self.age = 0
+
+    def is_active(self) -> bool:
+        return self.age < self.duration
+
+    def tick(self):
+        self.age += 1
+
+
+STRESS_SCHEDULE = [
+    (10, StressEvent(0.6, 5, "Bereavement")),
+    (25, StressEvent(0.4, 3, "Job Loss")),
+    (40, StressEvent(0.8, 8, "Trauma")),
+    (55, StressEvent(0.3, 4, "Social Isolation")),
+]
+
+EVENT_STEPS  = [s for s, _ in STRESS_SCHEDULE]
+EVENT_LABELS = [e.label for _, e in STRESS_SCHEDULE]
+
+# ── Cell 5: Memory Agent ─────────────────────────────────────────────
+
+class MemoryAgent(mesa.Agent):
+    def __init__(self, model, memory_length: int = 10):
+        super().__init__(model)
+
+        self.memory = deque(maxlen=memory_length)
+        self.state_history = []
+        self.decisions_history = []
+
+        rng = model.rng
+        self.base_resilience = float(rng.uniform(0.3, 0.9))
+        self.vulnerability = float(rng.uniform(0.2, 0.9))
+        self.resilience = self.base_resilience
+
+        self.state = HEALTHY
+        self.steps_in_state = 0
+        self.cumulative_burden = 0.0
+
+    def make_decision(self) -> float:
+        recent = list(self.memory)[-5:]
+        if not recent:
+            return 0.0
+        weights = np.exp(np.linspace(0, 1, len(recent)))
+        return float(np.average(recent, weights=weights))
+
+    def social_stress(self) -> float:
+        n_symp = sum(1 for a in self.model.agent_list if a is not self and a.state == SYMPTOMATIC)
+        total = self.model.n_agents - 1
+        return 0.25 * (n_symp / total) if total > 0 else 0.0
+
+    def _transition(self, stress_load: float):
+        rng = self.model.rng
+        rand = float(rng.random())
+        delay = min(self.steps_in_state / 10.0, 0.5)
+
+        if self.state == HEALTHY:
+            p_to_risk = 0.03 + 0.90 * stress_load * self.vulnerability * (1 - 0.6 * self.resilience) - 0.05 * delay
+            p_to_risk = np.clip(p_to_risk, 0, 0.95)
+            if rand < p_to_risk:
+                self.state = AT_RISK
+                self.steps_in_state = 0
+
+        elif self.state == AT_RISK:
+            p_s = 0.05 + 0.85 * stress_load * self.vulnerability * (1 - 0.5 * self.resilience)
+            p_h = 0.02 + 0.35 * self.resilience * (1 - stress_load)
+            p_s = np.clip(p_s, 0, 0.90)
+            p_h = np.clip(p_h, 0, 0.90 - p_s)
+
+            if rand < p_s:
+                self.state = SYMPTOMATIC
+                self.steps_in_state = 0
+            elif rand < p_s + p_h:
+                self.state = HEALTHY
+                self.steps_in_state = 0
+
+        elif self.state == SYMPTOMATIC:
+            p_r = 0.04 + 0.30 * self.resilience * (1 - 0.5 * stress_load) + 0.02 * min(self.steps_in_state, 10)
+            p_r = np.clip(p_r, 0, 0.80)
+            if rand < p_r:
+                self.state = RECOVERING
+                self.steps_in_state = 0
+            self.resilience = max(self.resilience - 0.01, 0.05)
+
+        elif self.state == RECOVERING:
+            p_h = 0.08 + 0.45 * self.resilience
+            p_relapse = 0.02 + 0.35 * stress_load * self.vulnerability
+            p_h = np.clip(p_h, 0, 0.90)
+            p_relapse = np.clip(p_relapse, 0, 0.90 - p_h)
+
+            if rand < p_h:
+                self.state = HEALTHY
+                self.steps_in_state = 0
+                self.resilience = min(self.resilience + 0.05, self.base_resilience)
+            elif rand < p_h + p_relapse:
+                self.state = SYMPTOMATIC
+                self.steps_in_state = 0
+
+    def step(self):
+        event_stress = sum(ev.severity for ev in self.model.active_events)
+        event_stress = min(event_stress, 1.0) * self.vulnerability
+
+        contagion = self.social_stress()
+        current_stress = min(event_stress + contagion, 1.0)
+
+        self.memory.append(current_stress)
+        self.cumulative_burden += current_stress
+
+        stress_load = self.make_decision()
+        self._transition(stress_load)
+        self.steps_in_state += 1
+
+        self.state_history.append(self.state)
+        self.decisions_history.append(
+            (self.model.schedule_step, self.state, stress_load, self.resilience)
+        )
+
+# ── Cell 6: Model ────────────────────────────────────────────────────
+
+class MentalHealthModel(mesa.Model):
+    def __init__(self, n_agents: int = 100, memory_length: int = 10, seed: int = 42):
+        super().__init__(seed=seed)
+        self.n_agents = n_agents
+        self.memory_length = memory_length
+        self.schedule_step = 0
+
+        self.active_events = []
+
+        self._scheduled = [
+            (trigger, StressEvent(ev.severity, ev.duration, ev.label))
+            for trigger, ev in STRESS_SCHEDULE
+        ]
+
+        self.agent_list = []
+        for _ in range(n_agents):
+            a = MemoryAgent(self, memory_length=memory_length)
+            self.agent_list.append(a)
+
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                "Pct_Healthy": lambda m: m._pct(HEALTHY),
+                "Pct_AtRisk": lambda m: m._pct(AT_RISK),
+                "Pct_Symptomatic": lambda m: m._pct(SYMPTOMATIC),
+                "Pct_Recovering": lambda m: m._pct(RECOVERING),
+                "Mean_Resilience": lambda m: float(np.mean([a.resilience for a in m.agent_list])),
+                "Mean_Burden": lambda m: float(np.mean([a.cumulative_burden for a in m.agent_list])),
+                "N_Active_Events": lambda m: len(m.active_events),
+            },
+            agent_reporters={
+                "State": lambda a: a.state,
+                "Resilience": lambda a: a.resilience,
+                "CumulBurden": lambda a: a.cumulative_burden,
+                "Vulnerability": lambda a: a.vulnerability,
+            }
+        )
+
+        self.datacollector.collect(self)
+
+    def _pct(self, state: str) -> float:
+        return sum(1 for a in self.agent_list if a.state == state) / self.n_agents
+
+    def _trigger_events(self):
+        for trigger, ev in self._scheduled:
+            if trigger == self.schedule_step:
+                self.active_events.append(ev)
+
+    def _tick_events(self):
+        for ev in self.active_events:
+            ev.tick()
+        self.active_events = [ev for ev in self.active_events if ev.is_active()]
+
+    def step(self):
+        self._trigger_events()
+
+        shuffled_agents = self.agent_list[:]
+        self.random.shuffle(shuffled_agents)
+        for agent in shuffled_agents:
+            agent.step()
+
+        self._tick_events()
+        self.schedule_step += 1
+        self.datacollector.collect(self)
+
+# ── Cell 7: Run Simulation ───────────────────────────────────────────
+
+N_AGENTS = 100
+N_STEPS = 80
+
+model = MentalHealthModel(n_agents=N_AGENTS, memory_length=10, seed=42)
+
+print("Running simulation…")
+for t in range(N_STEPS):
+    model.step()
+    if (t + 1) % 20 == 0:
+        d = model.datacollector.get_model_vars_dataframe()
+        symp = d["Pct_Symptomatic"].iloc[-1]
+        res = d["Mean_Resilience"].iloc[-1]
+        print(f"  Step {t+1:3d} | Symptomatic: {symp:.1%} | Mean Resilience: {res:.3f}")
+
+df_model = model.datacollector.get_model_vars_dataframe()
+df_agents = model.datacollector.get_agent_vars_dataframe()
+
+print("\nFinal population distribution:")
+print(df_model[["Pct_Healthy", "Pct_AtRisk", "Pct_Symptomatic", "Pct_Recovering"]].iloc[-1].round(3))
+
+# ── Cell 8: Temporal / Path-Dependence Analysis ──────────────────────
+
+LAG = 5
+burden_lagged = df_model["Mean_Burden"].iloc[:-LAG].values
+symp_future = df_model["Pct_Symptomatic"].iloc[LAG:].values
+corr_lag = float(np.corrcoef(burden_lagged, symp_future)[0, 1])
+print(f"\nCross-lag r (Burden[t] -> Symptomatic[t+{LAG}]): {corr_lag:.3f}")
+
+final_agents = df_agents.xs(N_STEPS, level="Step")
+final_numeric = final_agents["State"].map(STATE_VALUE)
+cv = final_numeric.std() / (final_numeric.mean() + 1e-9)
+print(f"Path-dependence CV: {cv:.3f}")
+
+# ── Cell 9: Visualization ────────────────────────────────────────────
+
+COLORS = {
+    HEALTHY: "#2ecc71",
+    AT_RISK: "#f39c12",
+    SYMPTOMATIC: "#e74c3c",
+    RECOVERING: "#3498db",
+}
+
+fig = plt.figure(figsize=(20, 14))
+fig.patch.set_facecolor("#0f1117")
+gs = gridspec.GridSpec(3, 3, figure=fig, hspace=0.48, wspace=0.36)
+
+ax_pop = fig.add_subplot(gs[0, :2])
+ax_res = fig.add_subplot(gs[0, 2])
+ax_lag = fig.add_subplot(gs[1, :2])
+ax_dist = fig.add_subplot(gs[1, 2])
+ax_traj = fig.add_subplot(gs[2, :])
+
+title_kw = dict(color="white", fontsize=10, fontweight="bold", pad=6)
+label_kw = dict(color="#aaaaaa", fontsize=8)
+
+for ax in [ax_pop, ax_res, ax_lag, ax_dist, ax_traj]:
+    ax.set_facecolor("#1a1d2e")
+    ax.tick_params(colors="#aaaaaa", labelsize=7)
+    for sp in ax.spines.values():
+        sp.set_color("#333344")
+
+steps_x = np.arange(len(df_model))
+
+ax_pop.stackplot(
+    steps_x,
+    df_model["Pct_Healthy"].values,
+    df_model["Pct_AtRisk"].values,
+    df_model["Pct_Symptomatic"].values,
+    df_model["Pct_Recovering"].values,
+    labels=[HEALTHY, AT_RISK, SYMPTOMATIC, RECOVERING],
+    colors=[COLORS[k] for k in [HEALTHY, AT_RISK, SYMPTOMATIC, RECOVERING]],
+    alpha=0.82,
+)
+
+for es, el in zip(EVENT_STEPS, EVENT_LABELS):
+    ax_pop.axvline(es, color="white", lw=0.8, ls="--", alpha=0.5)
+    ax_pop.text(
+        es + 0.5, 0.94, el, color="white", fontsize=6,
+        rotation=90, va="top", alpha=0.85,
+        transform=ax_pop.get_xaxis_transform()
+    )
+
+ax_pop.set_title("Population Mental Health Dynamics (Path-Dependent)", **title_kw)
+ax_pop.set_xlabel("Simulation Step", **label_kw)
+ax_pop.set_ylabel("Fraction of Population", **label_kw)
+ax_pop.set_ylim(0, 1)
+ax_pop.legend(loc="lower right", fontsize=7, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6)
+
+ax_res.plot(steps_x, df_model["Mean_Resilience"].values, color="#a29bfe", lw=2)
+for es in EVENT_STEPS:
+    ax_res.axvline(es, color="white", lw=0.7, ls="--", alpha=0.4)
+ax_res.set_title("Mean Population Resilience", **title_kw)
+ax_res.set_xlabel("Step", **label_kw)
+ax_res.set_ylabel("Resilience", **label_kw)
+ax_res.set_ylim(0, 1)
+
+ax_lag.scatter(burden_lagged, symp_future, c="#fd79a8", alpha=0.55, s=20, edgecolors="none")
+if len(np.unique(burden_lagged)) > 1:
+    m, b = np.polyfit(burden_lagged, symp_future, 1)
+    xf = np.linspace(burden_lagged.min(), burden_lagged.max(), 100)
+    ax_lag.plot(xf, m * xf + b, color="white", lw=1.5)
+
+ax_lag.set_title(f"Cross-Lag: Burden[t] -> Symptomatic[t+{LAG}] (r = {corr_lag:.2f})", **title_kw)
+ax_lag.set_xlabel("Mean Cumulative Burden at t", **label_kw)
+ax_lag.set_ylabel("% Symptomatic at t+LAG", **label_kw)
+
+sc = final_agents["State"].value_counts()
+bars = ax_dist.bar(sc.index, sc.values, color=[COLORS.get(s, "gray") for s in sc.index])
+ax_dist.set_title("Final State Distribution", **title_kw)
+ax_dist.set_xlabel("State", **label_kw)
+ax_dist.set_ylabel("Agent Count", **label_kw)
+for bar, val in zip(bars, sc.values):
+    ax_dist.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5, str(val),
+                 ha="center", va="bottom", color="white", fontsize=8)
+
+agent_ids = sorted(
+    list(set(df_agents.index.get_level_values("AgentID"))),
+    key=lambda aid: df_agents.xs(1, level="Step").loc[aid, "Vulnerability"]
+)
+
+n_sample = min(8, len(agent_ids))
+sample_ids = [agent_ids[int(i * len(agent_ids) / n_sample)] for i in range(n_sample)]
+cmap = plt.cm.plasma
+
+for idx, aid in enumerate(sample_ids):
+    traj = df_agents.xs(aid, level="AgentID")
+    steps_a = traj.index
+    numeric = traj["State"].map(STATE_VALUE).fillna(0)
+    vuln = traj["Vulnerability"].iloc[0]
+    ax_traj.plot(
+        steps_a, numeric,
+        color=cmap(idx / max(n_sample - 1, 1)),
+        alpha=0.75, lw=1.3,
+        label=f"Agent {aid} (vuln={vuln:.2f})"
+    )
+
+for es in EVENT_STEPS:
+    ax_traj.axvline(es, color="white", lw=0.7, ls="--", alpha=0.35)
+
+ax_traj.set_yticks([0, 1, 1.5, 2])
+ax_traj.set_yticklabels(["Healthy", "At-Risk", "Recovering", "Symptomatic"], color="#aaaaaa", fontsize=7)
+ax_traj.set_title(
+    "Individual Trajectories — Path Dependence & Memory Effects",
+    **title_kw
+)
+ax_traj.set_xlabel("Simulation Step", **label_kw)
+ax_traj.legend(loc="upper right", fontsize=6, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6, ncol=2)
+
+fig.suptitle(
+    "Temporal Dynamics: Memory, Delays & Path Dependence in Mental Health\n"
+    "Mesa ABM · Iterated Psychopathology Simulation",
+    color="white", fontsize=13, fontweight="bold", y=0.99
+)
+
+plt.savefig("mental_health_memory_abm.png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
+plt.show()
+print("Chart saved.")
