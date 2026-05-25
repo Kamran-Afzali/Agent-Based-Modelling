@@ -1,0 +1,1180 @@
+
+## MDP design
+
+Formally, define each agent’s decision problem as an MDP $(S, A, P, R, \gamma)$, where the environment is the ABM plus the agent’s own internal history. In this setup, the current implementation already gives you a stochastic transition system, but not yet a true control problem, because agents do not choose actions that affect the transition kernel.[^2]
+
+The first design choice is therefore: **what does an agent control?** The state should include only variables available to the agent at decision time, while the action should represent a feasible behavioral response such as self-care intensity, help-seeking, avoidance, or social engagement.[^1][^2]
+
+### State space
+
+A practical agent state for learning should be a compressed representation rather than the full continuous model state, because tabular Q-learning works best on finite discrete spaces. I would define the observable agent state as
+
+$$
+s_i(t)=\big(x_i(t),\, b_i(t),\, r_i(t),\, c_i(t),\, n_i(t)\big)
+$$
+
+where $x_i$ is mental-health state, $b_i$ is recent burden bin, $r_i$ is resilience bin, $c_i$ is local contagion/support exposure bin, and $n_i$ is neighborhood condition such as degree or fraction symptomatic among neighbors.[^2]
+
+A concrete discretization could be:
+
+- $x_i \in \{\text{Healthy}, \text{AtRisk}, \text{Symptomatic}, \text{Recovering}\}$
+- $b_i \in \{\text{low}, \text{medium}, \text{high}\}$
+- $r_i \in \{\text{low}, \text{medium}, \text{high}\}$
+- $c_i \in \{\text{low}, \text{high}\}$
+- $n_i \in \{\text{isolated}, \text{connected}\}$ or local symptomatic fraction bins.[^2]
+
+This gives a manageable finite state space for tabular Q-learning and preserves the model’s substantive story: current clinical state, accumulated burden, resilience, and local social environment jointly shape behavior.[^2]
+
+### Action space
+
+For your model, the most defensible action space is **behavioral regulation**, not direct “move to Healthy” state transitions. In other words, actions should modify stress processing, resilience, or network interaction probabilities rather than directly set the health state.[^1][^2]
+
+I recommend one of these three action-space designs:
+
+
+| Design | Actions | Best use |
+| :-- | :-- | :-- |
+| Coping only | Do nothing, self-regulate, seek help, withdraw | Simplest first version |
+| Social only | Maintain ties, seek supportive contact, avoid symptomatic contacts, form new ties | Best if network dynamics are central |
+| Hybrid | Self-regulate, seek help, socialize, withdraw, rewire ties | Most realistic but more complex |
+
+A good first implementation is the **hybrid but small** action set:
+
+- $a_0$: passive / no action
+- $a_1$: coping effort, lowers effective stress load but has a cost
+- $a_2$: seek support, increases chance of contact with healthy/recovering neighbors and may boost resilience
+- $a_3$: withdraw, reduces contagion exposure but also reduces support
+- $a_4$: rewire social tie, replace one neighbor based on a rule.[^3][^2]
+
+That gives real agency without making the model clinically implausible. The action is not “become healthy”; the action is “do something that changes the odds of future trajectories.”[^2]
+
+## Q-learning integration
+
+Once actions exist, the per-agent learner can use Q-learning with the usual update
+
+$$
+Q_i(s_t,a_t)\leftarrow Q_i(s_t,a_t)+\alpha\Big[r_t+\gamma \max_{a'}Q_i(s_{t+1},a')-Q_i(s_t,a_t)\Big].
+$$
+
+This is appropriate when the transition law is unknown and the agent learns from simulated experience rather than from an explicit model.[^2]
+
+### Reward design
+
+The reward is the hardest and most important modeling choice. If reward is badly chosen, the agents will learn odd but mathematically correct behavior.[^2]
+
+Use a reward with four components:
+
+$$
+r_i(t)=w_1\,H_i(t)+w_2\,\Delta R_i(t)-w_3\,L_i(t)-w_4\,C(a_i(t)),
+$$
+
+where:
+
+- $H_i(t)$ rewards good mental-health states,
+- $\Delta R_i(t)$ rewards resilience gain,
+- $L_i(t)$ penalizes stress burden or symptom severity,
+- $C(a_i)$ penalizes costly actions such as intense coping or rewiring.[^2]
+
+A concrete mapping:
+
+- Healthy: $+2$
+- Recovering: $+1$
+- At-Risk: $-1$
+- Symptomatic: $-3$
+- Additional penalty: $-\lambda \times \text{stress\_load}$
+- Action cost: small negative for coping, help-seeking, and rewiring.[^2]
+
+This prevents degenerate policies like constant rewiring or constant withdrawal. It also reflects that maintaining health matters, but all protective actions are not free.[^2]
+
+### Where the action enters
+
+The current model computes stress, stores memory, and then transitions probabilistically. To add learning, insert action choice before transition and let the action alter the transition inputs:
+
+$$
+\tilde{\sigma}_i(t)=f\big(\sigma_i^{\text{event}}(t),\,\sigma_i^{\text{social}}(t),\,a_i(t)\big),
+$$
+
+$$
+P\big(x_i(t+1)\mid x_i(t),\tilde{\sigma}_i(t),R_i(t),V_i,N_i(t)\big).
+$$
+
+Here $a_i(t)$ changes effective stress, resilience drift, or neighborhood exposure, but the clinical state transition remains stochastic.[^2]
+
+For example:
+
+- coping reduces effective stress by factor $(1-\eta_c)$,
+- seek support increases resilience by $+\delta_s$ if supportive contacts are available,
+- withdrawal reduces contagion term but also reduces support term,
+- rewiring changes future neighbors and therefore future social exposure.[^3][^2]
+
+
+### Pseudocode
+
+```text
+For each step t:
+    trigger global stress events
+    update network if exogenous rewiring occurs
+
+    shuffle agents
+    For each agent i:
+        observe local state s_i(t)
+        choose action a_i(t) using epsilon-greedy policy from Q_i
+        apply action effect to:
+            effective stress
+            resilience drift
+            support access
+            rewiring probabilities
+
+    For each agent i:
+        compute event stress
+        compute neighbor contagion/support stress
+        update memory buffer
+        compute stress_load from memory
+        sample next mental-health state x_i(t+1)
+        compute reward r_i(t)
+        observe next state s_i(t+1)
+        update Q_i(s_i(t), a_i(t))
+```
+
+This two-phase update is better than immediate sequential updating because it reduces order effects between action choice and network consequences.[^1][^2]
+
+## Neighbor interaction
+
+Your current “social contagion” is a mean-field term based on the fraction symptomatic in the whole population. To add neighbors, replace that with a local exposure process on a graph $G_t=(V,E_t)$, where the edge set may change over time. Dynamic social networks are a natural way to model changing contacts, clustering, and exposure heterogeneity.[^3][^2]
+
+### Network formalism
+
+Let $N_i(t)$ be the current neighbor set of agent $i$. Then define social exposure as
+
+$$
+\sigma_i^{\text{social}}(t)=
+\beta_c \cdot \frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)=\text{Symptomatic}\}
+\;-\;
+\beta_s \cdot \frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)\in\{\text{Healthy},\text{Recovering}\},
+$$
+
+possibly with weighted edges $w_{ij}(t)$. This allows both negative contagion and positive support instead of only harmful exposure.[^3][^2]
+
+A weighted version is even better:
+
+$$
+\sigma_i^{\text{social}}(t)=
+\sum_{j\in N_i(t)} w_{ij}(t)\,g(x_j(t)),
+$$
+
+where $g(\text{Healthy})<0$, $g(\text{Recovering})<0$, $g(\text{AtRisk})\approx 0$, and $g(\text{Symptomatic})>0$.[^2]
+
+### What “interaction” should mean
+
+Do not limit interaction to passive contagion. Let an interaction event have one of several consequences:
+
+- stress contagion,
+- supportive buffering,
+- tie strengthening,
+- tie weakening,
+- information transfer affecting action choice.[^3][^2]
+
+A simple interaction kernel is:
+
+$$
+I_{ij}(t) \sim \text{Bernoulli}(p_{ij}(t)),
+$$
+
+where $p_{ij}(t)$ depends on edge weight, homophily, prior interaction, and possibly actions such as “seek support.” If interaction occurs, update stress/support and optionally update edge weight:
+
+$$
+w_{ij}(t+1)=w_{ij}(t)+\rho \cdot h(x_i(t),x_j(t),a_i(t),a_j(t)).
+$$
+
+This lets relationships strengthen or decay endogenously.[^3]
+
+## Dynamic neighbors
+
+The neighbors may change through a rewiring rule. This should be explicit and separate from contagion.[^4][^3]
+
+### Rewiring mechanisms
+
+Use one or more of these:
+
+- **Random turnover**: with probability $p_{\text{rewire}}$, drop one edge and form another uniformly at random.
+- **Homophily**: agents prefer ties to similar resilience/state/action profiles.
+- **Avoidance**: healthy or coping agents may sever ties to highly symptomatic neighbors.
+- **Support seeking**: distressed agents may seek ties to healthy/recovering neighbors.
+- **Reciprocity / inertia**: strong ties are hard to break.[^3][^2]
+
+A clean formal rule:
+
+$$
+\Pr\big((i,j)\in E_{t+1}\big)\propto
+\exp\Big(
+\theta_1 \cdot \text{similarity}_{ij}
++\theta_2 \cdot \text{supportiveness}_j
+-\theta_3 \cdot \text{burden}_j
++\theta_4 \cdot \text{prior tie}_{ij}
+\Big).
+$$
+
+This turns neighbor change into an adaptive network process rather than an arbitrary graph shuffle.[^3]
+
+### Minimal pseudocode for rewiring
+
+```text
+For each agent i:
+    With probability p_drop(i,t):
+        choose current neighbor j to drop
+            probability increases if tie weak or contagion high
+    With probability p_add(i,t):
+        choose candidate k not currently connected
+            probability increases with similarity, supportiveness, proximity, prior contact
+    add edge (i,k) if degree constraints allow
+```
+
+Degree constraints matter. Without them, the graph can densify unrealistically or collapse into isolates.[^2]
+
+## Recommended implementation order
+
+You should not add everything at once. Add structure in four stages so you can identify what changes the model behavior.[^1][^2]
+
+### Stage 1: Local network without learning
+
+Replace population-wide contagion with neighbor-based contagion on a fixed graph. Keep the current transition equations unchanged except for replacing global symptomatic fraction with local weighted neighbor exposure.[^1][^2]
+
+### Stage 2: Dynamic network
+
+Add rewiring rules, still without Q-learning. This isolates the effect of adaptive neighborhood structure on trajectories and path dependence.[^3]
+
+### Stage 3: Q-learning with non-network actions
+
+Add a small action space such as passive, cope, seek support, withdraw. Let actions affect stress load and resilience, but not yet rewiring. This isolates whether learning stabilizes agents even in a static or exogenously changing network.[^1][^2]
+
+### Stage 4: Full coevolution
+
+Let one action affect tie formation or severing, and let network experience affect the learned policy. At this stage you have a coevolving system: health affects ties, ties affect exposure, exposure affects reward, reward updates policy.[^3][^2]
+
+## Design cautions
+
+The biggest conceptual issue is that the environment is **non-stationary** because all agents learn simultaneously and the network changes too. Standard tabular Q-learning assumes a stationary environment, so convergence guarantees weaken in this setting. In practice, it can still be useful, but interpret it as adaptive behavior rather than guaranteed optimal control.[^1][^2]
+
+A second issue is observability. If agents do not observe the full local network or true resilience of neighbors, the problem is closer to a partially observed decision process. You can still use Q-learning with binned observations, but conceptually you are approximating a POMDP with an observed-state surrogate.[^2]
+
+A third issue is calibration. Once actions and network rewiring are added, many parameter combinations can produce similar aggregate curves. Plan from the beginning to run sensitivity analyses over $\alpha, \gamma, \epsilon$, rewiring probabilities, contagion strength, support strength, and reward weights.[^2]
+
+## Suggested formal specification
+
+I would write the upgraded model as a coupled process:
+
+$$
+x_i(t+1)\sim P_x\big(x_i(t), m_i(t), R_i(t), V_i, N_i(t), a_i(t)\big)
+$$
+
+$$
+m_i(t+1)=\Phi\big(m_i(t), \sigma_i^{\text{event}}(t), \sigma_i^{\text{social}}(t), a_i(t)\big)
+$$
+
+$$
+E_{t+1}\sim P_E\big(E_t, X_t, A_t, W_t\big)
+$$
+
+$$
+Q_i \leftarrow \mathcal{U}\big(Q_i, s_i(t), a_i(t), r_i(t), s_i(t+1)\big)
+$$
+
+where:
+
+- $x_i$ is mental-health state,
+- $m_i$ is memory/burden state,
+- $E_t$ is the dynamic network,
+- $A_t$ is the action profile,
+- $Q_i$ is agent $i$’s action-value table.[^3][^2]
+
+That decomposition will help you keep the implementation modular:
+
+1. internal stress-memory module,
+2. network interaction module,
+3. clinical transition module,
+4. RL policy module.[^1][^2]
+
+## Concrete recommendation
+
+For a first serious version, I would use:
+
+- fixed small discrete state abstraction,
+- 4 actions: passive, cope, seek support, withdraw,
+- weighted local contagion/support on a fixed-degree network,
+- rewiring as an exogenous process first, then as a learned action later.[^3][^2]
+
+That gets you most of the scientific value without immediately creating an unstable multi-agent RL system. After that, you can compare four models: baseline, network-only, RL-only, and full coevolution. Those comparisons will tell you whether learning changes resilience trajectories, whether adaptive neighborhoods amplify inequality, and whether path dependence becomes stronger or weaker.[^2]
+
+Would you like me to turn this into a **model specification document** with notation, update equations, and a step-by-step implementation checklist?
+<span style="display:none">[^10][^5][^6][^7][^8][^9]</span>
+
+<div align="center">⁂</div>
+
+[^1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/
+
+[^2]: https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/
+
+[^3]: https://www.sciencedirect.com/science/article/pii/S0167278925000090
+
+[^4]: https://www.mimuw.edu.pl/~noble/courses/QPEDataScience/Resources/DynamicSocialNetworksAgentBased.pdf
+
+[^5]: https://www.reddit.com/r/Python/comments/1r5lkyh/mesa_350_agentbased_modeling_now_with/
+
+[^6]: https://en.wikipedia.org/wiki/Markov_decision_process
+
+[^7]: https://mesa.readthedocs.io
+
+[^8]: https://ceur-ws.org/Vol-627/mass_10.pdf
+
+[^9]: https://www.youtube.com/watch?v=u-XeFNeImyk
+
+[^10]: https://people.stfx.ca/jdelamer/courses/csci-531/lectures/mdp/markov-decison-process/markov_decision_process.html
+
+
+
+```
+import mesa
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import networkx as nx
+
+from collections import deque, defaultdict
+from enum import IntEnum
+
+# ============================================================
+# Constants
+# ============================================================
+
+HEALTHY = "Healthy"
+AT_RISK = "At-Risk"
+SYMPTOMATIC = "Symptomatic"
+RECOVERING = "Recovering"
+
+MENTAL_STATES = [HEALTHY, AT_RISK, SYMPTOMATIC, RECOVERING]
+
+STATE_VALUE = {
+    HEALTHY: 0.0,
+    AT_RISK: 1.0,
+    RECOVERING: 1.5,
+    SYMPTOMATIC: 2.0,
+}
+
+STATE_REWARD = {
+    HEALTHY: 2.0,
+    RECOVERING: 1.0,
+    AT_RISK: -1.0,
+    SYMPTOMATIC: -3.0,
+}
+
+COLORS = {
+    HEALTHY: "#2ecc71",
+    AT_RISK: "#f39c12",
+    SYMPTOMATIC: "#e74c3c",
+    RECOVERING: "#3498db",
+}
+
+class Action(IntEnum):
+    PASSIVE = 0
+    COPE = 1
+    SEEK_SUPPORT = 2
+    WITHDRAW = 3
+    REWIRE = 4
+
+ACTION_LABELS = {
+    Action.PASSIVE: "Passive",
+    Action.COPE: "Cope",
+    Action.SEEK_SUPPORT: "SeekSupport",
+    Action.WITHDRAW: "Withdraw",
+    Action.REWIRE: "Rewire",
+}
+
+ACTION_COST = {
+    Action.PASSIVE: 0.00,
+    Action.COPE: 0.08,
+    Action.SEEK_SUPPORT: 0.06,
+    Action.WITHDRAW: 0.05,
+    Action.REWIRE: 0.10,
+}
+
+# ============================================================
+# Stress Events
+# ============================================================
+
+class StressEvent:
+    def __init__(self, severity: float, duration: int, label: str = ""):
+        self.severity = float(severity)
+        self.duration = int(duration)
+        self.label = label
+        self.age = 0
+
+    def is_active(self) -> bool:
+        return self.age < self.duration
+
+    def tick(self):
+        self.age += 1
+
+
+STRESS_SCHEDULE = [
+    (10, StressEvent(0.6, 5, "Bereavement")),
+    (25, StressEvent(0.4, 3, "Job Loss")),
+    (40, StressEvent(0.8, 8, "Trauma")),
+    (55, StressEvent(0.3, 4, "Social Isolation")),
+]
+
+EVENT_STEPS = [s for s, _ in STRESS_SCHEDULE]
+EVENT_LABELS = [e.label for _, e in STRESS_SCHEDULE]
+
+# ============================================================
+# Agent
+# ============================================================
+
+class CoevolvingMentalHealthAgent(mesa.Agent):
+    def __init__(self, model, memory_length: int = 10):
+        super().__init__(model)
+
+        self.memory = deque(maxlen=memory_length)
+        self.state_history = []
+        self.action_history = []
+        self.reward_history = []
+
+        rng = model.rng
+        self.base_resilience = float(rng.uniform(0.35, 0.90))
+        self.vulnerability = float(rng.uniform(0.20, 0.90))
+        self.resilience = self.base_resilience
+
+        self.state = HEALTHY
+        self.steps_in_state = 0
+        self.cumulative_burden = 0.0
+
+        self.last_action = Action.PASSIVE
+        self.last_reward = 0.0
+
+        self.q = defaultdict(float)
+
+        # cached per-step values
+        self._obs_state = None
+        self._stress_load = 0.0
+        self._event_stress = 0.0
+        self._social_stress = 0.0
+        self._support_signal = 0.0
+        self._effective_stress = 0.0
+        self._did_rewire = False
+
+    # -------------------------
+    # Network helpers
+    # -------------------------
+    def neighbors(self):
+        return [self.model.agent_map[n] for n in self.model.network.neighbors(self.unique_id)]
+
+    def degree(self):
+        return int(self.model.network.degree[self.unique_id])
+
+    def edge_weight(self, other_id):
+        return float(self.model.network[self.unique_id][other_id].get("weight", 1.0))
+
+    # -------------------------
+    # RL state abstraction
+    # -------------------------
+    def burden_bin(self):
+        avg_recent = np.mean(self.memory) if len(self.memory) > 0 else 0.0
+        if avg_recent < 0.20:
+            return 0
+        elif avg_recent < 0.45:
+            return 1
+        return 2
+
+    def resilience_bin(self):
+        if self.resilience < 0.40:
+            return 0
+        elif self.resilience < 0.70:
+            return 1
+        return 2
+
+    def local_symptom_fraction(self):
+        neigh = self.neighbors()
+        if not neigh:
+            return 0.0
+        weighted = 0.0
+        total_w = 0.0
+        for a in neigh:
+            w = self.edge_weight(a.unique_id)
+            total_w += w
+            if a.state == SYMPTOMATIC:
+                weighted += w
+        return weighted / total_w if total_w > 0 else 0.0
+
+    def local_symptom_bin(self):
+        frac = self.local_symptom_fraction()
+        if frac < 0.15:
+            return 0
+        elif frac < 0.45:
+            return 1
+        return 2
+
+    def degree_bin(self):
+        d = self.degree()
+        if d <= self.model.min_degree + 1:
+            return 0
+        elif d <= self.model.target_degree + 1:
+            return 1
+        return 2
+
+    def observe_state(self):
+        return (
+            self.state,
+            self.burden_bin(),
+            self.resilience_bin(),
+            self.local_symptom_bin(),
+            self.degree_bin(),
+        )
+
+    # -------------------------
+    # Q learning
+    # -------------------------
+    def q_value(self, obs_state, action):
+        return self.q[(obs_state, int(action))]
+
+    def choose_action(self):
+        s = self.observe_state()
+        self._obs_state = s
+
+        if float(self.model.rng.random()) < self.model.epsilon:
+            a = Action(int(self.model.rng.integers(0, len(Action))))
+            return a
+
+        q_vals = np.array([self.q_value(s, a) for a in Action], dtype=float)
+        max_q = np.max(q_vals)
+        best_actions = [Action(i) for i, qv in enumerate(q_vals) if np.isclose(qv, max_q)]
+        return self.model.random.choice(best_actions)
+
+    def update_q(self, old_state, action, reward, new_state):
+        old_q = self.q[(old_state, int(action))]
+        future_max = max(self.q[(new_state, int(a))] for a in Action)
+        updated = old_q + self.model.alpha * (
+            reward + self.model.gamma * future_max - old_q
+        )
+        self.q[(old_state, int(action))] = float(updated)
+
+    # -------------------------
+    # Social dynamics
+    # -------------------------
+    def social_signals(self):
+        neigh = self.neighbors()
+        if not neigh:
+            return 0.0, 0.0
+
+        contagion_sum = 0.0
+        support_sum = 0.0
+        total_w = 0.0
+
+        for other in neigh:
+            w = self.edge_weight(other.unique_id)
+            total_w += w
+
+            if other.state == SYMPTOMATIC:
+                contagion_sum += w
+            elif other.state in (HEALTHY, RECOVERING):
+                support_sum += w
+
+        if total_w <= 0:
+            return 0.0, 0.0
+
+        contagion = self.model.beta_contagion * (contagion_sum / total_w)
+        support = self.model.beta_support * (support_sum / total_w)
+        return float(contagion), float(support)
+
+    def event_stress(self):
+        total = sum(ev.severity for ev in self.model.active_events)
+        total = min(total, 1.0)
+        return float(total * self.vulnerability)
+
+    # -------------------------
+    # Action effects
+    # -------------------------
+    def apply_action_effects(self, action, event_stress, contagion, support):
+        stress = event_stress + contagion - support
+        stress = max(0.0, min(stress, 1.5))
+
+        resilience_bonus = 0.0
+        support_bonus = 0.0
+        self._did_rewire = False
+
+        if action == Action.PASSIVE:
+            pass
+
+        elif action == Action.COPE:
+            stress *= (1.0 - self.model.cope_stress_reduction)
+            resilience_bonus += self.model.cope_resilience_gain
+
+        elif action == Action.SEEK_SUPPORT:
+            stress *= (1.0 - self.model.support_stress_reduction)
+            support_bonus += self.model.seek_support_bonus
+            resilience_bonus += self.model.seek_support_resilience_gain
+
+        elif action == Action.WITHDRAW:
+            contagion *= (1.0 - self.model.withdraw_contagion_reduction)
+            support *= (1.0 - self.model.withdraw_support_loss)
+            stress = max(0.0, min(event_stress + contagion - support, 1.5))
+            resilience_bonus -= self.model.withdraw_resilience_penalty
+
+        elif action == Action.REWIRE:
+            rewired = self.rewire_one_tie()
+            self._did_rewire = rewired
+            if rewired:
+                support_bonus += self.model.rewire_support_bonus
+                stress *= (1.0 - self.model.rewire_stress_reduction)
+
+        support += support_bonus
+        self.resilience = float(np.clip(self.resilience + resilience_bonus, 0.05, 1.0))
+        stress = max(0.0, min(event_stress + contagion - support, 1.5))
+
+        return float(contagion), float(support), float(stress)
+
+    def rewire_one_tie(self):
+        current_neighbors = self.neighbors()
+        if len(current_neighbors) <= self.model.min_degree:
+            return False
+
+        # choose the "worst" current tie: symptomatic, high burden, weak tie preferred for drop
+        scored_neighbors = []
+        for n in current_neighbors:
+            w = self.edge_weight(n.unique_id)
+            burden = n.cumulative_burden / max(1, self.model.schedule_step + 1)
+            symptom_penalty = 1.0 if n.state == SYMPTOMATIC else 0.0
+            score = 1.5 * symptom_penalty + 0.7 * burden - 0.4 * w
+            scored_neighbors.append((score, n))
+
+        scored_neighbors.sort(key=lambda x: x[0], reverse=True)
+        drop_agent = scored_neighbors[0][1]
+
+        candidates = []
+        existing_ids = {n.unique_id for n in current_neighbors}
+        existing_ids.add(self.unique_id)
+
+        for aid, candidate in self.model.agent_map.items():
+            if aid in existing_ids:
+                continue
+            if self.model.network.degree[aid] >= self.model.max_degree:
+                continue
+
+            similarity = 1.0 - abs(candidate.resilience - self.resilience)
+            supportiveness = 1.0 if candidate.state in (HEALTHY, RECOVERING) else 0.0
+            burden_penalty = candidate.cumulative_burden / max(1, self.model.schedule_step + 1)
+            score = 1.2 * similarity + 1.4 * supportiveness - 0.8 * burden_penalty
+            candidates.append((score, candidate))
+
+        if not candidates:
+            return False
+
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        top_k = candidates[: min(10, len(candidates))]
+        weights = np.array([max(0.01, s + 0.01) for s, _ in top_k], dtype=float)
+        weights /= weights.sum()
+
+        idx = int(self.model.rng.choice(np.arange(len(top_k)), p=weights))
+        new_agent = top_k[idx][1]
+
+        if self.model.network.has_edge(self.unique_id, drop_agent.unique_id):
+            self.model.network.remove_edge(self.unique_id, drop_agent.unique_id)
+
+        self.model.network.add_edge(
+            self.unique_id,
+            new_agent.unique_id,
+            weight=float(self.model.rng.uniform(0.5, 1.0)),
+            age=0,
+        )
+
+        return True
+
+    # -------------------------
+    # Transition dynamics
+    # -------------------------
+    def make_decision_stress(self):
+        recent = list(self.memory)[-5:]
+        if not recent:
+            return 0.0
+        weights = np.exp(np.linspace(0, 1, len(recent)))
+        return float(np.average(recent, weights=weights))
+
+    def _transition(self, stress_load: float):
+        rng = self.model.rng
+        rand = float(rng.random())
+        delay = min(self.steps_in_state / 10.0, 0.5)
+
+        if self.state == HEALTHY:
+            p_to_risk = (
+                0.03
+                + 0.90 * stress_load * self.vulnerability * (1 - 0.6 * self.resilience)
+                - 0.05 * delay
+            )
+            p_to_risk = np.clip(p_to_risk, 0, 0.95)
+            if rand < p_to_risk:
+                self.state = AT_RISK
+                self.steps_in_state = 0
+
+        elif self.state == AT_RISK:
+            p_s = 0.05 + 0.85 * stress_load * self.vulnerability * (1 - 0.5 * self.resilience)
+            p_h = 0.02 + 0.35 * self.resilience * (1 - stress_load)
+            p_s = np.clip(p_s, 0, 0.90)
+            p_h = np.clip(p_h, 0, 0.90 - p_s)
+
+            if rand < p_s:
+                self.state = SYMPTOMATIC
+                self.steps_in_state = 0
+            elif rand < p_s + p_h:
+                self.state = HEALTHY
+                self.steps_in_state = 0
+
+        elif self.state == SYMPTOMATIC:
+            p_r = 0.04 + 0.30 * self.resilience * (1 - 0.5 * stress_load) + 0.02 * min(self.steps_in_state, 10)
+            p_r = np.clip(p_r, 0, 0.80)
+            if rand < p_r:
+                self.state = RECOVERING
+                self.steps_in_state = 0
+            self.resilience = max(self.resilience - self.model.symptomatic_resilience_decay, 0.05)
+
+        elif self.state == RECOVERING:
+            p_h = 0.08 + 0.45 * self.resilience
+            p_relapse = 0.02 + 0.35 * stress_load * self.vulnerability
+            p_h = np.clip(p_h, 0, 0.90)
+            p_relapse = np.clip(p_relapse, 0, 0.90 - p_h)
+
+            if rand < p_h:
+                self.state = HEALTHY
+                self.steps_in_state = 0
+                self.resilience = min(self.resilience + self.model.recovery_resilience_gain, self.base_resilience)
+            elif rand < p_h + p_relapse:
+                self.state = SYMPTOMATIC
+                self.steps_in_state = 0
+
+    # -------------------------
+    # Reward
+    # -------------------------
+    def compute_reward(self, prev_resilience):
+        state_term = STATE_REWARD[self.state]
+        burden_penalty = self.model.reward_burden_weight * self._stress_load
+        resilience_term = self.model.reward_resilience_weight * (self.resilience - prev_resilience)
+        tie_penalty = self.model.reward_isolation_penalty if self.degree() == 0 else 0.0
+        action_cost = ACTION_COST[self.last_action]
+        reward = state_term + resilience_term - burden_penalty - action_cost - tie_penalty
+        return float(reward)
+
+    # -------------------------
+    # One step
+    # -------------------------
+    def step(self):
+        prev_resilience = self.resilience
+        old_state = self.observe_state()
+
+        action = self.choose_action()
+        self.last_action = action
+
+        ev_stress = self.event_stress()
+        contagion, support = self.social_signals()
+
+        contagion, support, effective_stress = self.apply_action_effects(
+            action, ev_stress, contagion, support
+        )
+
+        current_stress = max(0.0, min(effective_stress, 1.0))
+        self.memory.append(current_stress)
+        self.cumulative_burden += current_stress
+
+        stress_load = self.make_decision_stress()
+        self._event_stress = ev_stress
+        self._social_stress = contagion
+        self._support_signal = support
+        self._effective_stress = effective_stress
+        self._stress_load = stress_load
+
+        self._transition(stress_load)
+        self.steps_in_state += 1
+
+        reward = self.compute_reward(prev_resilience)
+        self.last_reward = reward
+        new_state = self.observe_state()
+        self.update_q(old_state, action, reward, new_state)
+
+        self.state_history.append(self.state)
+        self.action_history.append(int(action))
+        self.reward_history.append(reward)
+
+# ============================================================
+# Model
+# ============================================================
+
+class FullCoevolutionMentalHealthModel(mesa.Model):
+    def __init__(
+        self,
+        n_agents: int = 100,
+        memory_length: int = 10,
+        seed: int = 42,
+        target_degree: int = 6,
+        small_world_p: float = 0.12,
+    ):
+        super().__init__(seed=seed)
+
+        self.n_agents = int(n_agents)
+        self.memory_length = int(memory_length)
+        self.schedule_step = 0
+
+        # learning
+        self.alpha = 0.18
+        self.gamma = 0.92
+        self.epsilon = 0.18
+        self.epsilon_min = 0.03
+        self.epsilon_decay = 0.992
+
+        # network
+        self.target_degree = int(target_degree)
+        self.min_degree = max(1, target_degree // 2)
+        self.max_degree = max(target_degree + 3, target_degree + 1)
+        self.exogenous_rewire_prob = 0.02
+        self.tie_decay = 0.01
+        self.tie_strengthen = 0.03
+
+        # social dynamics
+        self.beta_contagion = 0.35
+        self.beta_support = 0.22
+
+        # action effect parameters
+        self.cope_stress_reduction = 0.25
+        self.cope_resilience_gain = 0.01
+
+        self.support_stress_reduction = 0.12
+        self.seek_support_bonus = 0.10
+        self.seek_support_resilience_gain = 0.015
+
+        self.withdraw_contagion_reduction = 0.55
+        self.withdraw_support_loss = 0.45
+        self.withdraw_resilience_penalty = 0.01
+
+        self.rewire_support_bonus = 0.06
+        self.rewire_stress_reduction = 0.08
+
+        # clinical drift
+        self.symptomatic_resilience_decay = 0.01
+        self.recovery_resilience_gain = 0.05
+
+        # reward
+        self.reward_burden_weight = 1.6
+        self.reward_resilience_weight = 6.0
+        self.reward_isolation_penalty = 0.3
+
+        self.active_events = []
+        self._scheduled = [
+            (trigger, StressEvent(ev.severity, ev.duration, ev.label))
+            for trigger, ev in STRESS_SCHEDULE
+        ]
+
+        # build network
+        if self.target_degree >= self.n_agents:
+            raise ValueError("target_degree must be < n_agents")
+        if self.target_degree % 2 == 1:
+            self.target_degree += 1  # Watts-Strogatz prefers even k
+
+        self.network = nx.watts_strogatz_graph(
+            n=self.n_agents,
+            k=self.target_degree,
+            p=small_world_p,
+            seed=seed
+        )
+
+        for u, v in self.network.edges():
+            self.network[u][v]["weight"] = float(self.rng.uniform(0.5, 1.0))
+            self.network[u][v]["age"] = 0
+
+        # agents
+        self.agent_list = []
+        self.agent_map = {}
+        for i in range(self.n_agents):
+            a = CoevolvingMentalHealthAgent(self, memory_length=self.memory_length)
+            self.agent_list.append(a)
+            self.agent_map[a.unique_id] = a
+
+        # map agent IDs to graph nodes by relabeling graph if needed
+        # assumes unique_id order aligns to creation order in Mesa
+        graph_nodes = list(self.network.nodes())
+        uid_map = {graph_nodes[i]: self.agent_list[i].unique_id for i in range(self.n_agents)}
+        self.network = nx.relabel_nodes(self.network, uid_map)
+
+        self.datacollector = mesa.DataCollector(
+            model_reporters={
+                "Pct_Healthy": lambda m: m._pct(HEALTHY),
+                "Pct_AtRisk": lambda m: m._pct(AT_RISK),
+                "Pct_Symptomatic": lambda m: m._pct(SYMPTOMATIC),
+                "Pct_Recovering": lambda m: m._pct(RECOVERING),
+                "Mean_Resilience": lambda m: float(np.mean([a.resilience for a in m.agent_list])),
+                "Mean_Burden": lambda m: float(np.mean([a.cumulative_burden for a in m.agent_list])),
+                "Mean_Degree": lambda m: float(np.mean([m.network.degree[a.unique_id] for a in m.agent_list])),
+                "Mean_TieWeight": lambda m: m.mean_tie_weight(),
+                "Pct_Action_Cope": lambda m: m._pct_action(Action.COPE),
+                "Pct_Action_SeekSupport": lambda m: m._pct_action(Action.SEEK_SUPPORT),
+                "Pct_Action_Withdraw": lambda m: m._pct_action(Action.WITHDRAW),
+                "Pct_Action_Rewire": lambda m: m._pct_action(Action.REWIRE),
+                "Mean_Reward": lambda m: float(np.mean([a.last_reward for a in m.agent_list])),
+                "N_Active_Events": lambda m: len(m.active_events),
+            },
+            agent_reporters={
+                "State": lambda a: a.state,
+                "Resilience": lambda a: a.resilience,
+                "CumulBurden": lambda a: a.cumulative_burden,
+                "Vulnerability": lambda a: a.vulnerability,
+                "Action": lambda a: ACTION_LABELS[a.last_action],
+                "Reward": lambda a: a.last_reward,
+                "Degree": lambda a: a.degree(),
+                "LocalSymptomFrac": lambda a: a.local_symptom_fraction(),
+            }
+        )
+
+        self.datacollector.collect(self)
+
+    # -------------------------
+    # Metrics
+    # -------------------------
+    def _pct(self, state: str) -> float:
+        return sum(1 for a in self.agent_list if a.state == state) / self.n_agents
+
+    def _pct_action(self, action: Action) -> float:
+        return sum(1 for a in self.agent_list if a.last_action == action) / self.n_agents
+
+    def mean_tie_weight(self):
+        if self.network.number_of_edges() == 0:
+            return 0.0
+        return float(np.mean([d.get("weight", 0.0) for _, _, d in self.network.edges(data=True)]))
+
+    # -------------------------
+    # Events
+    # -------------------------
+    def _trigger_events(self):
+        for trigger, ev in self._scheduled:
+            if trigger == self.schedule_step:
+                self.active_events.append(ev)
+
+    def _tick_events(self):
+        for ev in self.active_events:
+            ev.tick()
+        self.active_events = [ev for ev in self.active_events if ev.is_active()]
+
+    # -------------------------
+    # Dynamic network
+    # -------------------------
+    def _update_tie_weights(self):
+        edges = list(self.network.edges())
+        for u, v in edges:
+            au = self.agent_map[u]
+            av = self.agent_map[v]
+            d = self.network[u][v]
+
+            same_sign = (
+                (au.state in (HEALTHY, RECOVERING) and av.state in (HEALTHY, RECOVERING))
+                or (au.state == SYMPTOMATIC and av.state == SYMPTOMATIC)
+            )
+
+            if same_sign:
+                d["weight"] = min(1.5, d.get("weight", 1.0) + self.tie_strengthen)
+            else:
+                d["weight"] = max(0.05, d.get("weight", 1.0) - self.tie_decay)
+
+            d["age"] = d.get("age", 0) + 1
+
+    def _exogenous_rewire(self):
+        for a in self.agent_list:
+            if float(self.rng.random()) < self.exogenous_rewire_prob:
+                a.rewire_one_tie()
+
+    # -------------------------
+    # Step
+    # -------------------------
+    def step(self):
+        self._trigger_events()
+        self._update_tie_weights()
+        self._exogenous_rewire()
+
+        shuffled_agents = self.agent_list[:]
+        self.random.shuffle(shuffled_agents)
+        for agent in shuffled_agents:
+            agent.step()
+
+        self._tick_events()
+        self.schedule_step += 1
+        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+        self.datacollector.collect(self)
+
+# ============================================================
+# Run simulation
+# ============================================================
+
+if __name__ == "__main__":
+    N_AGENTS = 100
+    N_STEPS = 100
+
+    model = FullCoevolutionMentalHealthModel(
+        n_agents=N_AGENTS,
+        memory_length=10,
+        seed=42,
+        target_degree=6,
+        small_world_p=0.12,
+    )
+
+    print("Running full coevolution simulation...")
+    for t in range(N_STEPS):
+        model.step()
+        if (t + 1) % 20 == 0:
+            d = model.datacollector.get_model_vars_dataframe()
+            symp = d["Pct_Symptomatic"].iloc[-1]
+            res = d["Mean_Resilience"].iloc[-1]
+            rew = d["Pct_Action_Rewire"].iloc[-1]
+            print(
+                f"Step {t+1:3d} | Symptomatic: {symp:.1%} | "
+                f"Mean Resilience: {res:.3f} | Rewire action: {rew:.1%}"
+            )
+
+    df_model = model.datacollector.get_model_vars_dataframe()
+    df_agents = model.datacollector.get_agent_vars_dataframe()
+
+    print("\nFinal population distribution:")
+    print(df_model[["Pct_Healthy", "Pct_AtRisk", "Pct_Symptomatic", "Pct_Recovering"]].iloc[-1].round(3))
+
+    # -------------------------
+    # Temporal / path dependence analysis
+    # -------------------------
+    LAG = 5
+    burden_lagged = df_model["Mean_Burden"].iloc[:-LAG].values
+    symp_future = df_model["Pct_Symptomatic"].iloc[LAG:].values
+    corr_lag = float(np.corrcoef(burden_lagged, symp_future)[0, 1])
+
+    final_agents = df_agents.xs(N_STEPS, level="Step")
+    final_numeric = final_agents["State"].map(STATE_VALUE)
+    cv = final_numeric.std() / (final_numeric.mean() + 1e-9)
+
+    print(f"\nCross-lag r (Burden[t] -> Symptomatic[t+{LAG}]): {corr_lag:.3f}")
+    print(f"Path-dependence CV: {cv:.3f}")
+
+    # ============================================================
+    # Visualization
+    # ============================================================
+
+    fig = plt.figure(figsize=(20, 15))
+    fig.patch.set_facecolor("#0f1117")
+    gs = gridspec.GridSpec(3, 3, figure=fig, hspace=0.50, wspace=0.35)
+
+    ax_pop = fig.add_subplot(gs[0, :2])
+    ax_res = fig.add_subplot(gs[0, 2])
+    ax_lag = fig.add_subplot(gs[1, :2])
+    ax_actions = fig.add_subplot(gs[1, 2])
+    ax_traj = fig.add_subplot(gs[2, :])
+
+    title_kw = dict(color="white", fontsize=10, fontweight="bold", pad=6)
+    label_kw = dict(color="#aaaaaa", fontsize=8)
+
+    for ax in [ax_pop, ax_res, ax_lag, ax_actions, ax_traj]:
+        ax.set_facecolor("#1a1d2e")
+        ax.tick_params(colors="#aaaaaa", labelsize=7)
+        for sp in ax.spines.values():
+            sp.set_color("#333344")
+
+    steps_x = np.arange(len(df_model))
+
+    # population states
+    ax_pop.stackplot(
+        steps_x,
+        df_model["Pct_Healthy"].values,
+        df_model["Pct_AtRisk"].values,
+        df_model["Pct_Symptomatic"].values,
+        df_model["Pct_Recovering"].values,
+        labels=[HEALTHY, AT_RISK, SYMPTOMATIC, RECOVERING],
+        colors=[COLORS[k] for k in [HEALTHY, AT_RISK, SYMPTOMATIC, RECOVERING]],
+        alpha=0.84,
+    )
+
+    for es, el in zip(EVENT_STEPS, EVENT_LABELS):
+        ax_pop.axvline(es, color="white", lw=0.8, ls="--", alpha=0.5)
+        ax_pop.text(
+            es + 0.5, 0.94, el, color="white", fontsize=6,
+            rotation=90, va="top", alpha=0.85,
+            transform=ax_pop.get_xaxis_transform()
+        )
+
+    ax_pop.set_title("Population Mental Health Dynamics", **title_kw)
+    ax_pop.set_xlabel("Simulation Step", **label_kw)
+    ax_pop.set_ylabel("Fraction of Population", **label_kw)
+    ax_pop.set_ylim(0, 1)
+    ax_pop.legend(loc="lower right", fontsize=7, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6)
+
+    # resilience
+    ax_res.plot(steps_x, df_model["Mean_Resilience"].values, color="#a29bfe", lw=2, label="Mean resilience")
+    ax_res.plot(steps_x, df_model["Mean_Degree"].values / max(df_model["Mean_Degree"].max(), 1), color="#55efc4", lw=1.5, label="Scaled mean degree")
+    for es in EVENT_STEPS:
+        ax_res.axvline(es, color="white", lw=0.7, ls="--", alpha=0.4)
+    ax_res.set_title("Resilience and Connectivity", **title_kw)
+    ax_res.set_xlabel("Step", **label_kw)
+    ax_res.set_ylabel("Scaled value", **label_kw)
+    ax_res.set_ylim(0, 1.05)
+    ax_res.legend(loc="lower left", fontsize=7, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6)
+
+    # cross lag
+    ax_lag.scatter(burden_lagged, symp_future, c="#fd79a8", alpha=0.55, s=24, edgecolors="none")
+    if len(np.unique(burden_lagged)) > 1:
+        m, b = np.polyfit(burden_lagged, symp_future, 1)
+        xf = np.linspace(burden_lagged.min(), burden_lagged.max(), 100)
+        ax_lag.plot(xf, m * xf + b, color="white", lw=1.5)
+    ax_lag.set_title(f"Cross-Lag: Burden[t] -> Symptomatic[t+{LAG}] (r = {corr_lag:.2f})", **title_kw)
+    ax_lag.set_xlabel("Mean cumulative burden at t", **label_kw)
+    ax_lag.set_ylabel("% Symptomatic at t+LAG", **label_kw)
+
+    # actions
+    ax_actions.plot(steps_x, df_model["Pct_Action_Cope"].values, lw=1.8, color="#74b9ff", label="Cope")
+    ax_actions.plot(steps_x, df_model["Pct_Action_SeekSupport"].values, lw=1.8, color="#55efc4", label="SeekSupport")
+    ax_actions.plot(steps_x, df_model["Pct_Action_Withdraw"].values, lw=1.8, color="#ffeaa7", label="Withdraw")
+    ax_actions.plot(steps_x, df_model["Pct_Action_Rewire"].values, lw=1.8, color="#ff7675", label="Rewire")
+    ax_actions.set_title("Learned Action Mix", **title_kw)
+    ax_actions.set_xlabel("Step", **label_kw)
+    ax_actions.set_ylabel("Population fraction", **label_kw)
+    ax_actions.set_ylim(0, 1)
+    ax_actions.legend(loc="upper right", fontsize=7, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6)
+
+    # sampled trajectories
+    vulnerability_order = sorted(
+        list(set(df_agents.index.get_level_values("AgentID"))),
+        key=lambda aid: df_agents.xs(1, level="Step").loc[aid, "Vulnerability"] if 1 in df_agents.index.get_level_values("Step") else 0.0
+    )
+    n_sample = min(8, len(vulnerability_order))
+    sample_ids = [vulnerability_order[int(i * len(vulnerability_order) / n_sample)] for i in range(n_sample)]
+    cmap = plt.cm.plasma
+
+    for idx, aid in enumerate(sample_ids):
+        traj = df_agents.xs(aid, level="AgentID")
+        steps_a = traj.index
+        numeric = traj["State"].map(STATE_VALUE).fillna(0)
+        vuln = traj["Vulnerability"].iloc[0]
+        ax_traj.plot(
+            steps_a, numeric,
+            color=cmap(idx / max(n_sample - 1, 1)),
+            alpha=0.80, lw=1.3,
+            label=f"Agent {aid} (vuln={vuln:.2f})"
+        )
+
+    for es in EVENT_STEPS:
+        ax_traj.axvline(es, color="white", lw=0.7, ls="--", alpha=0.35)
+
+    ax_traj.set_yticks([0, 1, 1.5, 2])
+    ax_traj.set_yticklabels(["Healthy", "At-Risk", "Recovering", "Symptomatic"], color="#aaaaaa", fontsize=7)
+    ax_traj.set_title("Individual Trajectories Under Coevolution", **title_kw)
+    ax_traj.set_xlabel("Simulation Step", **label_kw)
+    ax_traj.legend(loc="upper right", fontsize=6, facecolor="#1a1d2e", labelcolor="white", framealpha=0.6, ncol=2)
+
+    fig.suptitle(
+        "Full Coevolution Mental Health ABM\n"
+        "Q-Learning + Dynamic Social Network + Contagion/Support",
+        color="white", fontsize=13, fontweight="bold", y=0.99
+    )
+
+    plt.savefig("mental_health_full_coevolution_abm.png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.show()
+
+    print("Chart saved as mental_health_full_coevolution_abm.png")
+
+```
