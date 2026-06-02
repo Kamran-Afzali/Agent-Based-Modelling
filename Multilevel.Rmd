@@ -1,0 +1,496 @@
+
+
+```
+# ============================================================
+# Single-cell Google Colab: Multi-level ABM — Workplace Mental Health
+# Mesa 2.3.2 compatible
+# ============================================================
+!pip install mesa==2.3.2 matplotlib pandas numpy -q
+
+import numpy as np
+import pandas as pd
+from mesa import Agent, Model
+from mesa.datacollection import DataCollector
+from mesa.time import RandomActivation
+import matplotlib.pyplot as plt
+from collections import OrderedDict
+
+np.random.seed(42)
+
+# ============================================================
+# MICRO LEVEL: Individual Employee
+# ============================================================
+class Employee(Agent):
+    """
+    Individual agent with mental health state variables.
+
+    Mental health dynamics are grounded in the workload-control model:
+      - stress rises with workload and social contagion from team
+      - social support buffers stress accumulation
+      - resilience buffers depression onset
+      - cross-level constraints: team stress (meso) and department
+        budget (macro) feed top-down into individual dynamics
+
+    References:
+      Karasek (1979) demand-control model;
+      Siegrist (1996) effort-reward imbalance model;
+      ABM reviews by Tracy et al. (PMC10030380) and Galea et al. (PMC6284360)
+    """
+
+    def __init__(self, unique_id, model, team_id, department_id):
+        super().__init__(unique_id, model)
+        self.team_id        = team_id
+        self.department_id  = department_id
+
+        self.stress          = np.random.uniform(20, 50)
+        self.depression_risk = np.random.uniform(10, 30)
+        self.social_support  = np.random.uniform(30, 70)
+        self.resilience      = np.random.uniform(40, 80)
+        self.workload        = np.random.uniform(30, 60)
+
+        self.stress_history     = [self.stress]
+        self.depression_history = [self.depression_risk]
+        self.connections        = []   # list of Employee unique_ids
+
+    def step(self):
+        team = self.model.team_registry[self.team_id]
+        dept = self.model.dept_registry[self.department_id]
+
+        # --- bottom-up: contribute to team sums (team resets them before calling step)
+        team.workload_sum          += self.workload
+
+        # --- top-down: macro and meso constraints
+        dept_budget_factor  = dept.budget / 100.0
+        team_stress_avg     = team.stress_average
+
+        workload_stress = self.workload * 0.30
+        contagion_stress = team_stress_avg * 0.15        # stress contagion (Hatfield 1993)
+        budget_stress   = (1 - dept_budget_factor) * 20  # resource scarcity effect
+
+        support_buffer   = self.social_support * 0.25
+        resilience_buffer = self.resilience * 0.30
+
+        stress_delta = workload_stress + contagion_stress + budget_stress - support_buffer
+        self.stress = np.clip(
+            self.stress + stress_delta + np.random.normal(0, 3), 0, 100
+        )
+
+        dep_delta = self.stress * 0.25 - resilience_buffer - self.social_support * 0.15
+        self.depression_risk = np.clip(
+            self.depression_risk + dep_delta + np.random.normal(0, 2), 0, 100
+        )
+
+        # social support diffusion over personal network
+        if self.connections:
+            neighbour_support = np.mean(
+                [self.model.employee_registry[c].social_support
+                 for c in self.connections
+                 if c in self.model.employee_registry]
+            )
+            self.social_support = np.clip(
+                self.social_support * 0.95 + neighbour_support * 0.05, 0, 100
+            )
+
+        self.workload = np.clip(self.workload + np.random.normal(0, 5), 0, 100)
+
+        self.stress_history.append(self.stress)
+        self.depression_history.append(self.depression_risk)
+
+        # bottom-up: feed into team sums
+        team.employee_stress_sum     += self.stress
+        team.employee_depression_sum += self.depression_risk
+
+
+# ============================================================
+# MESO LEVEL: Team
+# ============================================================
+class Team(Agent):
+    """
+    Team-level agent — implements the group/module layer in multi-level Mesa.
+
+    Scheduling order within each step:
+      1. Reset accumulators
+      2. Step all employees      (bottom-up data generation)
+      3. Aggregate to team level (emergent team state)
+      4. Apply team dynamics     (group-level processes)
+      5. Push feedback downward  (top-down constraints)
+
+    This mirrors the Department pattern provided in the course brief.
+    """
+
+    def __init__(self, unique_id, model, department_id):
+        super().__init__(unique_id, model)
+        self.department_id = department_id
+        self.employees: list[Employee] = []
+
+        self.stress_average  = 0.0
+        self.support_level   = np.random.uniform(40, 70)
+        self.department_budget = 50.0   # updated top-down by Department each step
+
+        # accumulators — reset at start of each step
+        self.workload_sum          = 0.0
+        self.employee_stress_sum   = 0.0
+        self.employee_depression_sum = 0.0
+
+        self.stress_history  = [self.stress_average]
+        self.support_history = [self.support_level]
+
+    def add_employee(self, emp: Employee):
+        self.employees.append(emp)
+
+    def step(self):
+        # 1. reset
+        self.workload_sum          = 0.0
+        self.employee_stress_sum   = 0.0
+        self.employee_depression_sum = 0.0
+
+        # 2. step employees
+        for emp in self.employees:
+            emp.step()
+
+        # 3. aggregate
+        n = len(self.employees)
+        if n:
+            self.stress_average = self.employee_stress_sum / n
+            avg_workload        = self.workload_sum / n
+        else:
+            self.stress_average = 0.0
+            avg_workload        = 0.0
+
+        # 4. team-level dynamics
+        team_support_buffer = self.support_level * 0.20
+        workload_stress     = avg_workload * 0.20
+        budget_stress       = (1 - self.department_budget / 100.0) * 15.0
+
+        self.stress_average = np.clip(
+            self.stress_average * 0.9
+            + workload_stress + budget_stress
+            - team_support_buffer
+            + np.random.normal(0, 2),
+            0, 100
+        )
+
+        if n:
+            avg_emp_support  = np.mean([e.social_support for e in self.employees])
+            self.support_level = np.clip(
+                self.support_level * 0.95 + avg_emp_support * 0.05, 0, 100
+            )
+
+        # 5. top-down: push updated team stress back to employees
+        for emp in self.employees:
+            emp.team_stress_avg = self.stress_average
+
+        self.stress_history.append(self.stress_average)
+        self.support_history.append(self.support_level)
+
+
+# ============================================================
+# MACRO LEVEL: Department
+# ============================================================
+class Department(Agent):
+    """
+    Department-level agent — top of the hierarchy.
+
+    Mirrors the Department pattern from the course brief:
+        self.employees → replaced by self.teams
+        self.budget    → institutional resource level
+        step()         → steps teams, updates dept metrics,
+                         pushes budget top-down
+
+    Budget undergoes a random walk with a penalty when organisational
+    stress is high, consistent with literature showing high employee
+    stress correlates with reduced organisational performance.
+    """
+
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.teams: list[Team] = []
+        self.budget = np.random.uniform(50, 100)
+
+        self.stress_average      = 0.0
+        self.mental_health_score = 50.0
+
+        self.budget_history          = [self.budget]
+        self.stress_history          = [self.stress_average]
+        self.mental_health_history   = [self.mental_health_score]
+
+    def add_team(self, team: Team):
+        self.teams.append(team)
+
+    def update_department_metrics(self):
+        """Aggregate upward and update institutional state."""
+        if self.teams:
+            self.stress_average = np.mean([t.stress_average for t in self.teams])
+            avg_support         = np.mean([t.support_level for t in self.teams])
+        else:
+            self.stress_average = 0.0
+            avg_support         = 0.0
+
+        budget_change = np.random.normal(0, 3)
+        if self.stress_average > 60:
+            budget_change -= 2          # high stress erodes budget efficiency
+        self.budget = np.clip(self.budget + budget_change, 0, 100)
+
+        self.mental_health_score = np.clip(
+            100 - self.stress_average + avg_support * 0.30, 0, 100
+        )
+
+        # push budget down to teams
+        for t in self.teams:
+            t.department_budget = self.budget
+
+        self.budget_history.append(self.budget)
+        self.stress_history.append(self.stress_average)
+        self.mental_health_history.append(self.mental_health_score)
+
+    def step(self):
+        for team in self.teams:
+            team.step()
+        self.update_department_metrics()
+
+
+# ============================================================
+# MODEL
+# ============================================================
+class MentalHealthModel(Model):
+    """
+    Multi-level ABM for workplace mental health.
+
+    Hierarchy:
+        Macro  — Department   (institutional budget, org-level stress)
+        Meso   — Team         (group stress, support culture)
+        Micro  — Employee     (individual stress, depression risk, resilience)
+
+    Cross-scale dynamics:
+        Bottom-up: employee workload/stress → team average → dept average
+        Top-down:  dept budget → team budget → individual budget stress
+                   team stress → individual stress contagion
+
+    Social network:
+        Within-team ties: p = 0.70   (dense, peer support)
+        Cross-team ties:  p = 0.15   (sparser, organisational bridging)
+    """
+
+    def __init__(self, num_departments=3, num_teams_per_dept=2, num_employees_per_team=5):
+        super().__init__()
+
+        self.num_departments       = num_departments
+        self.num_teams_per_dept    = num_teams_per_dept
+        self.num_employees_per_team = num_employees_per_team
+
+        # Use distinct names to avoid Mesa reserved attribute collision
+        self.dept_registry:     OrderedDict[int, Department] = OrderedDict()
+        self.team_registry:     OrderedDict[int, Team]       = OrderedDict()
+        self.employee_registry: OrderedDict[int, Employee]   = OrderedDict()
+
+        self._build_hierarchy()
+        self._build_social_network()
+
+        # Scheduler: only departments are registered;
+        # they cascade steps to teams → employees internally.
+        self.scheduler = RandomActivation(self)
+        for dept in self.dept_registry.values():
+            self.scheduler.add(dept)
+
+        self.datacollector = DataCollector(
+            model_reporters={
+                "avg_stress":     lambda m: m._model_avg("stress"),
+                "avg_depression": lambda m: m._model_avg("depression_risk"),
+                "avg_support":    lambda m: m._model_avg("social_support"),
+            },
+            agent_reporters={
+                "stress":          "stress",
+                "depression_risk": "depression_risk",
+                "social_support":  "social_support",
+                "resilience":      "resilience",
+            }
+        )
+
+    # ----------------------------------------------------------
+    def _build_hierarchy(self):
+        for dept_id in range(self.num_departments):
+            dept = Department(dept_id, self)
+            self.dept_registry[dept_id] = dept
+
+            for ti in range(self.num_teams_per_dept):
+                team_id = self.num_teams_per_dept * dept_id + ti
+                team = Team(team_id, self, dept_id)
+                self.team_registry[team_id] = team
+                dept.add_team(team)
+
+                for ei in range(self.num_employees_per_team):
+                    emp_id = self.num_employees_per_team * team_id + ei
+                    emp = Employee(emp_id, self, team_id, dept_id)
+                    self.employee_registry[emp_id] = emp
+                    team.add_employee(emp)
+
+    def _build_social_network(self):
+        all_emps = list(self.employee_registry.values())
+
+        # within-team dense ties
+        for team in self.team_registry.values():
+            es = team.employees
+            for i in range(len(es)):
+                for j in range(i + 1, len(es)):
+                    if np.random.random() < 0.70:
+                        es[i].connections.append(es[j].unique_id)
+                        es[j].connections.append(es[i].unique_id)
+
+        # cross-team weak ties
+        for i in range(len(all_emps)):
+            for j in range(i + 1, len(all_emps)):
+                if (all_emps[i].team_id != all_emps[j].team_id
+                        and np.random.random() < 0.15):
+                    all_emps[i].connections.append(all_emps[j].unique_id)
+                    all_emps[j].connections.append(all_emps[i].unique_id)
+
+    # ----------------------------------------------------------
+    def _model_avg(self, attr: str) -> float:
+        emps = list(self.employee_registry.values())
+        return float(np.mean([getattr(e, attr) for e in emps])) if emps else 0.0
+
+    def step(self):
+        self.scheduler.step()
+        self.datacollector.collect(self)
+
+    def run_model(self, n_steps: int):
+        for _ in range(n_steps):
+            self.step()
+
+    # ----------------------------------------------------------
+    def get_employee_df(self) -> pd.DataFrame:
+        rows = []
+        for e in self.employee_registry.values():
+            rows.append({
+                "employee_id":        e.unique_id,
+                "team_id":            e.team_id,
+                "department_id":      e.department_id,
+                "final_stress":       e.stress,
+                "final_depression":   e.depression_risk,
+                "final_support":      e.social_support,
+                "final_resilience":   e.resilience,
+                "avg_stress":         float(np.mean(e.stress_history)),
+                "avg_depression":     float(np.mean(e.depression_history)),
+            })
+        return pd.DataFrame(rows)
+
+    def get_team_df(self) -> pd.DataFrame:
+        rows = []
+        for t in self.team_registry.values():
+            rows.append({
+                "team_id":            t.unique_id,
+                "department_id":      t.department_id,
+                "n_employees":        len(t.employees),
+                "final_stress_avg":   t.stress_average,
+                "final_support":      t.support_level,
+                "avg_stress":         float(np.mean(t.stress_history)),
+            })
+        return pd.DataFrame(rows)
+
+    def get_department_df(self) -> pd.DataFrame:
+        rows = []
+        for d in self.dept_registry.values():
+            rows.append({
+                "department_id":      d.unique_id,
+                "n_teams":            len(d.teams),
+                "final_budget":       d.budget,
+                "final_stress_avg":   d.stress_average,
+                "mental_health_score":d.mental_health_score,
+                "avg_budget":         float(np.mean(d.budget_history)),
+                "avg_stress":         float(np.mean(d.stress_history)),
+            })
+        return pd.DataFrame(rows)
+
+
+# ============================================================
+# RUN
+# ============================================================
+model = MentalHealthModel(num_departments=3, num_teams_per_dept=2, num_employees_per_team=5)
+model.run_model(50)
+
+emp_df  = model.get_employee_df()
+team_df = model.get_team_df()
+dept_df = model.get_department_df()
+
+print("=" * 60)
+print("DEPARTMENT LEVEL (Macro)")
+print("=" * 60)
+print(dept_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("TEAM LEVEL (Meso)")
+print("=" * 60)
+print(team_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("EMPLOYEE LEVEL (Micro) — first 10")
+print("=" * 60)
+print(emp_df.head(10).to_string(index=False))
+
+high_dep = emp_df[emp_df["final_depression"] > 50]
+high_str = emp_df[emp_df["final_stress"]     > 60]
+print(f"\nHigh depression risk (>50): {len(high_dep)} / {len(emp_df)}")
+print(f"High stress (>60):          {len(high_str)} / {len(emp_df)}")
+
+# ============================================================
+# VISUALISATIONS
+# ============================================================
+model_data = model.datacollector.get_model_vars_dataframe()
+emps       = list(model.employee_registry.values())
+
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+fig.suptitle("Multi-Level Workplace Mental Health ABM", fontsize=14, fontweight="bold")
+
+# 1. Model-level time series
+ax = axes[0, 0]
+ax.plot(model_data["avg_stress"],     label="Avg stress",     color="tomato")
+ax.plot(model_data["avg_depression"], label="Avg depression", color="orchid")
+ax.plot(model_data["avg_support"],    label="Avg support",    color="steelblue")
+ax.set_title("Model-level trajectories")
+ax.set_xlabel("Step"); ax.set_ylabel("Score (0–100)")
+ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
+
+# 2. Sample individual stress trajectories
+ax = axes[0, 1]
+for emp in emps[:10]:
+    ax.plot(emp.stress_history, alpha=0.6, linewidth=1.2)
+ax.set_title("Individual stress trajectories (10 employees)")
+ax.set_xlabel("Step"); ax.set_ylabel("Stress"); ax.grid(True, alpha=0.3)
+
+# 3. Department stress time series
+ax = axes[0, 2]
+for d in model.dept_registry.values():
+    ax.plot(d.stress_history, label=f"Dept {d.unique_id}", linewidth=2)
+ax.set_title("Department stress over time (Macro)")
+ax.set_xlabel("Step"); ax.set_ylabel("Stress avg"); ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
+
+# 4. Depression risk distribution
+ax = axes[1, 0]
+ax.hist(emp_df["final_depression"], bins=10, color="salmon", edgecolor="k", alpha=0.85)
+ax.set_title("Final depression risk distribution")
+ax.set_xlabel("Depression risk"); ax.set_ylabel("Count"); ax.grid(True, alpha=0.3)
+
+# 5. Support vs stress scatter
+ax = axes[1, 1]
+sc = ax.scatter(
+    emp_df["final_support"], emp_df["final_stress"],
+    c=emp_df["final_depression"], cmap="YlOrRd", alpha=0.75, s=70
+)
+plt.colorbar(sc, ax=ax, label="Depression risk")
+ax.set_title("Support vs Stress\n(colour = depression risk)")
+ax.set_xlabel("Social support"); ax.set_ylabel("Stress"); ax.grid(True, alpha=0.3)
+
+# 6. Department mental health score
+ax = axes[1, 2]
+dept_ids = dept_df["department_id"].astype(str)
+bars = ax.bar(dept_ids, dept_df["mental_health_score"], color=["#4ECDC4","#45B7D1","#FF6B6B"], alpha=0.85)
+ax.set_title("Department mental health score\n(higher = better)")
+ax.set_xlabel("Department"); ax.set_ylabel("Score"); ax.set_ylim(0, 100); ax.grid(True, alpha=0.3, axis="y")
+for bar, val in zip(bars, dept_df["mental_health_score"]):
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, f"{val:.1f}", ha="center", fontsize=9)
+
+plt.tight_layout()
+plt.savefig("mental_health_abm.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Figure saved to mental_health_abm.png")
+```
