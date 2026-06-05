@@ -1,0 +1,806 @@
+
+# Multi-Level Dynamics: Stress, Support, and Path Dependence in Workplace Mental Health
+
+In earlier agent-based models, we often start with a single mechanism and ask what happens when that mechanism is allowed to evolve over time. Here, the structure is less compact but more realistic: workplace mental health is generated through interactions between individuals, teams, and departments. The model treats stress not as an isolated personal attribute, but as a quantity that is shaped by workload, social contagion, social support, resilience, and institutional budget. That is a familiar move in occupational stress theory, where high demands, low control, and low reward are treated as chronic exposures rather than one-off shocks.[^2][^1]
+
+The main interest is not whether the model predicts a real organization in a literal sense. It does not. The point is more limited and, arguably, more useful: to examine how multi-level constraints can generate divergent employee trajectories even when agents start in broadly similar ranges. A model like this is especially appropriate when the empirical object is dynamic, relational, and affected by feedback across scales, which is exactly the sort of system ABM is meant to represent.[^3]
+
+## The Logic of Workplace Stress
+
+The model uses a three-level hierarchy: employees at the micro level, teams at the meso level, and departments at the macro level. That structure mirrors a common argument in occupational health: strain is not only an individual psychological state, but also a consequence of organizational design and resource allocation. In the code, individual stress and depression risk update from a combination of workload, team stress, departmental budget, support, and resilience.[^1][^2]
+
+A compact way to write the individual stress update is:
+
+$$
+S_{i,t+1} = \text{clip}\Big(S_{i,t} + \Delta S_{i,t} + \epsilon_t,\ 0,\ 100\Big)
+$$
+
+with
+
+$$
+\Delta S_{i,t} = 0.30\,W_{i,t} + 0.15\,\bar S_{team,t} + 20(1-B_{dept,t}) - 0.25\,SS_{i,t} - 0.30\,R_{i,t}
+$$
+
+where $W$ is workload, $\bar S_{team}$ is team stress, $B_{dept}$ is department budget scaled to $[0,1]$, $SS$ is social support, and $R$ is resilience. The functional form is obviously stylized, but it has a clear interpretation: stress increases through exposure and scarcity, and it is buffered by support and coping capacity.
+
+```python
+workload_stress = self.workload * 0.30
+contagion_stress = team_stress_avg * 0.15
+budget_stress = (1 - dept_budget_factor) * 20
+
+support_buffer = self.social_support * 0.25
+resilience_buffer = self.resilience * 0.30
+
+stress_delta = workload_stress + contagion_stress + budget_stress - support_buffer
+self.stress = np.clip(self.stress + stress_delta + np.random.normal(0, 3), 0, 100)
+```
+
+Dry run: an employee with moderate workload but high team stress may still accumulate substantial strain. That is not a bug; it is the point. The model makes stress partially collective, which is consistent with the idea that work environments can transmit strain through shared norms and local observation of distress.[^3]
+
+## Micro-Level Employees
+
+Employees begin with heterogeneous baseline values for stress, depression risk, social support, resilience, and workload. This is a useful design choice because it prevents the model from collapsing into a single average trajectory. In practice, the random initialization means some agents begin in a fragile state and some in a buffered one, even before any organizational feedback has acted.
+
+A minimal description of the depression-risk update is:
+
+$$
+D_{i,t+1} = \text{clip}\Big(D_{i,t} + 0.25 S_{i,t+1} - 0.30 R_{i,t} - 0.15 SS_{i,t} + \eta_t,\ 0,\ 100\Big)
+$$
+
+This is not meant to be a clinical model of depression. It is a simple propagation rule that converts sustained stress into elevated risk, while allowing resilience and support to attenuate that process. The equation is more about directional plausibility than estimation.
+
+```python
+dep_delta = self.stress * 0.25 - resilience_buffer - self.social_support * 0.15
+self.depression_risk = np.clip(
+    self.depression_risk + dep_delta + np.random.normal(0, 2), 0, 100
+)
+```
+
+Dry run: suppose stress rises from 35 to 55, resilience is moderate, and support is low. The depression-risk trajectory will likely drift upward even if workload does not increase further. That is a small example of path dependence in a workplace context: previous strain changes the effect of current conditions.
+
+## Team-Level Feedback
+
+The team layer is the model’s main meso-scale mechanism. Each team aggregates employee-level stress and workload, then transforms those local sums into a team stress average and a team support level. That matters because the individual step uses team stress as an input, while the team step itself depends on the composition of the employees. The result is a feedback loop rather than a one-way cascade.
+
+The team stress update can be summarized as:
+
+$$
+\bar S_{k,t+1} = 0.9 \bar S_{k,t} + 0.20 \bar W_{k,t} + 15(1-B_{d,t}) - 0.20\,C_{k,t} + \xi_t
+$$
+
+where $C_{k,t}$ is team support culture and $B_{d,t}$ is the department budget. This resembles the logic of demand-control-support models, except that the “control” term is not explicit; instead, control is implicit in support and budget constraints.[^1]
+
+```python
+team_support_buffer = self.support_level * 0.20
+workload_stress = avg_workload * 0.20
+budget_stress = (1 - self.department_budget / 100.0) * 15.0
+
+self.stress_average = np.clip(
+    self.stress_average * 0.9
+    + workload_stress + budget_stress
+    - team_support_buffer
+    + np.random.normal(0, 2),
+    0, 100
+)
+```
+
+Dry run: if a team has several high-workload employees but also a relatively supportive climate, the support term may partly offset the stress buildup. But that offset is only partial. The model implicitly assumes that social support buffers distress, which is plausible, though not universally linear or symmetric in the empirical literature.[^2]
+
+## Department-Level Constraints
+
+Departments sit at the top of the hierarchy, and their budget evolves as a noisy random walk with an extra penalty under high stress. This is a compact way to encode the idea that organizational strain can degrade resource efficiency, which then feeds back down into teams and individuals. The model does not claim that stress literally destroys budget. It claims something weaker and more defensible: stress and resource scarcity tend to co-occur and amplify each other.
+
+A concise form of the department update is:
+
+$$
+B_{d,t+1} = \text{clip}\Big(B_{d,t} + \nu_t - 2 \cdot I(\bar S_{d,t} > 60),\ 0,\ 100\Big)
+$$
+
+and the department mental-health score is:
+
+$$
+M_{d,t} = \text{clip}\Big(100 - \bar S_{d,t} + 0.30 \bar C_{d,t},\ 0,\ 100\Big)
+$$
+
+where $\bar C_{d,t}$ is mean team support. This score is a convenience metric rather than a validated index. Still, it offers a readable summary of how institutional conditions shape the model’s overall state.
+
+```python
+budget_change = np.random.normal(0, 3)
+if self.stress_average > 60:
+    budget_change -= 2
+
+self.budget = np.clip(self.budget + budget_change, 0, 100)
+self.mental_health_score = np.clip(
+    100 - self.stress_average + avg_support * 0.30, 0, 100
+)
+```
+
+Dry run: when department stress stays elevated for several steps, the budget trajectory is likely to drift downward. Teams then inherit that constraint, and employees experience it as higher stress load. That makes the system path dependent in the organizational sense, not just the psychological one.
+
+## Network Diffusion
+
+The code also includes a simple social network among employees, with dense within-team ties and sparser cross-team ties. Support diffuses through those ties by a small weighted update. The resulting mechanism is close in spirit to emotional contagion, although here it concerns support rather than affect alone.[^3]
+
+The update is:
+
+$$
+SS_{i,t+1} = 0.95 SS_{i,t} + 0.05 \bar{SS}_{N(i),t}
+$$
+
+where $N(i)$ denotes the employee’s network neighbors.
+
+```python
+if self.connections:
+    neighbour_support = np.mean(
+        [self.model.employee_registry[c].social_support
+         for c in self.connections
+         if c in self.model.employee_registry]
+    )
+    self.social_support = np.clip(
+        self.social_support * 0.95 + neighbour_support * 0.05, 0, 100
+    )
+```
+
+Dry run: an employee embedded in a supportive team but connected to a wider set of low-support peers will update more slowly than someone in a uniformly supportive neighborhood. That is a modest but useful reminder that local social topology matters, even in a toy model.
+
+## Model Order and Data
+
+The execution order is important because the model is explicitly nested. Departments step teams; teams step employees; employees contribute upward during their step; teams then aggregate and push constraints back down; departments finally update institutional metrics. That sequencing is not incidental. It is the mechanism that allows bottom-up emergence and top-down constraint to coexist in the same system.
+
+Mesa is used here in a relatively standard way, with `DataCollector` storing model-level summaries such as average stress, average depression, and average support, alongside agent-level reporters for stress, depression risk, support, and resilience. The structure is readable and reproducible, which matters more than it sometimes gets credit for in simulation work.[^4]
+
+```python
+self.datacollector = DataCollector(
+    model_reporters={
+        "avg_stress": lambda m: m._model_avg("stress"),
+        "avg_depression": lambda m: m._model_avg("depression_risk"),
+        "avg_support": lambda m: m._model_avg("social_support"),
+    },
+    agent_reporters={
+        "stress": "stress",
+        "depression_risk": "depression_risk",
+        "social_support": "social_support",
+        "resilience": "resilience",
+    }
+)
+```
+
+Dry run: after 50 steps, model-level averages can be compared with the distribution of final employee outcomes. If the system is doing anything interesting, the averages will conceal heterogeneity rather than explain it.
+
+## Reading the Outputs
+
+The time series of average stress, depression, and support is the first thing to look at. It shows whether the workplace settles into a stable regime, drifts toward deterioration, or cycles through local fluctuations. Since the model includes noise, the exact trajectory is less important than the direction and persistence of changes.
+
+The employee-level stress trajectories are more informative than the aggregate plot. Averages can flatten the fact that some agents absorb stress much more quickly than others. The final depression-risk histogram is particularly helpful here because it reveals whether the system produces a long right tail of high-risk employees or a more compressed distribution. That matters for intervention design, since a sparse high-risk subgroup may call for different action than a broad moderate-risk shift.
+
+The scatterplot of final support versus final stress is probably the clearest representation of the model’s intended logic. If the buffering mechanism is operating, higher support should be associated with lower stress, though not necessarily linearly and not without exceptions. The department mental-health bar chart then closes the loop by showing whether organizational score differs materially across departments or just reflects noise.
+
+## Why It Matters
+
+What the model gives you is not a diagnosis of workplace mental health. It gives you a structured way to think about how strain can emerge from the interaction of workload, social ties, and institutional constraint. That is consistent with the broader ABM literature, which emphasizes that heterogeneous agents and local interactions can generate population outcomes that are not obvious from the rules alone. It is also consistent with classic occupational stress models, though the code simplifies those models substantially.[^2][^1][^3]
+
+The more interesting claim is probably the weaker one: if support diffuses, stress accumulates, and budgets are constrained by organizational strain, then mental health outcomes may become clustered and persistent even without any single catastrophic event. That is a plausible mechanism, not a proof. But in simulation work, plausibility is often the right first target.
+
+## Possible Extensions
+
+Several extensions would make the model more realistic without changing its basic structure. You could add explicit leadership agents, make department budget respond to turnover or absenteeism, or let employees leave teams when depression risk becomes too high. You could also model job control separately from social support, which would bring the model closer to the full demand-control-support tradition.[^1]
+
+Another useful extension would be to replace the simple support diffusion rule with a weighted network process, perhaps allowing strong ties to matter more than weak ones. That would be closer to empirical social network models, and it would make the meso-level structure more consequential. Finally, the model would benefit from repeated runs and sensitivity analysis. The current single run is fine for illustration, but not enough for serious inference.
+
+If useful, I can turn this into a polished blog-ready version with a title, smoother transitions, and LaTeX rendered cleanly for Markdown or Jupyter Notebook output.
+<span style="display:none">[^10][^11][^12][^13][^14][^15][^16][^17][^5][^6][^7][^8][^9]</span>
+
+```python
+# ============================================================
+
+# Single-cell Google Colab: Multi-level ABM — Workplace Mental Health
+
+# Mesa 2.3.2 compatible
+
+# ============================================================
+
+!pip install mesa==2.3.2 matplotlib pandas numpy -q
+
+import numpy as np
+import pandas as pd
+from mesa import Agent, Model
+from mesa.datacollection import DataCollector
+from mesa.time import RandomActivation
+import matplotlib.pyplot as plt
+from collections import OrderedDict
+
+np.random.seed(42)
+
+# ============================================================
+
+# MICRO LEVEL: Individual Employee
+
+# ============================================================
+
+class Employee(Agent):
+"""
+Individual agent with mental health state variables.
+
+    Mental health dynamics are grounded in the workload-control model:
+      - stress rises with workload and social contagion from team
+      - social support buffers stress accumulation
+      - resilience buffers depression onset
+      - cross-level constraints: team stress (meso) and department
+        budget (macro) feed top-down into individual dynamics
+    
+    
+    References:
+      Karasek (1979) demand-control model;
+      Siegrist (1996) effort-reward imbalance model;
+      ABM reviews by Tracy et al. (PMC10030380) and Galea et al. (PMC6284360)
+    """
+    
+    
+    def __init__(self, unique_id, model, team_id, department_id):
+        super().__init__(unique_id, model)
+        self.team_id        = team_id
+        self.department_id  = department_id
+    
+    
+        self.stress          = np.random.uniform(20, 50)
+        self.depression_risk = np.random.uniform(10, 30)
+        self.social_support  = np.random.uniform(30, 70)
+        self.resilience      = np.random.uniform(40, 80)
+        self.workload        = np.random.uniform(30, 60)
+    
+    
+        self.stress_history     = [self.stress]
+        self.depression_history = [self.depression_risk]
+        self.connections        = []   # list of Employee unique_ids
+    
+    
+    def step(self):
+        team = self.model.team_registry[self.team_id]
+        dept = self.model.dept_registry[self.department_id]
+    
+    
+        # --- bottom-up: contribute to team sums (team resets them before calling step)
+        team.workload_sum          += self.workload
+    
+    
+        # --- top-down: macro and meso constraints
+        dept_budget_factor  = dept.budget / 100.0
+        team_stress_avg     = team.stress_average
+    
+    
+        workload_stress = self.workload * 0.30
+        contagion_stress = team_stress_avg * 0.15        # stress contagion (Hatfield 1993)
+        budget_stress   = (1 - dept_budget_factor) * 20  # resource scarcity effect
+    
+    
+        support_buffer   = self.social_support * 0.25
+        resilience_buffer = self.resilience * 0.30
+    
+    
+        stress_delta = workload_stress + contagion_stress + budget_stress - support_buffer
+        self.stress = np.clip(
+            self.stress + stress_delta + np.random.normal(0, 3), 0, 100
+        )
+    
+    
+        dep_delta = self.stress * 0.25 - resilience_buffer - self.social_support * 0.15
+        self.depression_risk = np.clip(
+            self.depression_risk + dep_delta + np.random.normal(0, 2), 0, 100
+        )
+    
+    
+        # social support diffusion over personal network
+        if self.connections:
+            neighbour_support = np.mean(
+                [self.model.employee_registry[c].social_support
+                 for c in self.connections
+                 if c in self.model.employee_registry]
+            )
+            self.social_support = np.clip(
+                self.social_support * 0.95 + neighbour_support * 0.05, 0, 100
+            )
+    
+    
+        self.workload = np.clip(self.workload + np.random.normal(0, 5), 0, 100)
+    
+    
+        self.stress_history.append(self.stress)
+        self.depression_history.append(self.depression_risk)
+    
+    
+        # bottom-up: feed into team sums
+        team.employee_stress_sum     += self.stress
+        team.employee_depression_sum += self.depression_risk
+    
+# ============================================================
+
+# MESO LEVEL: Team
+
+# ============================================================
+
+class Team(Agent):
+"""
+Team-level agent — implements the group/module layer in multi-level Mesa.
+
+    Scheduling order within each step:
+      1. Reset accumulators
+      2. Step all employees      (bottom-up data generation)
+      3. Aggregate to team level (emergent team state)
+      4. Apply team dynamics     (group-level processes)
+      5. Push feedback downward  (top-down constraints)
+    
+    
+    This mirrors the Department pattern provided in the course brief.
+    """
+    
+    
+    def __init__(self, unique_id, model, department_id):
+        super().__init__(unique_id, model)
+        self.department_id = department_id
+        self.employees: list[Employee] = []
+    
+    
+        self.stress_average  = 0.0
+        self.support_level   = np.random.uniform(40, 70)
+        self.department_budget = 50.0   # updated top-down by Department each step
+    
+    
+        # accumulators — reset at start of each step
+        self.workload_sum          = 0.0
+        self.employee_stress_sum   = 0.0
+        self.employee_depression_sum = 0.0
+    
+    
+        self.stress_history  = [self.stress_average]
+        self.support_history = [self.support_level]
+    
+    
+    def add_employee(self, emp: Employee):
+        self.employees.append(emp)
+    
+    
+    def step(self):
+        # 1. reset
+        self.workload_sum          = 0.0
+        self.employee_stress_sum   = 0.0
+        self.employee_depression_sum = 0.0
+    
+    
+        # 2. step employees
+        for emp in self.employees:
+            emp.step()
+    
+    
+        # 3. aggregate
+        n = len(self.employees)
+        if n:
+            self.stress_average = self.employee_stress_sum / n
+            avg_workload        = self.workload_sum / n
+        else:
+            self.stress_average = 0.0
+            avg_workload        = 0.0
+    
+    
+        # 4. team-level dynamics
+        team_support_buffer = self.support_level * 0.20
+        workload_stress     = avg_workload * 0.20
+        budget_stress       = (1 - self.department_budget / 100.0) * 15.0
+    
+    
+        self.stress_average = np.clip(
+            self.stress_average * 0.9
+            + workload_stress + budget_stress
+            - team_support_buffer
+            + np.random.normal(0, 2),
+            0, 100
+        )
+    
+    
+        if n:
+            avg_emp_support  = np.mean([e.social_support for e in self.employees])
+            self.support_level = np.clip(
+                self.support_level * 0.95 + avg_emp_support * 0.05, 0, 100
+            )
+    
+    
+        # 5. top-down: push updated team stress back to employees
+        for emp in self.employees:
+            emp.team_stress_avg = self.stress_average
+    
+    
+        self.stress_history.append(self.stress_average)
+        self.support_history.append(self.support_level)
+    
+# ============================================================
+
+# MACRO LEVEL: Department
+
+# ============================================================
+
+class Department(Agent):
+"""
+Department-level agent — top of the hierarchy.
+
+    Mirrors the Department pattern from the course brief:
+        self.employees → replaced by self.teams
+        self.budget    → institutional resource level
+        step()         → steps teams, updates dept metrics,
+                         pushes budget top-down
+    
+    
+    Budget undergoes a random walk with a penalty when organisational
+    stress is high, consistent with literature showing high employee
+    stress correlates with reduced organisational performance.
+    """
+    
+    
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        self.teams: list[Team] = []
+        self.budget = np.random.uniform(50, 100)
+    
+    
+        self.stress_average      = 0.0
+        self.mental_health_score = 50.0
+    
+    
+        self.budget_history          = [self.budget]
+        self.stress_history          = [self.stress_average]
+        self.mental_health_history   = [self.mental_health_score]
+    
+    
+    def add_team(self, team: Team):
+        self.teams.append(team)
+    
+    
+    def update_department_metrics(self):
+        """Aggregate upward and update institutional state."""
+        if self.teams:
+            self.stress_average = np.mean([t.stress_average for t in self.teams])
+            avg_support         = np.mean([t.support_level for t in self.teams])
+        else:
+            self.stress_average = 0.0
+            avg_support         = 0.0
+    
+    
+        budget_change = np.random.normal(0, 3)
+        if self.stress_average > 60:
+            budget_change -= 2          # high stress erodes budget efficiency
+        self.budget = np.clip(self.budget + budget_change, 0, 100)
+    
+    
+        self.mental_health_score = np.clip(
+            100 - self.stress_average + avg_support * 0.30, 0, 100
+        )
+    
+    
+        # push budget down to teams
+        for t in self.teams:
+            t.department_budget = self.budget
+    
+    
+        self.budget_history.append(self.budget)
+        self.stress_history.append(self.stress_average)
+        self.mental_health_history.append(self.mental_health_score)
+    
+    
+    def step(self):
+        for team in self.teams:
+            team.step()
+        self.update_department_metrics()
+    
+# ============================================================
+
+# MODEL
+
+# ============================================================
+
+class MentalHealthModel(Model):
+"""
+Multi-level ABM for workplace mental health.
+
+    Hierarchy:
+        Macro  — Department   (institutional budget, org-level stress)
+        Meso   — Team         (group stress, support culture)
+        Micro  — Employee     (individual stress, depression risk, resilience)
+    
+    
+    Cross-scale dynamics:
+        Bottom-up: employee workload/stress → team average → dept average
+        Top-down:  dept budget → team budget → individual budget stress
+                   team stress → individual stress contagion
+    
+    
+    Social network:
+        Within-team ties: p = 0.70   (dense, peer support)
+        Cross-team ties:  p = 0.15   (sparser, organisational bridging)
+    """
+    
+    
+    def __init__(self, num_departments=3, num_teams_per_dept=2, num_employees_per_team=5):
+        super().__init__()
+    
+    
+        self.num_departments       = num_departments
+        self.num_teams_per_dept    = num_teams_per_dept
+        self.num_employees_per_team = num_employees_per_team
+    
+    
+        # Use distinct names to avoid Mesa reserved attribute collision
+        self.dept_registry:     OrderedDict[int, Department] = OrderedDict()
+        self.team_registry:     OrderedDict[int, Team]       = OrderedDict()
+        self.employee_registry: OrderedDict[int, Employee]   = OrderedDict()
+    
+    
+        self._build_hierarchy()
+        self._build_social_network()
+    
+    
+        # Scheduler: only departments are registered;
+        # they cascade steps to teams → employees internally.
+        self.scheduler = RandomActivation(self)
+        for dept in self.dept_registry.values():
+            self.scheduler.add(dept)
+    
+    
+        self.datacollector = DataCollector(
+            model_reporters={
+                "avg_stress":     lambda m: m._model_avg("stress"),
+                "avg_depression": lambda m: m._model_avg("depression_risk"),
+                "avg_support":    lambda m: m._model_avg("social_support"),
+            },
+            agent_reporters={
+                "stress":          "stress",
+                "depression_risk": "depression_risk",
+                "social_support":  "social_support",
+                "resilience":      "resilience",
+            }
+        )
+    
+    
+    # ----------------------------------------------------------
+    def _build_hierarchy(self):
+        for dept_id in range(self.num_departments):
+            dept = Department(dept_id, self)
+            self.dept_registry[dept_id] = dept
+    
+    
+            for ti in range(self.num_teams_per_dept):
+                team_id = self.num_teams_per_dept * dept_id + ti
+                team = Team(team_id, self, dept_id)
+                self.team_registry[team_id] = team
+                dept.add_team(team)
+    
+    
+                for ei in range(self.num_employees_per_team):
+                    emp_id = self.num_employees_per_team * team_id + ei
+                    emp = Employee(emp_id, self, team_id, dept_id)
+                    self.employee_registry[emp_id] = emp
+                    team.add_employee(emp)
+    
+    
+    def _build_social_network(self):
+        all_emps = list(self.employee_registry.values())
+    
+    
+        # within-team dense ties
+        for team in self.team_registry.values():
+            es = team.employees
+            for i in range(len(es)):
+                for j in range(i + 1, len(es)):
+                    if np.random.random() < 0.70:
+                        es[i].connections.append(es[j].unique_id)
+                        es[j].connections.append(es[i].unique_id)
+    
+    
+        # cross-team weak ties
+        for i in range(len(all_emps)):
+            for j in range(i + 1, len(all_emps)):
+                if (all_emps[i].team_id != all_emps[j].team_id
+                        and np.random.random() < 0.15):
+                    all_emps[i].connections.append(all_emps[j].unique_id)
+                    all_emps[j].connections.append(all_emps[i].unique_id)
+    
+    
+    # ----------------------------------------------------------
+    def _model_avg(self, attr: str) -> float:
+        emps = list(self.employee_registry.values())
+        return float(np.mean([getattr(e, attr) for e in emps])) if emps else 0.0
+    
+    
+    def step(self):
+        self.scheduler.step()
+        self.datacollector.collect(self)
+    
+    
+    def run_model(self, n_steps: int):
+        for _ in range(n_steps):
+            self.step()
+    
+    
+    # ----------------------------------------------------------
+    def get_employee_df(self) -> pd.DataFrame:
+        rows = []
+        for e in self.employee_registry.values():
+            rows.append({
+                "employee_id":        e.unique_id,
+                "team_id":            e.team_id,
+                "department_id":      e.department_id,
+                "final_stress":       e.stress,
+                "final_depression":   e.depression_risk,
+                "final_support":      e.social_support,
+                "final_resilience":   e.resilience,
+                "avg_stress":         float(np.mean(e.stress_history)),
+                "avg_depression":     float(np.mean(e.depression_history)),
+            })
+        return pd.DataFrame(rows)
+    
+    
+    def get_team_df(self) -> pd.DataFrame:
+        rows = []
+        for t in self.team_registry.values():
+            rows.append({
+                "team_id":            t.unique_id,
+                "department_id":      t.department_id,
+                "n_employees":        len(t.employees),
+                "final_stress_avg":   t.stress_average,
+                "final_support":      t.support_level,
+                "avg_stress":         float(np.mean(t.stress_history)),
+            })
+        return pd.DataFrame(rows)
+    
+    
+    def get_department_df(self) -> pd.DataFrame:
+        rows = []
+        for d in self.dept_registry.values():
+            rows.append({
+                "department_id":      d.unique_id,
+                "n_teams":            len(d.teams),
+                "final_budget":       d.budget,
+                "final_stress_avg":   d.stress_average,
+                "mental_health_score":d.mental_health_score,
+                "avg_budget":         float(np.mean(d.budget_history)),
+                "avg_stress":         float(np.mean(d.stress_history)),
+            })
+        return pd.DataFrame(rows)
+    
+# ============================================================
+
+# RUN
+
+# ============================================================
+
+model = MentalHealthModel(num_departments=3, num_teams_per_dept=2, num_employees_per_team=5)
+model.run_model(50)
+
+emp_df  = model.get_employee_df()
+team_df = model.get_team_df()
+dept_df = model.get_department_df()
+
+print("=" * 60)
+print("DEPARTMENT LEVEL (Macro)")
+print("=" * 60)
+print(dept_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("TEAM LEVEL (Meso)")
+print("=" * 60)
+print(team_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("EMPLOYEE LEVEL (Micro) — first 10")
+print("=" * 60)
+print(emp_df.head(10).to_string(index=False))
+
+high_dep = emp_df[emp_df["final_depression"] > 50]
+high_str = emp_df[emp_df["final_stress"]     > 60]
+print(f"\nHigh depression risk (>50): {len(high_dep)} / {len(emp_df)}")
+print(f"High stress (>60):          {len(high_str)} / {len(emp_df)}")
+
+# ============================================================
+
+# VISUALISATIONS
+
+# ============================================================
+
+model_data = model.datacollector.get_model_vars_dataframe()
+emps       = list(model.employee_registry.values())
+
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+fig.suptitle("Multi-Level Workplace Mental Health ABM", fontsize=14, fontweight="bold")
+
+# 1. Model-level time series
+
+ax = axes[0, 0]
+ax.plot(model_data["avg_stress"],     label="Avg stress",     color="tomato")
+ax.plot(model_data["avg_depression"], label="Avg depression", color="orchid")
+ax.plot(model_data["avg_support"],    label="Avg support",    color="steelblue")
+ax.set_title("Model-level trajectories")
+ax.set_xlabel("Step"); ax.set_ylabel("Score (0–100)")
+ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
+
+# 2. Sample individual stress trajectories
+
+ax = axes[0, 1]
+for emp in emps[:10]:
+ax.plot(emp.stress_history, alpha=0.6, linewidth=1.2)
+ax.set_title("Individual stress trajectories (10 employees)")
+ax.set_xlabel("Step"); ax.set_ylabel("Stress"); ax.grid(True, alpha=0.3)
+
+# 3. Department stress time series
+
+ax = axes[0, 2]
+for d in model.dept_registry.values():
+ax.plot(d.stress_history, label=f"Dept {d.unique_id}", linewidth=2)
+ax.set_title("Department stress over time (Macro)")
+ax.set_xlabel("Step"); ax.set_ylabel("Stress avg"); ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
+
+# 4. Depression risk distribution
+
+ax = axes[1, 0]
+ax.hist(emp_df["final_depression"], bins=10, color="salmon", edgecolor="k", alpha=0.85)
+ax.set_title("Final depression risk distribution")
+ax.set_xlabel("Depression risk"); ax.set_ylabel("Count"); ax.grid(True, alpha=0.3)
+
+# 5. Support vs stress scatter
+
+ax = axes[1, 1]
+sc = ax.scatter(
+emp_df["final_support"], emp_df["final_stress"],
+c=emp_df["final_depression"], cmap="YlOrRd", alpha=0.75, s=70
+)
+plt.colorbar(sc, ax=ax, label="Depression risk")
+ax.set_title("Support vs Stress\n(colour = depression risk)")
+ax.set_xlabel("Social support"); ax.set_ylabel("Stress"); ax.grid(True, alpha=0.3)
+
+# 6. Department mental health score
+
+ax = axes[1, 2]
+dept_ids = dept_df["department_id"].astype(str)
+bars = ax.bar(dept_ids, dept_df["mental_health_score"], color=["\#4ECDC4","\#45B7D1","\#FF6B6B"], alpha=0.85)
+ax.set_title("Department mental health score\n(higher = better)")
+ax.set_xlabel("Department"); ax.set_ylabel("Score"); ax.set_ylim(0, 100); ax.grid(True, alpha=0.3, axis="y")
+for bar, val in zip(bars, dept_df["mental_health_score"]):
+ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, f"{val:.1f}", ha="center", fontsize=9)
+
+plt.tight_layout()
+plt.savefig("mental_health_abm.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Figure saved to mental_health_abm.png")
+```
+
+
+[^1]: https://www.jstor.org/stable/pdf/2392498.pdf
+
+[^2]: https://pubmed.ncbi.nlm.nih.gov/9547031/
+
+[^3]: https://pmc.ncbi.nlm.nih.gov/articles/PMC10030380/
+
+[^4]: https://mesa.readthedocs.io/latest/apis/datacollection.html
+
+[^5]: https://werkwelzijnenmotivatie.wordpress.com/job-design-2/the-job-demand-control-model-of-karasek/
+
+[^6]: https://pmc.ncbi.nlm.nih.gov/articles/PMC7730790/
+
+[^7]: https://www.wilmarschaufeli.nl/publications/Schaufeli/167.pdf
+
+[^8]: https://www.youtube.com/watch?v=APywfCbyn7s
+
+[^9]: https://www.physio-pedia.com/Effort-Reward_Imbalance_Questionnaire
+
+[^10]: https://books.google.com/books/about/Emotional_Contagion.html?id=oXiVn788v74C
+
+[^11]: https://www.toolshero.com/human-resources/job-demand-control-model/
+
+[^12]: https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.00386/full
+
+[^13]: https://www.sciencedirect.com/topics/psychology/emotional-contagion
+
+[^14]: https://tkmim.ac.in/wp-content/uploads/2017/03/Article-3.pdf
+
+[^15]: https://www.scirp.org/reference/referencespapers
+
+[^16]: https://www.iloencyclopaedia.org/part-v-77965/psychosocial-and-organizational-factors/theories-of-job-stress/item/12-psychosocial-factors-stress-and-health-2
+
+[^17]: https://www.sjweh.fi/download.php?abstract_id=1263\&file_nro=1
+
