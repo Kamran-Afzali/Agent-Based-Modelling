@@ -1,13 +1,13 @@
 
 # Multi-Level Dynamics: Stress, Support, and Path Dependence in Workplace Mental Health
 
-In earlier agent-based models, we often start with a single mechanism and ask what happens when that mechanism is allowed to evolve over time. Here, the structure is less compact but more realistic: workplace mental health is generated through interactions between individuals, teams, and departments. The model treats stress not as an isolated personal attribute, but as a quantity that is shaped by workload, social contagion, social support, resilience, and institutional budget. That is a familiar move in occupational stress theory, where high demands, low control, and low reward are treated as chronic exposures rather than one-off shocks.[^2][^1]
+In earlier agent-based models, we often start with a single mechanism and ask what happens when that mechanism is allowed to evolve over time. Here, the structure is less compact but more realistic: workplace mental health is generated through interactions between individuals, teams, and departments. The model treats stress not as an isolated personal attribute, but as a quantity that is shaped by workload, social contagion, social support, resilience, and institutional budget. That is a familiar move in occupational stress theory, where high demands, low control, and low reward are treated as chronic exposures rather than one-off shocks.
 
-The main interest is not whether the model predicts a real organization in a literal sense. It does not. The point is more limited and, arguably, more useful: to examine how multi-level constraints can generate divergent employee trajectories even when agents start in broadly similar ranges. A model like this is especially appropriate when the empirical object is dynamic, relational, and affected by feedback across scales, which is exactly the sort of system ABM is meant to represent.[^3]
+The main interest is not whether the model predicts a real organization in a literal sense. It does not. The point is more limited and, arguably, more useful: to examine how multi-level constraints can generate divergent employee trajectories even when agents start in broadly similar ranges. A model like this is especially appropriate when the empirical object is dynamic, relational, and affected by feedback across scales, which is exactly the sort of system ABM is meant to represent.
 
 ## The Logic of Workplace Stress
 
-The model uses a three-level hierarchy: employees at the micro level, teams at the meso level, and departments at the macro level. That structure mirrors a common argument in occupational health: strain is not only an individual psychological state, but also a consequence of organizational design and resource allocation. In the code, individual stress and depression risk update from a combination of workload, team stress, departmental budget, support, and resilience.[^1][^2]
+The model uses a three-level hierarchy: employees at the micro level, teams at the meso level, and departments at the macro level. That structure mirrors a common argument in occupational health: strain is not only an individual psychological state, but also a consequence of organizational design and resource allocation. In the code, individual stress and depression risk update from a combination of workload, team stress, departmental budget, support, and resilience.
 
 A compact way to write the individual stress update is:
 
@@ -35,7 +35,7 @@ stress_delta = workload_stress + contagion_stress + budget_stress - support_buff
 self.stress = np.clip(self.stress + stress_delta + np.random.normal(0, 3), 0, 100)
 ```
 
-Dry run: an employee with moderate workload but high team stress may still accumulate substantial strain. That is not a bug; it is the point. The model makes stress partially collective, which is consistent with the idea that work environments can transmit strain through shared norms and local observation of distress.[^3]
+Dry run: an employee with moderate workload but high team stress may still accumulate substantial strain. That is not a bug; it is the point. The model makes stress partially collective, which is consistent with the idea that work environments can transmit strain through shared norms and local observation of distress.
 
 ## Micro-Level Employees
 
@@ -68,7 +68,7 @@ $$
 \bar S_{k,t+1} = 0.9 \bar S_{k,t} + 0.20 \bar W_{k,t} + 15(1-B_{d,t}) - 0.20\,C_{k,t} + \xi_t
 $$
 
-where $C_{k,t}$ is team support culture and $B_{d,t}$ is the department budget. This resembles the logic of demand-control-support models, except that the “control” term is not explicit; instead, control is implicit in support and budget constraints.[^1]
+where $C_{k,t}$ is team support culture and $B_{d,t}$ is the department budget. This resembles the logic of demand-control-support models, except that the “control” term is not explicit; instead, control is implicit in support and budget constraints.
 
 ```python
 team_support_buffer = self.support_level * 0.20
@@ -84,7 +84,7 @@ self.stress_average = np.clip(
 )
 ```
 
-Dry run: if a team has several high-workload employees but also a relatively supportive climate, the support term may partly offset the stress buildup. But that offset is only partial. The model implicitly assumes that social support buffers distress, which is plausible, though not universally linear or symmetric in the empirical literature.[^2]
+Dry run: if a team has several high-workload employees but also a relatively supportive climate, the support term may partly offset the stress buildup. But that offset is only partial. The model implicitly assumes that social support buffers distress, which is plausible, though not universally linear or symmetric in the empirical literature.
 
 ## Department-Level Constraints
 
@@ -119,7 +119,7 @@ Dry run: when department stress stays elevated for several steps, the budget tra
 
 ## Network Diffusion
 
-The code also includes a simple social network among employees, with dense within-team ties and sparser cross-team ties. Support diffuses through those ties by a small weighted update. The resulting mechanism is close in spirit to emotional contagion, although here it concerns support rather than affect alone.[^3]
+The code also includes a simple social network among employees, with dense within-team ties and sparser cross-team ties. Support diffuses through those ties by a small weighted update. The resulting mechanism is close in spirit to emotional contagion, although here it concerns support rather than affect alone.
 
 The update is:
 
@@ -147,7 +147,7 @@ Dry run: an employee embedded in a supportive team but connected to a wider set 
 
 The execution order is important because the model is explicitly nested. Departments step teams; teams step employees; employees contribute upward during their step; teams then aggregate and push constraints back down; departments finally update institutional metrics. That sequencing is not incidental. It is the mechanism that allows bottom-up emergence and top-down constraint to coexist in the same system.
 
-Mesa is used here in a relatively standard way, with `DataCollector` storing model-level summaries such as average stress, average depression, and average support, alongside agent-level reporters for stress, depression risk, support, and resilience. The structure is readable and reproducible, which matters more than it sometimes gets credit for in simulation work.[^4]
+Mesa is used here in a relatively standard way, with `DataCollector` storing model-level summaries such as average stress, average depression, and average support, alongside agent-level reporters for stress, depression risk, support, and resilience. The structure is readable and reproducible, which matters more than it sometimes gets credit for in simulation work.
 
 ```python
 self.datacollector = DataCollector(
@@ -177,18 +177,18 @@ The scatterplot of final support versus final stress is probably the clearest re
 
 ## Why It Matters
 
-What the model gives you is not a diagnosis of workplace mental health. It gives you a structured way to think about how strain can emerge from the interaction of workload, social ties, and institutional constraint. That is consistent with the broader ABM literature, which emphasizes that heterogeneous agents and local interactions can generate population outcomes that are not obvious from the rules alone. It is also consistent with classic occupational stress models, though the code simplifies those models substantially.[^2][^1][^3]
+What the model gives you is not a diagnosis of workplace mental health. It gives you a structured way to think about how strain can emerge from the interaction of workload, social ties, and institutional constraint. That is consistent with the broader ABM literature, which emphasizes that heterogeneous agents and local interactions can generate population outcomes that are not obvious from the rules alone. It is also consistent with classic occupational stress models, though the code simplifies those models substantially.
 
 The more interesting claim is probably the weaker one: if support diffuses, stress accumulates, and budgets are constrained by organizational strain, then mental health outcomes may become clustered and persistent even without any single catastrophic event. That is a plausible mechanism, not a proof. But in simulation work, plausibility is often the right first target.
 
 ## Possible Extensions
 
-Several extensions would make the model more realistic without changing its basic structure. You could add explicit leadership agents, make department budget respond to turnover or absenteeism, or let employees leave teams when depression risk becomes too high. You could also model job control separately from social support, which would bring the model closer to the full demand-control-support tradition.[^1]
+Several extensions would make the model more realistic without changing its basic structure. You could add explicit leadership agents, make department budget respond to turnover or absenteeism, or let employees leave teams when depression risk becomes too high. You could also model job control separately from social support, which would bring the model closer to the full demand-control-support tradition.
 
 Another useful extension would be to replace the simple support diffusion rule with a weighted network process, perhaps allowing strong ties to matter more than weak ones. That would be closer to empirical social network models, and it would make the meso-level structure more consequential. Finally, the model would benefit from repeated runs and sensitivity analysis. The current single run is fine for illustration, but not enough for serious inference.
 
 If useful, I can turn this into a polished blog-ready version with a title, smoother transitions, and LaTeX rendered cleanly for Markdown or Jupyter Notebook output.
-<span style="display:none">[^10][^11][^12][^13][^14][^15][^16][^17][^5][^6][^7][^8][^9]</span>
+<span style="display:none">[^10][^11][^12][^13][^14][^15][^16][^17]</span>
 
 ```python
 # ============================================================
