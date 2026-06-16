@@ -1,0 +1,1167 @@
+
+# Substance Use, Social Context, and the Limits of Individual Choice: A Multi-Level ABM with Reinforcement Learning
+
+The previous model treated mental health as emerging from stress accumulation across organizational layers. This one is harder to reduce to a single mechanism. Substance use initiation is shaped simultaneously by craving and neurobiological state, peer norms that shift what feels normal, neighborhood resource availability, and city-level policy — each operating on a different timescale. The model attempts to represent that structure honestly, which means accepting more moving parts in exchange for more plausible dynamics.
+
+The key design choice is to embed Q-learning at every level of the hierarchy. Individuals do not simply react to their environment; they learn, however imperfectly, which behavioral strategies yield the most reward under their current constraints. Peer cliques update their norms based on observed group outcomes. Neighborhoods allocate outreach or policing based on aggregate use rates. City zones shift policy quarterly. That is a significant departure from the workplace model, where agents were largely passive recipients of institutional forces. Here, adaptation is happening at every scale.
+
+## Structure of the Hierarchy
+
+The model runs four nested levels: `CityZone` at the top, `Neighborhood` below it, then `Block` and `PeerClique` at the meso level, and `Individual` at the base. The `Block` layer is structural — it holds cliques and passively drifts in retail exposure and visible disorder, but does not have its own Q-learner. Each other level does. Three city zones are assigned SES levels of 20, 50, and 80, roughly representing low, mid, and high socioeconomic context. Neighborhood and individual SES values inherit from their zone with added noise.
+
+The temporal structure is non-uniform, which is worth noting. Individuals step every model tick (daily cadence). Cliques step every 7 ticks. Neighborhoods step every 30. City zones step every 90. That asymmetry is intentional. Peer norm shifts are slower than individual choices; policy adjustments are slower still. Running everything synchronously would collapse those differences and likely produce unrealistic dynamics.
+
+## The Q-Learning Core
+
+All agents share the same `QTable` class, a minimal tabular Q-learner with epsilon-greedy exploration and exponential decay. The update rule follows the standard temporal-difference form:
+
+$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \Big[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \Big]
+$$
+
+where $\alpha = 0.10$ is the learning rate, $\gamma = 0.90$ the discount factor, and $\epsilon$ decays from 0.30 toward 0.05. Continuous state variables are discretized into 5 bins before lookup, so the state space remains tractable even with multiple inputs.
+
+```python
+def update(self, state, action, reward, next_state):
+    td = reward + self.gamma * np.max(self.q[next_state]) - self.q[state][action]
+    self.q[state][action] += self.alpha * td
+    self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+```
+
+Dry run: at initialization, all Q-values are zero and the agent explores randomly. After a few dozen steps, the epsilon decay means roughly 70% of choices are greedy. Whether the learned policy is good depends entirely on whether the reward function encodes the right incentives — a limitation that applies to every level of this model.
+
+## Micro Level: Individual Behavioral Choice
+
+Each individual has five possible actions: `substance_use`, `prosocial_leisure`, `isolation`, `employment_search`, and `treatment_contact`. The reward function is where the SES mechanism lives. Slow-payoff actions — employment search and treatment contact — are discounted proportionally to low SES, reflecting the empirical finding that resource scarcity compresses the subjective value of deferred rewards (Galea et al., 2020; Hatzenbuehler et al., 2013).
+
+The individual state update after `substance_use` is representative:
+
+$$
+\text{craving}_{t+1} = \text{clip}(\text{craving}_t - 15 + \epsilon_t,\ 0,\ 100)
+$$
+
+$$
+\text{depression}_{t+1} = \text{clip}(\text{depression}_t + 4 + \eta_t,\ 0,\ 100)
+$$
+
+The action provides immediate craving relief but nudges depression upward — a simplified version of the reward-sensitization / tolerance dynamic described in incentive salience theory (Berridge \& Robinson, 1998). Background craving drift is always positive, representing withdrawal pressure:
+
+```python
+# Background craving drift (withdrawal)
+self.craving = np.clip(self.craving + np.random.normal(2, 1), 0, 100)
+```
+
+Dry run: a low-SES individual with craving at 70 will find `substance_use` more rewarding than `employment_search` in the short run, because the SES factor compresses the employment payoff to near zero. That is not irrational behavior; it reflects a structurally constrained reward landscape.
+
+## Meso Level: Peer Clique Norm Dynamics
+
+Peer cliques update their descriptive norm for substance use (`norm_use`) and their inclusion threshold (`inclusion`) weekly, using a three-action Q-learner. The actions — `normalize_use`, `promote_mutual_aid`, and `tighten_exclusion` — adjust these norms incrementally and push them top-down to all members. The key mechanism is that `norm_use` enters directly into the individual reward for `substance_use`:
+
+$$
+r_{\text{sub}} = 8.0 \cdot \frac{\text{craving}}{100} + 5.0 \cdot \text{norm\_use} - 6.0 \cdot \text{policing} - 4.0 \cdot \frac{\text{depression}}{100}
+$$
+
+That peer approval term — `5.0 * norm_use` — is the social contagion mechanism. When a clique normalizes use, individual reward for that behavior rises, and the Q-learner is more likely to select it in future steps. That is consistent with descriptive norm theory (Cialdini et al., 1990) and with epidemiological evidence that peer substance use is among the strongest predictors of initiation.
+
+```python
+def _apply_action(self, action_idx):
+    action = CLIQUE_ACTIONS[action_idx]
+    if action == "normalize_use":
+        self.norm_use  = np.clip(self.norm_use  + 0.05, 0, 1)
+        self.inclusion = np.clip(self.inclusion - 0.03, 0, 1)
+```
+
+Dry run: a clique in a low-SES zone that observes high use rates among its members may learn to normalize use because the reward for doing so (correlated with current use rate) is higher than the reward for promoting mutual aid, at least in early steps. Whether that reverses over time depends on whether depression accumulates enough to shift the reward landscape — a subtler dynamic that the model can in principle capture.
+
+## Neighborhood Level: Resource Allocation Policy
+
+Neighborhoods operate monthly and face three actions: `increase_outreach`, `increase_policing`, and `expand_harm_reduction`. The reward function penalizes all interventions with a fixed cost of 5 and rewards reductions in use rate and improvements in safety, weighted by neighborhood SES. This is a rough approximation of the resource allocation tradeoffs studied in the harm reduction literature (Kerr et al., 2006).
+
+A compact form of the harm-reduction reward is:
+
+$$
+r_{\text{HR}} = 7.0 \cdot \bar{u} - 2.0 \cdot \frac{\bar{d}}{100} - 5.0
+$$
+
+where $\bar{u}$ is the average use rate and $\bar{d}$ is average depression. The intervention is only worth choosing when use is already high — a potential feedback trap where harm-reduction resources arrive too late in low-resource neighborhoods.
+
+```python
+def _reward(self, action_idx):
+    if action == "expand_harm_reduction":
+        return 7.0 * self.avg_use_rate - 2.0 * (self.avg_depression / 100) - cost
+```
+
+Dry run: early in the simulation, `avg_use_rate` is low because the model has not accumulated many `substance_use` actions yet. The harm-reduction reward is therefore near zero or negative, and the neighborhood Q-learner may initially prefer policing. Over 180 steps, that ordering may shift — or it may not, which is itself informative about how late-arriving harm-reduction signals fare against earlier policing lock-in.
+
+## Macro Level: City Zone Policy
+
+City zones update quarterly — twice in a 180-step run. The four policy actions (`restrict_licensing`, `improve_transit_access`, `expand_service_placement`, `increase_enforcement`) affect structural variables that propagate downward. Transit access and service placement also nudge neighborhood SES upward via a small additive term, encoding the idea that infrastructure investment has cumulative equity effects:
+
+$$
+\text{ses\_mean}_{t+1} = \text{clip}\left(\text{ses\_mean}_t + 0.01 \cdot \frac{\text{transit} + \text{service}}{200} \cdot 10,\ 0,\ 100\right)
+$$
+
+The zone mental health score is a composite:
+
+$$
+M_z = \text{clip}\Big(100 - \bar{d}_z + 0.20 \cdot \text{service\_placement} - 20 \cdot \bar{u}_z,\ 0,\ 100\Big)
+$$
+
+```python
+self.mental_health_score = np.clip(
+    100 - self.avg_depression
+    + self.service_placement * 0.20
+    - self.avg_use_rate * 20,
+    0, 100
+)
+```
+
+Dry run: a low-SES zone with `avg_depression` near 60 and persistent use will score poorly even if service placement improves, because the use-rate penalty dominates. That dynamic may suggest that zone-level policy alone cannot compensate for structurally embedded SES disadvantage — a plausible claim, though the model is far too stylized to treat as evidence.
+
+## Model Execution Order and Data Collection
+
+The update schedule is worth being explicit about. Every step, all individuals are stepped directly. Clique, neighborhood, and zone steps are gated on modular time:
+
+```python
+def step(self):
+    self.current_step += 1
+    for ind in self.individual_registry.values():
+        ind.step()
+    if self.current_step % 7 == 0:
+        for clique in self.clique_registry.values():
+            clique.step()
+    if self.current_step % 30 == 0:
+        for nb in self.neighborhood_registry.values():
+            nb.step()
+    if self.current_step % 90 == 0:
+        for zone in self.zone_registry.values():
+            zone.step()
+```
+
+This is a departure from the workplace model, where cascade happened strictly through the Mesa scheduler. Here the cascade is time-gated rather than hierarchically nested. The tradeoff is that bottom-up signals — say, an individual's last action — are read by the clique on the next weekly step, not instantaneously. That introduces a small temporal lag into the feedback loop, which may actually be more realistic than synchronous aggregation.
+
+The `DataCollector` tracks five model-level averages: substance use rate, stress, depression, craving, and social capital. Individual-level outcomes are accessed directly via `get_individual_df()` rather than through Mesa's agent reporter, which keeps the collection logic simpler and avoids the Mesa 2.x agent reporter overhead.
+
+## Reading the Outputs
+
+The most revealing output is likely the SES-stratified scatter of `ses_score` against `substance_use_count`. If the reward compression mechanism is working, lower SES agents should accumulate more substance use actions, not because they are modeled as intrinsically different, but because the action space is cheaper for them in expected reward terms. The Pearson correlation between SES and use count is computed directly and serves as a quick check on whether the gradient is in the expected direction.
+
+The clique norm trajectories by zone are also worth examining closely. Low-SES zone cliques may converge toward higher `norm_use` values, which then reinforces individual substance use through the peer approval term. If that happens, it suggests the model is generating something like a descriptive norm trap — not designed in, but emerging from the reward structure at the clique level. The action distribution bar chart by SES tertile closes the picture, showing whether `treatment_contact` and `employment_search` are genuinely suppressed in low-SES agents or whether the epsilon-greedy exploration keeps those proportions roughly uniform.
+
+## What the Model Adds
+
+The substantive claim this model makes is fairly specific: if SES compresses the relative value of recovery-oriented behaviors, and if peer norms adapt to observed use rates, then use initiation can become self-reinforcing in ways that are not reducible to individual risk factors. That is consistent with a structural view of addiction that runs from Bourgois's ethnographic work through Galea's population health models, though the formalization here is obviously much thinner than either.
+
+The RL framing adds something that pure rule-based ABMs cannot: agents that adapt their strategies, and higher-level agents that adapt their policies. Whether that adaptation converges to anything meaningful in 180 steps is unclear — two quarterly zone updates is barely enough for the Q-learner to leave its initialization. A more careful analysis would run 500–1000 steps with repeated seeds and track whether the learned policies differ across SES zones. That remains the most important extension, and the current run should probably be read as a demonstration of structure rather than an analysis of behavior.
+
+## Extensions Worth Considering
+
+Several modifications would strengthen the model without requiring architectural changes. Letting individual SES scores evolve — decreasing with sustained substance use, increasing with employment actions — would make the SES-use relationship bidirectional rather than fixed. Adding a stigma diffusion mechanism analogous to the support diffusion in the workplace model would allow treatment-seeking to be socially suppressed not just individually. At the neighborhood level, letting policing intensity reduce social capital (a well-documented empirical pattern in over-policed communities) would introduce a policy tradeoff that the current reward function ignores. Finally, separating craving from stress more explicitly — perhaps allowing craving to be modeled as a partially observable state — would bring the individual layer closer to computational accounts of substance use in the psychiatry literature.
+
+
+```python
+# ============================================================
+# Single-cell Google Colab: Multi-level ABM
+# Substance Use Initiation & Comorbid Distress
+# Under SES Stratification
+# Mesa 2.3.2 compatible | Tabular Q-learning RL at all levels
+# ============================================================
+
+!pip install mesa==2.3.2 matplotlib pandas numpy -q
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import OrderedDict, defaultdict
+from mesa import Agent, Model
+from mesa.datacollection import DataCollector
+from mesa.time import RandomActivation
+
+np.random.seed(42)
+
+# ============================================================
+# CONSTANTS & ACTION SPACES
+# ============================================================
+
+# Micro: individual daily actions
+INDIVIDUAL_ACTIONS = [
+    "substance_use",    # immediate craving relief, peer approval, risk of penalty
+    "prosocial_leisure",# delayed reward, social capital gain
+    "isolation",        # avoidance; short-term stress relief, long-term depression risk
+    "employment_search",# long-term reward, low immediate payoff
+    "treatment_contact",# delayed recovery, stigma cost
+]
+
+# Meso: clique weekly norm updates
+CLIQUE_ACTIONS = [
+    "normalize_use",        # increase descriptive norm for substance use
+    "promote_mutual_aid",   # increase inclusion threshold for prosocial members
+    "tighten_exclusion",    # exclude high-risk members to protect group
+]
+
+# Neighborhood: monthly resource allocation
+NEIGHBORHOOD_ACTIONS = [
+    "increase_outreach",
+    "increase_policing",
+    "expand_harm_reduction",
+]
+
+# City zone: quarterly policy shifts
+ZONE_ACTIONS = [
+    "restrict_licensing",
+    "improve_transit_access",
+    "expand_service_placement",
+    "increase_enforcement",
+]
+
+# ============================================================
+# TABULAR Q-LEARNING HELPER
+# ============================================================
+
+class QTable:
+    """
+    Minimal tabular Q-learner.
+    State is discretized externally before lookup.
+    epsilon-greedy policy with decay.
+    """
+    def __init__(self, n_actions: int, alpha=0.10, gamma=0.90,
+                 epsilon=0.30, epsilon_min=0.05, epsilon_decay=0.995):
+        self.q: defaultdict = defaultdict(lambda: np.zeros(n_actions))
+        self.n_actions   = n_actions
+        self.alpha       = alpha
+        self.gamma       = gamma
+        self.epsilon     = epsilon
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
+
+    def discretize(self, value: float, bins=5) -> int:
+        """Map continuous [0,100] to integer bin."""
+        return int(np.clip(value / 100 * bins, 0, bins - 1))
+
+    def get_state(self, *continuous_vals) -> tuple:
+        return tuple(self.discretize(v) for v in continuous_vals)
+
+    def choose_action(self, state: tuple) -> int:
+        if np.random.random() < self.epsilon:
+            return np.random.randint(self.n_actions)
+        return int(np.argmax(self.q[state]))
+
+    def update(self, state, action, reward, next_state):
+        td = reward + self.gamma * np.max(self.q[next_state]) - self.q[state][action]
+        self.q[state][action] += self.alpha * td
+        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+
+
+# ============================================================
+# MICRO LEVEL: Individual (Adolescent / Young Adult)
+# Daily update cadence
+# ============================================================
+
+class Individual(Agent):
+    """
+    Individual agent at the micro level.
+
+    State variables:
+        craving, stress, depression, stigma, social_capital
+
+    RL reward combines:
+        + immediate craving/stress relief
+        + peer approval (from clique norm)
+        - withdrawal penalty (if substance_use skipped while craving high)
+        - delayed mood penalty (depression worsens over time)
+        - legal/social sanction (from neighborhood policing)
+
+    SES modulation: low SES compresses the value of slow-payoff actions
+    (employment_search, treatment_contact) relative to substance_use.
+    This is the central mechanism from Galea et al. and the ScienceDirect
+    reference in the brief.
+    """
+
+    def __init__(self, unique_id, model, clique_id, block_id,
+                 neighborhood_id, zone_id, ses_score: float):
+        super().__init__(unique_id, model)
+        self.clique_id       = clique_id
+        self.block_id        = block_id
+        self.neighborhood_id = neighborhood_id
+        self.zone_id         = zone_id
+        self.ses_score       = ses_score          # 0 (low) – 100 (high)
+
+        # State
+        self.craving       = np.random.uniform(20, 60)
+        self.stress        = np.random.uniform(30, 70)
+        self.depression    = np.random.uniform(10, 40)
+        self.stigma        = np.random.uniform(20, 50)
+        self.social_capital= np.random.uniform(20, 60)
+
+        # Behavior counters
+        self.substance_use_count  = 0
+        self.treatment_count      = 0
+        self.last_action          = None
+
+        # Q-learner: state = (craving_bin, stress_bin, clique_norm_bin)
+        self.ql = QTable(n_actions=len(INDIVIDUAL_ACTIONS))
+
+        # History
+        self.stress_history    = [self.stress]
+        self.depression_history= [self.depression]
+        self.craving_history   = [self.craving]
+        self.action_history    = []
+
+        # Set by clique (top-down)
+        self.clique_norm_use   = 0.5   # descriptive norm [0,1]
+        self.clique_inclusion  = 0.5   # how inclusive the clique is
+        self.neighborhood_harm_reduction = 0.0
+        self.neighborhood_policing       = 0.5
+
+    # ---- reward function ----------------------------------------
+    def _compute_reward(self, action_idx: int) -> float:
+        action = INDIVIDUAL_ACTIONS[action_idx]
+
+        # SES discount on slow-payoff strategies
+        ses_factor = self.ses_score / 100.0   # 0→1
+
+        if action == "substance_use":
+            r  =  8.0 * (self.craving / 100)          # immediate relief
+            r +=  5.0 * self.clique_norm_use           # peer approval
+            r -=  6.0 * self.neighborhood_policing     # sanction risk
+            r -=  4.0 * (self.depression / 100)        # delayed mood penalty
+            self.substance_use_count += 1
+
+        elif action == "prosocial_leisure":
+            r  =  4.0 * self.clique_inclusion          # social reward
+            r +=  3.0 * ses_factor                     # only pays off if SES affords it
+            r -=  2.0 * (self.craving / 100)           # craving still present
+
+        elif action == "isolation":
+            r  =  3.0 * (self.stress / 100)            # short-term stress relief
+            r -=  5.0 * (1 - ses_factor)               # worse in low SES (no resources)
+
+        elif action == "employment_search":
+            r  =  7.0 * ses_factor                     # low in low-SES neighborhoods
+            r -=  3.0 * (self.stress / 100)            # effortful
+            r -=  2.0 * (self.craving / 100)
+
+        elif action == "treatment_contact":
+            r  =  6.0 * self.neighborhood_harm_reduction  # availability
+            r -=  5.0 * (self.stigma / 100)               # stigma barrier
+            r +=  4.0 * ses_factor                         # socioeconomic access
+            self.treatment_count += 1
+
+        return float(r)
+
+    # ---- state dynamics ------------------------------------------
+    def _apply_action(self, action_idx: int):
+        action = INDIVIDUAL_ACTIONS[action_idx]
+        self.last_action = action
+
+        if action == "substance_use":
+            self.craving    = np.clip(self.craving    - 15 + np.random.normal(0, 3), 0, 100)
+            self.stress     = np.clip(self.stress     - 8  + np.random.normal(0, 2), 0, 100)
+            self.depression = np.clip(self.depression + 4  + np.random.normal(0, 2), 0, 100)
+            self.social_capital = np.clip(
+                self.social_capital + 3 * self.clique_norm_use - 2, 0, 100)
+
+        elif action == "prosocial_leisure":
+            self.craving    = np.clip(self.craving    + 5  + np.random.normal(0, 2), 0, 100)
+            self.stress     = np.clip(self.stress     - 5  + np.random.normal(0, 2), 0, 100)
+            self.depression = np.clip(self.depression - 3  + np.random.normal(0, 2), 0, 100)
+            self.social_capital = np.clip(self.social_capital + 5, 0, 100)
+
+        elif action == "isolation":
+            self.craving    = np.clip(self.craving    + 8  + np.random.normal(0, 2), 0, 100)
+            self.stress     = np.clip(self.stress     - 3  + np.random.normal(0, 3), 0, 100)
+            self.depression = np.clip(self.depression + 6  + np.random.normal(0, 2), 0, 100)
+            self.social_capital = np.clip(self.social_capital - 5, 0, 100)
+
+        elif action == "employment_search":
+            self.craving    = np.clip(self.craving    + 4, 0, 100)
+            self.stress     = np.clip(self.stress     + 5  + np.random.normal(0, 3), 0, 100)
+            self.depression = np.clip(self.depression - 2  + np.random.normal(0, 2), 0, 100)
+
+        elif action == "treatment_contact":
+            self.craving    = np.clip(self.craving    - 10 + np.random.normal(0, 3), 0, 100)
+            self.stress     = np.clip(self.stress     - 6  + np.random.normal(0, 2), 0, 100)
+            self.depression = np.clip(self.depression - 5  + np.random.normal(0, 2), 0, 100)
+            self.stigma     = np.clip(self.stigma     + 3  + np.random.normal(0, 1), 0, 100)
+
+        # background craving drift (withdrawal)
+        self.craving = np.clip(self.craving + np.random.normal(2, 1), 0, 100)
+
+    # ---- main step -----------------------------------------------
+    def step(self):
+        state = self.ql.get_state(self.craving, self.stress, self.clique_norm_use * 100)
+        action_idx = self.ql.choose_action(state)
+        reward = self._compute_reward(action_idx)
+        self._apply_action(action_idx)
+        next_state = self.ql.get_state(self.craving, self.stress, self.clique_norm_use * 100)
+        self.ql.update(state, action_idx, reward, next_state)
+
+        self.action_history.append(INDIVIDUAL_ACTIONS[action_idx])
+        self.stress_history.append(self.stress)
+        self.depression_history.append(self.depression)
+        self.craving_history.append(self.craving)
+
+
+# ============================================================
+# MESO LEVEL: Peer Clique
+# Weekly update (every 7 model steps)
+# ============================================================
+
+class PeerClique(Agent):
+    """
+    Peer clique at meso level.
+
+    Maintains descriptive norm for substance use and an inclusion
+    threshold for prosocial members. RL adapts these norms based on
+    observed aggregate outcomes of members.
+
+    Bottom-up: receives average substance use rate and social capital.
+    Top-down: pushes norm_use and inclusion back to individuals.
+    """
+
+    def __init__(self, unique_id, model, block_id, neighborhood_id, zone_id):
+        super().__init__(unique_id, model)
+        self.block_id        = block_id
+        self.neighborhood_id = neighborhood_id
+        self.zone_id         = zone_id
+        self.members: list[Individual] = []
+
+        self.norm_use       = np.random.uniform(0.3, 0.7)  # descriptive norm
+        self.inclusion      = np.random.uniform(0.4, 0.8)  # mutual aid norm
+
+        # Aggregated bottom-up signals
+        self.avg_use_rate   = 0.0
+        self.avg_social_cap = 0.0
+        self.avg_depression = 0.0
+
+        self.ql = QTable(n_actions=len(CLIQUE_ACTIONS))
+
+        self.norm_history      = [self.norm_use]
+        self.inclusion_history = [self.inclusion]
+
+    def add_member(self, ind: Individual):
+        self.members.append(ind)
+
+    def _aggregate(self):
+        if not self.members:
+            return
+        self.avg_use_rate   = np.mean([
+            1 if m.last_action == "substance_use" else 0
+            for m in self.members
+        ])
+        self.avg_social_cap = np.mean([m.social_capital for m in self.members])
+        self.avg_depression = np.mean([m.depression     for m in self.members])
+
+    def _reward(self, action_idx: int) -> float:
+        action = CLIQUE_ACTIONS[action_idx]
+        if action == "normalize_use":
+            return 3.0 * self.avg_use_rate - 2.0 * (self.avg_depression / 100)
+        elif action == "promote_mutual_aid":
+            return 4.0 * (self.avg_social_cap / 100) - 1.5 * self.avg_use_rate
+        elif action == "tighten_exclusion":
+            return 2.0 * (1 - self.avg_use_rate) - 3.0 * (1 - self.inclusion)
+        return 0.0
+
+    def _apply_action(self, action_idx: int):
+        action = CLIQUE_ACTIONS[action_idx]
+        if action == "normalize_use":
+            self.norm_use  = np.clip(self.norm_use  + 0.05, 0, 1)
+            self.inclusion = np.clip(self.inclusion - 0.03, 0, 1)
+        elif action == "promote_mutual_aid":
+            self.inclusion = np.clip(self.inclusion + 0.05, 0, 1)
+            self.norm_use  = np.clip(self.norm_use  - 0.02, 0, 1)
+        elif action == "tighten_exclusion":
+            self.inclusion = np.clip(self.inclusion - 0.05, 0, 1)
+
+    def step(self):
+        self._aggregate()
+        state = self.ql.get_state(self.norm_use * 100, self.avg_depression)
+        action_idx = self.ql.choose_action(state)
+        reward = self._reward(action_idx)
+        self._apply_action(action_idx)
+        next_state = self.ql.get_state(self.norm_use * 100, self.avg_depression)
+        self.ql.update(state, action_idx, reward, next_state)
+
+        # push top-down to members
+        for m in self.members:
+            m.clique_norm_use  = self.norm_use
+            m.clique_inclusion = self.inclusion
+
+        self.norm_history.append(self.norm_use)
+        self.inclusion_history.append(self.inclusion)
+
+
+# ============================================================
+# BLOCK LEVEL: Structural intermediary
+# Holds cliques; passes neighborhood signals down
+# ============================================================
+
+class Block(Agent):
+    """
+    City block — structural container between neighborhood and clique.
+    No own RL; aggregates and relays signals.
+    """
+
+    def __init__(self, unique_id, model, neighborhood_id, zone_id):
+        super().__init__(unique_id, model)
+        self.neighborhood_id = neighborhood_id
+        self.zone_id         = zone_id
+        self.cliques: list[PeerClique] = []
+
+        self.retail_exposure  = np.random.uniform(20, 60)  # substance outlet density
+        self.visible_disorder = np.random.uniform(20, 60)
+        self.perceived_safety = np.random.uniform(30, 70)
+
+    def add_clique(self, clique: PeerClique):
+        self.cliques.append(clique)
+
+    def step(self):
+        # passive drift in block environment
+        self.retail_exposure  = np.clip(
+            self.retail_exposure  + np.random.normal(0, 1), 0, 100)
+        self.visible_disorder = np.clip(
+            self.visible_disorder + np.random.normal(0, 1), 0, 100)
+        self.perceived_safety = np.clip(
+            self.perceived_safety + np.random.normal(0, 1), 0, 100)
+
+
+# ============================================================
+# NEIGHBORHOOD LEVEL: Monthly resource allocation
+# ============================================================
+
+class Neighborhood(Agent):
+    """
+    Neighborhood agent.
+
+    RL allocates outreach, policing intensity, and harm-reduction
+    presence monthly (every 30 model steps). Reward is a composite
+    of reduced aggregate substance use and improved safety perception
+    net of cost.
+
+    Pushes harm_reduction and policing signals down to individuals
+    via block → clique chain.
+    """
+
+    def __init__(self, unique_id, model, zone_id, ses_mean: float):
+        super().__init__(unique_id, model)
+        self.zone_id  = zone_id
+        self.ses_mean = ses_mean      # neighborhood average SES
+
+        self.blocks: list[Block] = []
+
+        self.outreach_level     = np.random.uniform(20, 60)
+        self.policing_intensity = np.random.uniform(30, 70)
+        self.harm_reduction     = np.random.uniform(10, 50)
+
+        # Aggregated signals
+        self.avg_use_rate   = 0.0
+        self.avg_depression = 0.0
+        self.avg_safety     = 0.0
+
+        self.ql = QTable(n_actions=len(NEIGHBORHOOD_ACTIONS))
+
+        self.harm_reduction_history = [self.harm_reduction]
+        self.policing_history       = [self.policing_intensity]
+        self.use_rate_history       = [self.avg_use_rate]
+
+    def add_block(self, block: Block):
+        self.blocks.append(block)
+
+    def _get_all_individuals(self) -> list:
+        inds = []
+        for b in self.blocks:
+            for c in b.cliques:
+                inds.extend(c.members)
+        return inds
+
+    def _aggregate(self):
+        inds = self._get_all_individuals()
+        if inds:
+            self.avg_use_rate   = np.mean([
+                1 if i.last_action == "substance_use" else 0 for i in inds])
+            self.avg_depression = np.mean([i.depression for i in inds])
+            self.avg_safety     = np.mean([
+                b.perceived_safety for b in self.blocks]) if self.blocks else 50.0
+
+    def _reward(self, action_idx: int) -> float:
+        action = NEIGHBORHOOD_ACTIONS[action_idx]
+        cost = 5.0   # resource cost of any intervention
+        if action == "increase_outreach":
+            return 6.0 * (1 - self.avg_use_rate) - cost + 2.0 * (self.ses_mean / 100)
+        elif action == "increase_policing":
+            return 4.0 * (self.avg_safety / 100) - 3.0 * self.avg_use_rate - cost
+        elif action == "expand_harm_reduction":
+            return 7.0 * self.avg_use_rate - 2.0 * (self.avg_depression / 100) - cost
+        return 0.0
+
+    def _apply_action(self, action_idx: int):
+        action = NEIGHBORHOOD_ACTIONS[action_idx]
+        if action == "increase_outreach":
+            self.outreach_level = np.clip(self.outreach_level + 5, 0, 100)
+        elif action == "increase_policing":
+            self.policing_intensity = np.clip(self.policing_intensity + 5, 0, 100)
+        elif action == "expand_harm_reduction":
+            self.harm_reduction = np.clip(self.harm_reduction + 5, 0, 100)
+
+    def _push_top_down(self):
+        for b in self.blocks:
+            for c in b.cliques:
+                for ind in c.members:
+                    ind.neighborhood_harm_reduction = self.harm_reduction / 100.0
+                    ind.neighborhood_policing       = self.policing_intensity / 100.0
+
+    def step(self):
+        # Step blocks (block-level passive drift)
+        for b in self.blocks:
+            b.step()
+
+        self._aggregate()
+        state = self.ql.get_state(self.avg_use_rate * 100, self.ses_mean)
+        action_idx = self.ql.choose_action(state)
+        reward = self._reward(action_idx)
+        self._apply_action(action_idx)
+        next_state = self.ql.get_state(self.avg_use_rate * 100, self.ses_mean)
+        self.ql.update(state, action_idx, reward, next_state)
+
+        self._push_top_down()
+
+        self.harm_reduction_history.append(self.harm_reduction)
+        self.policing_history.append(self.policing_intensity)
+        self.use_rate_history.append(self.avg_use_rate)
+
+
+# ============================================================
+# MACRO LEVEL: City Policy Zone
+# Quarterly update (every 90 model steps)
+# ============================================================
+
+class CityZone(Agent):
+    """
+    City policy zone — highest level.
+
+    RL shifts licensing, transit, and service placement policies
+    quarterly. Reward favors reduced zone-wide use and depression
+    net of implementation cost. Budget is constrained by zone SES.
+
+    Top-down: pushes ses_policy_modifier to neighborhoods, which
+    in turn modulates individual SES-based reward compression.
+    """
+
+    def __init__(self, unique_id, model, zone_ses: float):
+        super().__init__(unique_id, model)
+        self.zone_ses = zone_ses
+
+        self.neighborhoods: list[Neighborhood] = []
+
+        self.licensing_restriction = np.random.uniform(20, 60)
+        self.transit_access        = np.random.uniform(30, 70)
+        self.service_placement     = np.random.uniform(20, 50)
+        self.enforcement_level     = np.random.uniform(30, 60)
+
+        self.avg_use_rate   = 0.0
+        self.avg_depression = 0.0
+        self.mental_health_score = 50.0
+
+        self.ql = QTable(n_actions=len(ZONE_ACTIONS))
+
+        self.mh_score_history   = [self.mental_health_score]
+        self.use_rate_history   = [self.avg_use_rate]
+
+    def add_neighborhood(self, nb: Neighborhood):
+        self.neighborhoods.append(nb)
+
+    def _get_all_individuals(self) -> list:
+        inds = []
+        for nb in self.neighborhoods:
+            inds.extend(nb._get_all_individuals())
+        return inds
+
+    def _aggregate(self):
+        inds = self._get_all_individuals()
+        if inds:
+            self.avg_use_rate   = np.mean([
+                1 if i.last_action == "substance_use" else 0 for i in inds])
+            self.avg_depression = np.mean([i.depression for i in inds])
+        self.mental_health_score = np.clip(
+            100 - self.avg_depression
+            + self.service_placement * 0.20
+            - self.avg_use_rate * 20,
+            0, 100
+        )
+
+    def _reward(self, action_idx: int) -> float:
+        action = ZONE_ACTIONS[action_idx]
+        cost = 4.0
+        if action == "restrict_licensing":
+            return 5.0 * (1 - self.avg_use_rate) - cost
+        elif action == "improve_transit_access":
+            return 4.0 * (self.zone_ses / 100) + 3.0 * (1 - self.avg_use_rate) - cost
+        elif action == "expand_service_placement":
+            return 6.0 * (self.avg_depression / 100) - cost
+        elif action == "increase_enforcement":
+            return 3.0 * (1 - self.avg_use_rate) - 2.0 * (self.zone_ses / 100) - cost
+        return 0.0
+
+    def _apply_action(self, action_idx: int):
+        action = ZONE_ACTIONS[action_idx]
+        if action == "restrict_licensing":
+            self.licensing_restriction = np.clip(
+                self.licensing_restriction + 5, 0, 100)
+        elif action == "improve_transit_access":
+            self.transit_access = np.clip(self.transit_access + 5, 0, 100)
+        elif action == "expand_service_placement":
+            self.service_placement = np.clip(self.service_placement + 5, 0, 100)
+        elif action == "increase_enforcement":
+            self.enforcement_level = np.clip(self.enforcement_level + 5, 0, 100)
+
+    def _push_top_down(self):
+        """
+        Policy shifts propagate as SES modifier to neighborhoods.
+        Better transit and service placement nudge effective SES upward.
+        """
+        ses_boost = (self.transit_access + self.service_placement) / 200 * 10
+        for nb in self.neighborhoods:
+            nb.ses_mean = np.clip(nb.ses_mean + ses_boost * 0.01, 0, 100)
+
+    def step(self):
+        for nb in self.neighborhoods:
+            nb.step()
+        self._aggregate()
+        state = self.ql.get_state(self.avg_use_rate * 100, self.zone_ses)
+        action_idx = self.ql.choose_action(state)
+        reward = self._reward(action_idx)
+        self._apply_action(action_idx)
+        next_state = self.ql.get_state(self.avg_use_rate * 100, self.zone_ses)
+        self.ql.update(state, action_idx, reward, next_state)
+        self._push_top_down()
+
+        self.mh_score_history.append(self.mental_health_score)
+        self.use_rate_history.append(self.avg_use_rate)
+
+
+# ============================================================
+# MODEL
+# ============================================================
+
+class SubstanceUseModel(Model):
+    """
+    Multi-level ABM: Substance Use & Comorbid Distress under SES Stratification.
+
+    Hierarchy (4 levels):
+        Macro  — CityZone         (quarterly RL: licensing, transit, services)
+        Upper  — Neighborhood     (monthly RL: outreach, policing, harm-reduction)
+        Meso   — PeerClique       (weekly RL: norm_use, mutual aid)
+                 Block            (structural container, passive drift)
+        Micro  — Individual       (daily RL: 5-action behavioral choice)
+
+    Update cadence:
+        Daily  (every step):     Individual.step()
+        Weekly (every 7 steps):  PeerClique.step()
+        Monthly (every 30 steps): Neighborhood.step()
+        Quarterly (every 90 steps): CityZone.step()
+
+    SES stratification:
+        zone_ses ∈ {low=20, mid=50, high=80} assigned per zone.
+        Neighborhood SES inherits zone_ses ± noise.
+        Individual SES inherits neighborhood SES ± noise.
+    """
+
+    def __init__(
+        self,
+        num_zones=3,
+        num_neighborhoods_per_zone=2,
+        num_blocks_per_neighborhood=2,
+        num_cliques_per_block=2,
+        num_individuals_per_clique=5,
+    ):
+        super().__init__()
+
+        self.num_zones = num_zones
+        self.num_neighborhoods_per_zone  = num_neighborhoods_per_zone
+        self.num_blocks_per_neighborhood = num_blocks_per_neighborhood
+        self.num_cliques_per_block       = num_cliques_per_block
+        self.num_individuals_per_clique  = num_individuals_per_clique
+
+        self.zone_registry:         OrderedDict[int, CityZone]    = OrderedDict()
+        self.neighborhood_registry: OrderedDict[int, Neighborhood] = OrderedDict()
+        self.block_registry:        OrderedDict[int, Block]        = OrderedDict()
+        self.clique_registry:       OrderedDict[int, PeerClique]   = OrderedDict()
+        self.individual_registry:   OrderedDict[int, Individual]   = OrderedDict()
+
+        self.current_step = 0
+
+        self._build_hierarchy()
+        self._build_peer_network()
+
+        # Only city zones registered; they cascade internally
+        self.scheduler = RandomActivation(self)
+        for zone in self.zone_registry.values():
+            self.scheduler.add(zone)
+
+        self.datacollector = DataCollector(
+            model_reporters={
+                "avg_substance_use_rate": lambda m: m._model_avg_use(),
+                "avg_stress":             lambda m: m._model_avg("stress"),
+                "avg_depression":         lambda m: m._model_avg("depression"),
+                "avg_craving":            lambda m: m._model_avg("craving"),
+                "avg_social_capital":     lambda m: m._model_avg("social_capital"),
+            }
+        )
+
+    # ------------------------------------------------------------------
+    def _ses_for_zone(self, zone_idx: int) -> float:
+        """Assign zone SES: low / mid / high in order."""
+        ses_levels = [20, 50, 80]
+        return ses_levels[zone_idx % len(ses_levels)]
+
+    def _build_hierarchy(self):
+        ind_id   = 0
+        clq_id   = 0
+        blk_id   = 0
+        nbh_id   = 0
+
+        for z_idx in range(self.num_zones):
+            zone_ses = self._ses_for_zone(z_idx)
+            zone = CityZone(z_idx, self, zone_ses)
+            self.zone_registry[z_idx] = zone
+
+            for n_idx in range(self.num_neighborhoods_per_zone):
+                ses_mean = np.clip(zone_ses + np.random.normal(0, 10), 0, 100)
+                nb = Neighborhood(nbh_id, self, z_idx, ses_mean)
+                self.neighborhood_registry[nbh_id] = nb
+                zone.add_neighborhood(nb)
+
+                for b_idx in range(self.num_blocks_per_neighborhood):
+                    blk = Block(blk_id, self, nbh_id, z_idx)
+                    self.block_registry[blk_id] = blk
+                    nb.add_block(blk)
+
+                    for c_idx in range(self.num_cliques_per_block):
+                        clique = PeerClique(clq_id, self, blk_id, nbh_id, z_idx)
+                        self.clique_registry[clq_id] = clique
+                        blk.add_clique(clique)
+
+                        for _ in range(self.num_individuals_per_clique):
+                            ind_ses = np.clip(ses_mean + np.random.normal(0, 10), 0, 100)
+                            ind = Individual(
+                                ind_id, self,
+                                clique_id=clq_id,
+                                block_id=blk_id,
+                                neighborhood_id=nbh_id,
+                                zone_id=z_idx,
+                                ses_score=ind_ses,
+                            )
+                            self.individual_registry[ind_id] = ind
+                            clique.add_member(ind)
+                            ind_id += 1
+
+                        clq_id += 1
+                    blk_id += 1
+                nbh_id += 1
+
+    def _build_peer_network(self):
+        """
+        Within-clique ties: p=0.70 (dense peer support)
+        Cross-clique ties:  p=0.15 (organizational bridging)
+        """
+        for clique in self.clique_registry.values():
+            ms = clique.members
+            for i in range(len(ms)):
+                for j in range(i + 1, len(ms)):
+                    if np.random.random() < 0.70:
+                        ms[i].connections = getattr(ms[i], "connections", [])
+                        ms[j].connections = getattr(ms[j], "connections", [])
+                        ms[i].connections.append(ms[j].unique_id)
+                        ms[j].connections.append(ms[i].unique_id)
+
+        all_inds = list(self.individual_registry.values())
+        for i in range(len(all_inds)):
+            for j in range(i + 1, len(all_inds)):
+                if (all_inds[i].clique_id != all_inds[j].clique_id
+                        and np.random.random() < 0.15):
+                    all_inds[i].connections = getattr(all_inds[i], "connections", [])
+                    all_inds[j].connections = getattr(all_inds[j], "connections", [])
+                    all_inds[i].connections.append(all_inds[j].unique_id)
+                    all_inds[j].connections.append(all_inds[i].unique_id)
+
+    # ------------------------------------------------------------------
+    def _model_avg(self, attr: str) -> float:
+        inds = list(self.individual_registry.values())
+        return float(np.mean([getattr(i, attr) for i in inds])) if inds else 0.0
+
+    def _model_avg_use(self) -> float:
+        inds = list(self.individual_registry.values())
+        if not inds:
+            return 0.0
+        return float(np.mean([1 if i.last_action == "substance_use" else 0
+                               for i in inds]))
+
+    # ------------------------------------------------------------------
+    def step(self):
+        self.current_step += 1
+
+        # Individual daily step (always)
+        for ind in self.individual_registry.values():
+            ind.step()
+
+        # Clique weekly (every 7 steps)
+        if self.current_step % 7 == 0:
+            for clique in self.clique_registry.values():
+                clique.step()
+
+        # Neighborhood monthly (every 30 steps)
+        if self.current_step % 30 == 0:
+            for nb in self.neighborhood_registry.values():
+                nb.step()
+
+        # City zone quarterly (every 90 steps)
+        if self.current_step % 90 == 0:
+            for zone in self.zone_registry.values():
+                zone.step()
+
+        self.datacollector.collect(self)
+
+    def run_model(self, n_steps: int):
+        for _ in range(n_steps):
+            self.step()
+
+    # ------------------------------------------------------------------
+    def get_individual_df(self) -> pd.DataFrame:
+        rows = []
+        for i in self.individual_registry.values():
+            rows.append({
+                "id":              i.unique_id,
+                "zone_id":         i.zone_id,
+                "neighborhood_id": i.neighborhood_id,
+                "clique_id":       i.clique_id,
+                "ses_score":       i.ses_score,
+                "final_stress":    i.stress,
+                "final_depression":i.depression,
+                "final_craving":   i.craving,
+                "final_social_cap":i.social_capital,
+                "substance_use_count": i.substance_use_count,
+                "treatment_count":     i.treatment_count,
+                "avg_stress":      float(np.mean(i.stress_history)),
+                "avg_depression":  float(np.mean(i.depression_history)),
+                "avg_craving":     float(np.mean(i.craving_history)),
+            })
+        return pd.DataFrame(rows)
+
+    def get_clique_df(self) -> pd.DataFrame:
+        rows = []
+        for c in self.clique_registry.values():
+            rows.append({
+                "clique_id":      c.unique_id,
+                "block_id":       c.block_id,
+                "neighborhood_id":c.neighborhood_id,
+                "zone_id":        c.zone_id,
+                "final_norm_use": c.norm_use,
+                "final_inclusion":c.inclusion,
+                "avg_norm_use":   float(np.mean(c.norm_history)),
+            })
+        return pd.DataFrame(rows)
+
+    def get_neighborhood_df(self) -> pd.DataFrame:
+        rows = []
+        for nb in self.neighborhood_registry.values():
+            rows.append({
+                "neighborhood_id":   nb.unique_id,
+                "zone_id":           nb.zone_id,
+                "ses_mean":          nb.ses_mean,
+                "final_harm_red":    nb.harm_reduction,
+                "final_policing":    nb.policing_intensity,
+                "final_use_rate":    nb.avg_use_rate,
+                "avg_harm_red":      float(np.mean(nb.harm_reduction_history)),
+            })
+        return pd.DataFrame(rows)
+
+    def get_zone_df(self) -> pd.DataFrame:
+        rows = []
+        for z in self.zone_registry.values():
+            rows.append({
+                "zone_id":           z.unique_id,
+                "zone_ses":          z.zone_ses,
+                "final_mh_score":    z.mental_health_score,
+                "final_use_rate":    z.avg_use_rate,
+                "transit_access":    z.transit_access,
+                "service_placement": z.service_placement,
+                "enforcement":       z.enforcement_level,
+                "avg_mh_score":      float(np.mean(z.mh_score_history)),
+            })
+        return pd.DataFrame(rows)
+
+
+# ============================================================
+# RUN
+# ============================================================
+
+model = SubstanceUseModel(
+    num_zones=3,
+    num_neighborhoods_per_zone=2,
+    num_blocks_per_neighborhood=2,
+    num_cliques_per_block=2,
+    num_individuals_per_clique=5,
+)
+
+# 180 daily steps ≈ 6 months; triggers 2 quarterly zone updates
+model.run_model(180)
+
+ind_df  = model.get_individual_df()
+clq_df  = model.get_clique_df()
+nbh_df  = model.get_neighborhood_df()
+zone_df = model.get_zone_df()
+
+print("=" * 60)
+print("CITY ZONE LEVEL (Macro)")
+print("=" * 60)
+print(zone_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("NEIGHBORHOOD LEVEL")
+print("=" * 60)
+print(nbh_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("CLIQUE LEVEL (Meso)")
+print("=" * 60)
+print(clq_df.to_string(index=False))
+
+print("\n" + "=" * 60)
+print("INDIVIDUAL LEVEL (Micro) — first 15")
+print("=" * 60)
+print(ind_df.head(15).to_string(index=False))
+
+high_dep = ind_df[ind_df["final_depression"] > 50]
+high_use = ind_df[ind_df["substance_use_count"] > 20]
+print(f"\nHigh depression (>50):         {len(high_dep)} / {len(ind_df)}")
+print(f"Heavy substance use (>20 acts): {len(high_use)} / {len(ind_df)}")
+print(f"\nSES–use correlation (Pearson):  "
+      f"{ind_df['ses_score'].corr(ind_df['substance_use_count']):.3f}")
+print(f"SES–depression correlation:     "
+      f"{ind_df['ses_score'].corr(ind_df['final_depression']):.3f}")
+
+# ============================================================
+# VISUALISATIONS
+# ============================================================
+
+model_data = model.datacollector.get_model_vars_dataframe()
+zone_ses_map = {z.unique_id: z.zone_ses for z in model.zone_registry.values()}
+
+fig, axes = plt.subplots(2, 4, figsize=(20, 10))
+fig.suptitle(
+    "Multi-Level ABM: Substance Use Initiation & Comorbid Distress\nunder SES Stratification",
+    fontsize=13, fontweight="bold"
+)
+
+# 1. Model-level trajectories
+ax = axes[0, 0]
+ax.plot(model_data["avg_substance_use_rate"], label="Substance use rate", color="firebrick")
+ax.plot(model_data["avg_depression"] / 100,  label="Depression (norm)",  color="orchid")
+ax.plot(model_data["avg_craving"] / 100,     label="Craving (norm)",     color="darkorange")
+ax.set_title("Model-level trajectories")
+ax.set_xlabel("Day"); ax.set_ylabel("Rate / Normalised score")
+ax.legend(fontsize=7); ax.grid(True, alpha=0.3)
+
+# 2. SES vs substance use count
+ax = axes[0, 1]
+colors = ind_df["zone_id"].map(zone_ses_map)
+sc = ax.scatter(
+    ind_df["ses_score"], ind_df["substance_use_count"],
+    c=colors, cmap="RdYlGn", alpha=0.7, s=50
+)
+plt.colorbar(sc, ax=ax, label="Zone SES")
+ax.set_title("SES vs Substance Use Count\n(colour = zone SES)")
+ax.set_xlabel("Individual SES"); ax.set_ylabel("Substance use actions")
+ax.grid(True, alpha=0.3)
+
+# 3. SES vs depression
+ax = axes[0, 2]
+sc2 = ax.scatter(
+    ind_df["ses_score"], ind_df["final_depression"],
+    c=ind_df["substance_use_count"], cmap="YlOrRd", alpha=0.7, s=50
+)
+plt.colorbar(sc2, ax=ax, label="Substance use count")
+ax.set_title("SES vs Final Depression\n(colour = substance use)")
+ax.set_xlabel("Individual SES"); ax.set_ylabel("Depression score")
+ax.grid(True, alpha=0.3)
+
+# 4. Sample individual craving trajectories by SES tertile
+ax = axes[0, 3]
+low_ses  = ind_df.nsmallest(5, "ses_score")["id"].values
+high_ses = ind_df.nlargest(5, "ses_score")["id"].values
+for eid in low_ses:
+    emp = model.individual_registry[eid]
+    ax.plot(emp.craving_history, color="firebrick", alpha=0.6, linewidth=1.0,
+            label="Low SES" if eid == low_ses[0] else "")
+for eid in high_ses:
+    emp = model.individual_registry[eid]
+    ax.plot(emp.craving_history, color="steelblue", alpha=0.6, linewidth=1.0,
+            label="High SES" if eid == high_ses[0] else "")
+ax.set_title("Craving trajectories\nLow vs High SES individuals")
+ax.set_xlabel("Day"); ax.set_ylabel("Craving")
+ax.legend(fontsize=7); ax.grid(True, alpha=0.3)
+
+# 5. Clique norm evolution by zone
+ax = axes[1, 0]
+for c in model.clique_registry.values():
+    color = "firebrick" if c.zone_id == 0 else ("gold" if c.zone_id == 1 else "steelblue")
+    ax.plot(c.norm_history, color=color, alpha=0.5, linewidth=1.0)
+from matplotlib.lines import Line2D
+legend_els = [
+    Line2D([0], [0], color="firebrick",  label="Zone 0 (Low SES)"),
+    Line2D([0], [0], color="gold",       label="Zone 1 (Mid SES)"),
+    Line2D([0], [0], color="steelblue",  label="Zone 2 (High SES)"),
+]
+ax.legend(handles=legend_els, fontsize=7)
+ax.set_title("Clique norm_use over time\n(weekly updates)")
+ax.set_xlabel("Clique step"); ax.set_ylabel("Descriptive norm [0,1]")
+ax.grid(True, alpha=0.3)
+
+# 6. Neighborhood harm reduction vs policing
+ax = axes[1, 1]
+for nb in model.neighborhood_registry.values():
+    ax.plot(nb.harm_reduction_history, linestyle="-",
+            label=f"HR nbh-{nb.unique_id}" if nb.unique_id < 3 else "")
+    ax.plot(nb.policing_history, linestyle="--",
+            label=f"Pol nbh-{nb.unique_id}" if nb.unique_id < 3 else "")
+ax.set_title("Neighborhood harm-reduction\nvs policing (monthly)")
+ax.set_xlabel("Month step"); ax.set_ylabel("Level")
+ax.legend(fontsize=6); ax.grid(True, alpha=0.3)
+
+# 7. Zone mental health score over time
+ax = axes[1, 2]
+for z in model.zone_registry.values():
+    lbl = f"Zone {z.unique_id} (SES={int(z.zone_ses)})"
+    ax.plot(z.mh_score_history, label=lbl, linewidth=2)
+ax.set_title("Zone mental health score\n(quarterly updates)")
+ax.set_xlabel("Quarterly step"); ax.set_ylabel("Score (0–100)")
+ax.legend(fontsize=7); ax.grid(True, alpha=0.3)
+
+# 8. Action distribution by SES tertile
+ax = axes[1, 3]
+ind_df["ses_tertile"] = pd.qcut(
+    ind_df["ses_score"], q=3, labels=["Low", "Mid", "High"])
+action_counts = {}
+for label, group in ind_df.groupby("ses_tertile", observed=True):
+    ids = group["id"].values
+    counts = defaultdict(int)
+    for eid in ids:
+        emp = model.individual_registry[eid]
+        for act in emp.action_history:
+            counts[act] += 1
+    total = sum(counts.values()) or 1
+    action_counts[label] = {a: counts[a] / total for a in INDIVIDUAL_ACTIONS}
+
+df_act = pd.DataFrame(action_counts).T
+df_act.plot(kind="bar", ax=ax, colormap="Set2", width=0.7, edgecolor="k", linewidth=0.5)
+ax.set_title("Action distribution by SES tertile")
+ax.set_xlabel("SES tertile"); ax.set_ylabel("Proportion of actions")
+ax.tick_params(axis="x", rotation=0)
+ax.legend(fontsize=6, loc="upper right")
+ax.grid(True, alpha=0.3, axis="y")
+
+plt.tight_layout()
+plt.savefig("substance_use_abm.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Figure saved to substance_use_abm.png")
+```
