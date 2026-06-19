@@ -187,8 +187,6 @@ Several extensions would make the model more realistic without changing its basi
 
 Another useful extension would be to replace the simple support diffusion rule with a weighted network process, perhaps allowing strong ties to matter more than weak ones. That would be closer to empirical social network models, and it would make the meso-level structure more consequential. Finally, the model would benefit from repeated runs and sensitivity analysis. The current single run is fine for illustration, but not enough for serious inference.
 
-If useful, I can turn this into a polished blog-ready version with a title, smoother transitions, and LaTeX rendered cleanly for Markdown or Jupyter Notebook output.
-<span style="display:none">[^10][^11][^12][^13][^14][^15][^16][^17]</span>
 
 ```python
 # ============================================================
@@ -766,7 +764,6 @@ ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, f"{val:.1f}", ha=
 plt.tight_layout()
 plt.savefig("mental_health_abm.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("Figure saved to mental_health_abm.png")
 ```
 
 

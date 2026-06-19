@@ -1163,5 +1163,4 @@ ax.grid(True, alpha=0.3, axis="y")
 plt.tight_layout()
 plt.savefig("substance_use_abm.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("Figure saved to substance_use_abm.png")
 ```
