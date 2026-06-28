@@ -1,0 +1,799 @@
+# Mental Health Crisis Escalation and Service Disengagement: A Hybrid ABM with Online Machine Learning
+
+The previous model focused on substance use initiation across a fixed socioeconomic hierarchy, where agents adapted their behavior through Q-learning at every organizational level. This model takes a different problem structure. Service disengagement in mental health care is not primarily a learning problem — it is a prediction and allocation problem. Agents drop out of care for reasons that are observable but heterogeneous, and the system's limited outreach capacity means that guessing wrong about who is at risk carries real cost. The central design decision here is to separate concerns: an agent-based model governs the *mechanisms* (social contagion, trust erosion, disclosure, appointment dynamics), while a machine learning layer handles *prediction* (near-term risk scores derived from recent agent histories). Neither component could do the other's job well.
+
+## Model Architecture and the Separation of Roles
+
+The model runs 400 agents over 104 simulated weeks on a Watts–Strogatz small-world network with mean degree 6 and rewiring probability 0.15. The network structure is not decorative; it encodes the empirically documented clustering of mental health trajectories within social groups (Cacioppo & Fowler, 2013; Rosenquist et al., 2011). Each agent carries continuous state variables — distress, support, trust, help-seeking propensity, stigma, and structural barriers — initialized from beta distributions that produce realistic right-skewed profiles rather than uniform or Gaussian starting conditions.
+
+The ABM layer is responsible for all within-agent and between-agent dynamics: exogenous shock events, social contagion of distress, natural decay and recovery, disclosure decisions, referral chains, appointment attendance, and crisis events. These are modeled as probabilistic transitions governed by logistic functions of the current agent state, not learned policies. The ML layer sits above this: every four weeks, two Random Forest classifiers are retrained on the accumulated history of agent feature snapshots labeled with subsequent outcomes (no-show and crisis), and their output scores are used to prioritize outreach allocation. The two components share information but have no feedback from ML predictions back into agent state dynamics — which is an important architectural choice and a limitation discussed later.
+
+## Distress Dynamics and Social Contagion
+
+The individual distress update combines three additive terms: a baseline vulnerability drift, a social support buffer, and an engaged-care benefit for fully enrolled agents. The deterministic core of the update is:
+
+$$
+d_{t+1} = d_t + \delta \cdot v_i - \sigma \cdot s_i - \beta \cdot \mathbf{1}[\text{eng}_i = 2] + \kappa \cdot \min(m_i, 3) \cdot 0.1 + \varepsilon_t
+$$
+
+where $$\delta = 0.10$$ is the distress decay rate, $$v_i$$ is individual baseline vulnerability, $$\sigma = 0.18$$ is the support buffer coefficient, $$\beta = 0.15$$ is the engaged-care benefit, $$\kappa = 0.12$$ is the missed-appointment penalty, and $$\varepsilon_t \sim \mathcal{N}(0, 0.03)$$ is process noise. The three-state engagement variable — 0 (disengaged), 1 (loosely connected), 2 (actively enrolled) — is the key moderator: only fully enrolled agents receive the care benefit, and repeated missed appointments degrade engagement state.
+
+Social contagion is modeled as a neighborhood effect on the Watts–Strogatz graph:
+
+```python
+def step_social(self):
+    neighbors = list(self.model.G.neighbors(self.unique_id))
+    nb_distress = [agent_map[n].distress for n in neighbors if n in agent_map]
+    nb_support  = [agent_map[n].support  for n in neighbors if n in agent_map]
+    contagion_effect = p["contagion_weight"] * max(np.mean(nb_distress) - 0.3, 0)
+    support_effect   = p["support_buffer"]   * np.mean(nb_support) * 0.3
+    self.distress    = clip01(self.distress + contagion_effect - support_effect)
+```
+
+The threshold of 0.3 in the contagion term means that low-distress neighborhoods are effectively neutral — only neighbors with distress meaningfully above the population median transmit upward pressure. This is consistent with the asymmetric contagion literature, where distress spreads more readily than recovery (Coyne, 1976; Joiner & Coyne, 1999). Dry run: an agent with distress at 0.45 surrounded by four neighbors averaging 0.55 receives a contagion increment of approximately $$0.10 \times (0.55 - 0.30) = 0.025$$, partially offset by the support buffer. The effect is small per step but accumulates over weeks without intervention.
+
+## Disclosure, Referral, and Appointment Dynamics
+
+All behavioral transitions are modeled via logistic functions of the relevant state variables. Disclosure probability reflects the literature on help-seeking barriers (Clement et al., 2015; Corrigan, 2004):
+
+$$
+P(\text{disclose}) = \sigma\!\left(-2.2 + 3.5 \cdot d_i + 1.5 \cdot h_i + 0.8 \cdot s_i - 1.2 \cdot \text{stig}_i\right)
+$$
+
+where $$d_i$$ is distress, $$h_i$$ help-seeking propensity, $$s_i$$ social support, and $$\text{stig}_i$$ stigma. The dominant coefficient on distress reflects the well-documented pattern that individuals are most likely to seek help near crisis rather than at early symptom stages — a pattern that this model may inadvertently reinforce through the late-arriving reward structure. Attendance probability adds trust and engagement to the equation and subtracts barriers and distress:
+
+$$
+P(\text{attend}) = \sigma\!\left(1.5 + 1.5 \cdot \tau_i + 0.5 \cdot \text{eng}_i - 2.0 \cdot d_i - 2.0 \cdot b_i + 2.0 \cdot \text{out}_i\right)
+$$
+
+where $$\tau_i$$ is trust, $$b_i$$ structural barriers, and $$\text{out}_i$$ is an indicator for whether the agent received outreach that week. That outreach term — with a coefficient of 2.0 — is the main mechanism by which the allocation policy translates into attendance outcomes. When an agent attends, trust increases by 0.05 and the missed-appointment counter decrements; when they miss, trust drops by 0.08, the counter increments, and engagement can degrade. The asymmetry is intentional: trust is harder to build than to lose, which is consistent with the therapeutic alliance literature (Horvath & Symonds, 1991).
+
+```python
+def step_attend(self):
+    if not self.appt_was_scheduled:
+        return False
+    prob = sigmoid(
+        p["attend_base"]
+        + 1.5 * self.trust
+        + 0.5 * float(self.engagement)
+        - 2.0 * self.distress
+        - 2.0 * self.barriers
+        + 2.0 * float(self.outreach_this_week)
+    )
+    attended = bernoulli(prob)
+    if attended:
+        self.trust = clip01(self.trust + 0.05)
+        self.recent_missed = max(0, self.recent_missed - 1)
+    else:
+        self.trust = clip01(self.trust - 0.08)
+        self.recent_missed = min(self.recent_missed + 1, 8)
+    return attended
+```
+
+Dry run: an agent with trust 0.5, engagement 1, distress 0.7, barriers 0.4, and outreach gives an attendance probability of $$\sigma(1.5 + 0.75 + 0.5 - 1.4 - 0.8 + 2.0) \approx \sigma(2.55) \approx 0.93$$. Without outreach, the same agent attends with probability $$\sigma(0.55) \approx 0.63$$. The gap is meaningful at the population level and is what makes targeted outreach allocation consequential.
+
+## The Machine Learning Layer
+
+The feature vector for each agent at each time step encodes both current state and recent history:
+
+```python
+def get_features(self):
+    return [
+        self.distress,
+        float(np.mean(self.distress_history)),   # 4-week rolling mean
+        float(self.recent_missed),
+        float(self.engagement),
+        self.trust,
+        self.support,
+        neighbor_distress,                        # mean neighbor distress
+        frac_high_distress,                       # fraction of neighbors > 0.6
+        float(self.recent_outreach),
+        float(self.recent_disclosures),
+        float(min(self.weeks_since_attended, 20)),
+        self.baseline_vuln,
+        self.barriers,
+        self.stigma,
+    ]
+```
+
+Two separate Random Forest classifiers predict no-show and crisis outcomes, retrained every four weeks on labeled snapshots from the previous steps. The combined risk score is a weighted average:
+
+$$
+\rho_i = w \cdot \hat{P}(\text{crisis}_i) + (1 - w) \cdot \hat{P}(\text{no-show}_i), \quad w = 0.55
+$$
+
+The weight of 0.55 places slightly more emphasis on crisis prediction, reflecting the asymmetric cost of missing a high-risk individual relative to wasting an outreach contact on a low-risk one. Before sufficient training data has accumulated (fewer than 80 labeled rows with at least 5 positive examples in each class), the model falls back to a simple heuristic:
+
+$$
+\hat{\rho}_i^{\text{heuristic}} = 0.55 \cdot d_i + 0.20 \cdot v_i
+$$
+
+This cold-start fallback is worth noting: in real implementations, the warm-up period before a trained model is available can span several weeks or months, during which the system's targeting quality is substantially degraded. The model makes this explicit rather than assuming a pre-trained classifier is available from week one.
+
+## Outreach Policy Variants
+
+Four policies are compared across the full 104-week run. The `none` policy serves as a baseline with no active outreach. The `universal` policy ranks agents by raw distress and outreaches the top 25 at reduced intensity (0.7). The `targeted` policy uses the combined ML risk score to rank agents and outreaches the top 25 at full intensity (1.0). The `tiered` policy stratifies agents by risk threshold — high-risk agents ($$\rho_i \geq 0.65$$) receive full-intensity outreach, mid-risk agents ($$0.35 \leq \rho_i < 0.65$$) receive half-intensity outreach — and depletes capacity across strata in priority order:
+
+```python
+elif self.policy == "tiered":
+    high = sorted([a for a in agents if a.combined_risk >= ht],
+                  key=lambda a: -a.combined_risk)
+    mid  = sorted([a for a in agents if mt <= a.combined_risk < ht],
+                  key=lambda a: -a.combined_risk)
+    cap = K
+    for a in high[:cap]:
+        a.apply_outreach(intensity=1.0); cap -= 1
+    for a in mid[:cap]:
+        a.apply_outreach(intensity=0.5); cap -= 1
+```
+
+The tiered policy is the most realistic of the four — real outreach programs routinely differentiate contact intensity by risk level — and it is also the most sensitive to the quality of the underlying risk scores. If the Random Forest is poorly calibrated, the stratification thresholds will misclassify agents and the policy will underperform relative to the simpler distress-based universal approach. That conditional effectiveness is an important interpretive constraint on any simulation result.
+
+## Reading the Outputs and Limitations
+
+The primary comparison metric is total crisis events across 104 weeks, supplemented by total missed appointments and final engagement rate. Weekly series are presented with a 4-week rolling average to reduce noise from the stochastic event structure. Feature importances from the no-show and crisis classifiers offer a secondary diagnostic: if the model is capturing realistic dynamics, distress trajectory features (current distress, rolling mean, weeks since attended) should dominate, with peer-level features (neighbor distress, fraction high-distress neighbors) contributing meaningfully but secondarily.
+
+Several structural limitations should constrain how these results are read. The ML model is trained entirely on simulation-generated data, which means its learned patterns are only as realistic as the logistic functions that generated the outcomes. There is no feedback from ML predictions into agent dynamics — a predicted high-risk agent does not alter their own behavior based on being flagged, which is unrealistic in any implementation where patients are informed of their risk status. The 104-week run is also relatively short for learning stable policies; the first ~20 weeks of cold-start operation bias the cumulative outcomes toward the heuristic fallback, potentially understating the gap between ML-guided and non-ML-guided policies. Finally, the network is static across the full simulation. In practice, social networks around individuals experiencing mental health crises reorganize substantially over time (Corrigan & Miller, 2004), and a dynamic network would likely amplify both the contagion and the isolation dynamics that are currently underrepresented here.
+
+What the model does contribute is a clean separation of mechanism from prediction that is uncommon in mental health simulation literature. Most ABMs in this domain either use purely rule-based agents (which cannot adapt to data) or embed full RL policies (which can, but at the cost of interpretability). Treating the ABM as a mechanistic engine and the ML layer as a prediction oracle is a more faithful representation of how these components might actually be deployed in a real service system — where clinicians need to trust the prediction model, not just the simulation that generated the training data, and where the causal mechanisms governing engagement and crisis remain partially opaque even with good predictive performance.
+
+## Extensions Worth Considering
+
+The most consequential extension would be allowing trust and engagement to influence the feature importance structure over time — specifically, testing whether early outreach that successfully builds trust changes the relative predictive weight of social network features versus individual trajectory features. A second useful addition would be modeling the organizational side: appointment capacity and outreach staff are treated as fixed parameters here, but in real systems they fluctuate with funding cycles in ways that interact non-trivially with the risk score thresholds. A tiered policy calibrated to a capacity of 25 outreach contacts per week will perform very differently under sudden capacity reductions, and the simulation could generate informative stress tests of policy robustness. Finally, partially observable agent states — where trust or baseline vulnerability are not directly accessible to the ML feature vector, but must be inferred from behavioral proxies — would bring the prediction problem closer to the actual information environment of a mental health care system.
+
+
+```python
+# ============================================================
+# Hybrid Mesa ABM + ML Tutorial
+# Mental Health Crisis Escalation & Service Disengagement
+# Single Google Colab Cell  |  Compatible: Mesa >= 3.0
+# ============================================================
+
+# --- 0. INSTALL & IMPORTS ---
+import subprocess
+subprocess.run(["pip", "install", "mesa>=3.0", "-q"])
+
+import warnings
+warnings.filterwarnings("ignore")
+
+import numpy as np
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from collections import deque
+
+from mesa import Agent, Model
+from mesa.datacollection import DataCollector
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+
+SEED = 42
+np.random.seed(SEED)
+
+# ============================================================
+# 1. PARAMETERS
+# ============================================================
+PARAMS = dict(
+    N                        = 400,
+    weeks                    = 104,
+    network_k                = 6,
+    network_p                = 0.15,
+    shock_prob               = 0.07,
+    shock_magnitude          = 0.25,
+    distress_decay           = 0.10,
+    support_buffer           = 0.18,
+    engaged_care_benefit     = 0.15,
+    contagion_weight         = 0.10,
+    miss_penalty             = 0.12,
+    noise_sd                 = 0.03,
+    disclosure_base          = -2.2,
+    referral_base            = -1.8,
+    attend_base              = 1.5,
+    crisis_base              = -2.8,
+    appointment_capacity     = 35,
+    outreach_capacity        = 25,
+    outreach_trust_boost     = 0.08,
+    outreach_distress_cut    = 0.06,
+    outreach_attend_boost    = 0.10,
+    retrain_every            = 4,
+    history_window           = 4,
+    risk_weight_crisis       = 0.55,
+    high_risk_threshold      = 0.65,
+    mid_risk_threshold       = 0.35,
+    initial_engaged_frac     = 0.55,
+    initial_loose_frac       = 0.25,
+)
+
+# ============================================================
+# 2. UTILITY FUNCTIONS
+# ============================================================
+def sigmoid(x):
+    return 1.0 / (1.0 + np.exp(-np.clip(x, -10, 10)))
+
+def clip01(x):
+    return float(np.clip(x, 0.0, 1.0))
+
+def bernoulli(p):
+    return np.random.rand() < p
+
+# ============================================================
+# 3. AGENT CLASS
+# ============================================================
+class AtRiskAgent(Agent):
+    def __init__(self, model):
+        super().__init__(model)
+        p   = model.params
+        rng = np.random
+
+        self.baseline_vuln       = clip01(rng.beta(2, 5))
+        self.distress            = clip01(rng.beta(2, 4) * 0.6 + self.baseline_vuln * 0.4)
+        self.support             = clip01(rng.beta(4, 2))
+        self.trust               = clip01(rng.beta(3, 2))
+        self.help_seeking        = clip01(rng.beta(2, 3))
+        self.stigma              = clip01(rng.beta(2, 4))
+        self.barriers            = clip01(rng.beta(2, 4))
+
+        r = rng.rand()
+        if r < p["initial_engaged_frac"]:
+            self.engagement = 2
+        elif r < p["initial_engaged_frac"] + p["initial_loose_frac"]:
+            self.engagement = 1
+        else:
+            self.engagement = 0
+
+        self.has_appointment      = False
+        self.attended_last        = False
+        self.weeks_since_attended = rng.randint(0, 8)
+        self.recent_missed        = 0
+        self.recent_outreach      = 0
+        self.recent_disclosures   = 0
+        self.crisis_last_week     = False
+        self.outreach_this_week   = False
+        self.referral_this_week   = False
+        self.crisis_this_week     = False
+        self.appt_was_scheduled   = False
+
+        self.distress_history = deque(
+            [self.distress] * p["history_window"],
+            maxlen=p["history_window"]
+        )
+        self.pred_no_show   = 0.3
+        self.pred_crisis    = 0.2
+        self.combined_risk  = 0.25
+
+    def get_features(self):
+        # Neighbor stats via model graph
+        neighbors = list(self.model.G.neighbors(self.unique_id))
+        agent_map = self.model.agent_map
+        if neighbors:
+            nb_distress = [agent_map[n].distress for n in neighbors if n in agent_map]
+            neighbor_distress    = float(np.mean(nb_distress)) if nb_distress else 0.0
+            frac_high_distress   = float(np.mean([d > 0.6 for d in nb_distress])) if nb_distress else 0.0
+        else:
+            neighbor_distress, frac_high_distress = 0.0, 0.0
+
+        return [
+            self.distress,
+            float(np.mean(self.distress_history)),
+            float(self.recent_missed),
+            float(self.engagement),
+            self.trust,
+            self.support,
+            neighbor_distress,
+            frac_high_distress,
+            float(self.recent_outreach),
+            float(self.recent_disclosures),
+            float(min(self.weeks_since_attended, 20)),
+            self.baseline_vuln,
+            self.barriers,
+            self.stigma,
+        ]
+
+    def step_shocks(self):
+        p = self.model.params
+        if bernoulli(p["shock_prob"]):
+            self.distress = clip01(self.distress + p["shock_magnitude"] * np.random.rand())
+
+    def step_social(self):
+        p         = self.model.params
+        neighbors = list(self.model.G.neighbors(self.unique_id))
+        agent_map = self.model.agent_map
+        if not neighbors:
+            return
+        nb_distress = [agent_map[n].distress for n in neighbors if n in agent_map]
+        nb_support  = [agent_map[n].support  for n in neighbors if n in agent_map]
+        if not nb_distress:
+            return
+        contagion_effect = p["contagion_weight"] * max(float(np.mean(nb_distress)) - 0.3, 0)
+        support_effect   = p["support_buffer"]   * float(np.mean(nb_support)) * 0.3
+        self.distress    = clip01(self.distress + contagion_effect - support_effect)
+
+    def step_distress(self):
+        p = self.model.params
+        d = self.distress
+        d += p["distress_decay"] * self.baseline_vuln
+        d -= p["support_buffer"] * self.support
+        if self.engagement == 2:
+            d -= p["engaged_care_benefit"]
+        d += p["miss_penalty"] * min(self.recent_missed, 3) * 0.1
+        d += np.random.normal(0, p["noise_sd"])
+        self.distress = clip01(d)
+        self.distress_history.append(self.distress)
+
+    def step_disclosure(self):
+        p    = self.model.params
+        prob = sigmoid(
+            p["disclosure_base"]
+            + 3.5 * self.distress
+            + 1.5 * self.help_seeking
+            + 0.8 * self.support
+            - 1.2 * self.stigma
+        )
+        disclosed = bernoulli(prob)
+        if disclosed:
+            self.recent_disclosures = min(self.recent_disclosures + 1, 5)
+        return disclosed
+
+    def step_referral(self, disclosed):
+        p = self.model.params
+        if not disclosed or self.engagement == 2:
+            return False
+        prob = sigmoid(
+            p["referral_base"]
+            + 3.0 * self.distress
+            + 1.5 * self.trust
+            - 0.5 * float(self.has_appointment)
+        )
+        return bernoulli(prob)
+
+    def step_attend(self):
+        if not self.appt_was_scheduled:
+            return False
+        p    = self.model.params
+        prob = sigmoid(
+            p["attend_base"]
+            + 1.5 * self.trust
+            + 0.5 * float(self.engagement)
+            - 2.0 * self.distress
+            - 2.0 * self.barriers
+            + 2.0 * float(self.outreach_this_week)
+        )
+        attended = bernoulli(prob)
+        if attended:
+            self.attended_last        = True
+            self.weeks_since_attended = 0
+            self.trust                = clip01(self.trust + 0.05)
+            self.recent_missed        = max(0, self.recent_missed - 1)
+            if self.engagement < 2:
+                self.engagement += 1
+        else:
+            self.attended_last        = False
+            self.recent_missed        = min(self.recent_missed + 1, 8)
+            self.trust                = clip01(self.trust - 0.08)
+            self.weeks_since_attended += 1
+            if self.engagement > 0 and self.recent_missed >= 2:
+                self.engagement -= 1
+        self.has_appointment = False
+        return attended
+
+    def step_crisis(self):
+        p     = self.model.params
+        prob  = sigmoid(
+            p["crisis_base"]
+            + 4.5 * self.distress
+            + 1.8 * min(self.recent_missed, 4) * 0.2
+            - 1.5 * self.support
+            - 1.0 * float(self.outreach_this_week)
+        )
+        crisis = bernoulli(prob)
+        self.crisis_this_week = crisis
+        if crisis:
+            self.distress = clip01(self.distress + 0.15)
+            self.trust    = clip01(self.trust    - 0.05)
+        return crisis
+
+    def apply_outreach(self, intensity=1.0):
+        p = self.model.params
+        self.outreach_this_week = True
+        self.recent_outreach    = min(self.recent_outreach + 1, 5)
+        self.trust    = clip01(self.trust    + p["outreach_trust_boost"] * intensity)
+        self.distress = clip01(self.distress - p["outreach_distress_cut"] * intensity)
+
+    def reset_weekly(self):
+        self.outreach_this_week   = False
+        self.referral_this_week   = False
+        self.crisis_last_week     = self.crisis_this_week
+        self.crisis_this_week     = False
+        self.appt_was_scheduled   = False
+        self.attended_last        = False
+        self.weeks_since_attended += 1
+        self.recent_missed        = max(0, self.recent_missed - 0.05)
+        self.recent_outreach      = max(0, self.recent_outreach - 0.2)
+        self.recent_disclosures   = max(0, self.recent_disclosures - 0.3)
+
+# ============================================================
+# 4. MODEL CLASS
+# ============================================================
+class HybridMentalHealthModel(Model):
+    def __init__(self, params, policy="none", seed=SEED):
+        super().__init__(seed=seed)
+        np.random.seed(seed)
+        self.params  = params
+        self.policy  = policy
+        self.week    = 0
+
+        # Social network
+        self.G = nx.watts_strogatz_graph(
+            params["N"], params["network_k"], params["network_p"], seed=seed
+        )
+
+        # Create agents (Mesa 3.x: pass model as first arg)
+        for _ in range(params["N"]):
+            AtRiskAgent(self)
+
+        # Build uid -> agent map for fast neighbor lookup
+        self.agent_map = {a.unique_id: a for a in self.agents}
+
+        # Relabel network to match agent unique_ids
+        uid_list = list(self.agent_map.keys())
+        mapping  = {i: uid_list[i] for i in range(params["N"])}
+        self.G   = nx.relabel_nodes(self.G, mapping)
+
+        # ML infrastructure
+        self.clf_no_show   = RandomForestClassifier(n_estimators=80, random_state=seed)
+        self.clf_crisis    = RandomForestClassifier(n_estimators=80, random_state=seed)
+        self.scaler        = StandardScaler()
+        self.ml_trained    = False
+        self.training_rows = []
+        self._prev_snapshots = []
+
+        # Logs
+        self.weekly_crisis     = []
+        self.weekly_missed     = []
+        self.weekly_engaged    = []
+        self.weekly_referrals  = []
+        self.weekly_outreached = []
+
+        self.datacollector = DataCollector(
+            model_reporters={
+                "WeeklyCrisis"    : lambda m: m._w_crisis,
+                "WeeklyMissed"    : lambda m: m._w_missed,
+                "EngagementRate"  : lambda m: m._w_engaged,
+            }
+        )
+        self._w_crisis  = 0
+        self._w_missed  = 0
+        self._w_engaged = 0
+
+    # ---- ML helpers ----
+    def _snapshot_features(self):
+        return [
+            {"uid": a.unique_id, "week": self.week,
+             "feats": a.get_features(), "no_show": None, "crisis": None}
+            for a in self.agents
+        ]
+
+    def _label_rows(self, snapshots):
+        labeled = []
+        for row in snapshots:
+            a = self.agent_map.get(row["uid"])
+            if a is None:
+                continue
+            row = row.copy()
+            row["no_show"] = int(a.appt_was_scheduled and not a.attended_last)
+            row["crisis"]  = int(a.crisis_last_week)
+            labeled.append(row)
+        return labeled
+
+    def _retrain(self):
+        if len(self.training_rows) < 80:
+            return
+        feats     = np.array([r["feats"]    for r in self.training_rows])
+        labels_ns = np.array([r["no_show"]  for r in self.training_rows])
+        labels_cr = np.array([r["crisis"]   for r in self.training_rows])
+        if labels_ns.sum() < 5 or labels_cr.sum() < 5:
+            return
+        feats_s = self.scaler.fit_transform(feats)
+        self.clf_no_show.fit(feats_s, labels_ns)
+        self.clf_crisis.fit(feats_s,  labels_cr)
+        self.ml_trained = True
+
+    def _score_agents(self):
+        w      = self.params["risk_weight_crisis"]
+        agents = list(self.agents)
+        feats  = np.array([a.get_features() for a in agents])
+        if self.ml_trained:
+            fs   = self.scaler.transform(feats)
+            p_ns = self.clf_no_show.predict_proba(fs)[:, 1]
+            p_cr = self.clf_crisis.predict_proba(fs)[:,  1]
+        else:
+            p_ns = np.array([a.distress * 0.5 + a.recent_missed * 0.05 for a in agents])
+            p_cr = np.array([a.distress * 0.6 + a.baseline_vuln * 0.2  for a in agents])
+        for i, a in enumerate(agents):
+            a.pred_no_show  = float(np.clip(p_ns[i], 0, 1))
+            a.pred_crisis   = float(np.clip(p_cr[i], 0, 1))
+            a.combined_risk = float(np.clip(w * p_cr[i] + (1 - w) * p_ns[i], 0, 1))
+
+    # ---- Outreach policies ----
+    def _allocate_outreach(self):
+        K       = self.params["outreach_capacity"]
+        ht      = self.params["high_risk_threshold"]
+        mt      = self.params["mid_risk_threshold"]
+        agents  = list(self.agents)
+
+        if self.policy == "none":
+            pass
+
+        elif self.policy == "universal":
+            cands = sorted(agents, key=lambda a: -a.distress)
+            for a in cands[:K]:
+                a.apply_outreach(intensity=0.7)
+
+        elif self.policy == "targeted":
+            cands = sorted(agents, key=lambda a: -a.combined_risk)
+            for a in cands[:K]:
+                a.apply_outreach(intensity=1.0)
+
+        elif self.policy == "tiered":
+            high = sorted(
+                [a for a in agents if a.combined_risk >= ht],
+                key=lambda a: -a.combined_risk
+            )
+            mid  = sorted(
+                [a for a in agents if mt <= a.combined_risk < ht],
+                key=lambda a: -a.combined_risk
+            )
+            cap = K
+            for a in high[:cap]:
+                a.apply_outreach(intensity=1.0); cap -= 1
+            for a in mid[:cap]:
+                a.apply_outreach(intensity=0.5); cap -= 1
+
+    def _schedule_appointments(self, referrals):
+        cap  = self.params["appointment_capacity"]
+        cands = [a for a in referrals if not a.has_appointment]
+        np.random.shuffle(cands)
+        for a in cands[:cap]:
+            a.has_appointment    = True
+            a.appt_was_scheduled = True
+
+    # ---- Main model step ----
+    def step(self):
+        agents = list(self.agents)
+
+        # Label rows from last week
+        if self.week > 0:
+            labeled = self._label_rows(self._prev_snapshots)
+            self.training_rows.extend(labeled)
+
+        # Retrain ML periodically
+        if self.week % self.params["retrain_every"] == 0:
+            self._retrain()
+
+        # Score agents
+        self._score_agents()
+
+        # Outreach (before agents act)
+        self._allocate_outreach()
+
+        # Shocks
+        for a in agents: a.step_shocks()
+
+        # Social contagion / support
+        for a in agents: a.step_social()
+
+        # Distress update
+        for a in agents: a.step_distress()
+
+        # Disclosure & referral
+        referrals = []
+        for a in agents:
+            disclosed = a.step_disclosure()
+            if a.step_referral(disclosed):
+                referrals.append(a)
+                a.referral_this_week = True
+
+        # Appointment scheduling
+        self._schedule_appointments(referrals)
+
+        # Attendance
+        w_missed = 0
+        for a in agents:
+            attended = a.step_attend()
+            if a.appt_was_scheduled and not attended:
+                w_missed += 1
+
+        # Crisis events
+        w_crisis = sum(a.step_crisis() for a in agents)
+
+        # Logs
+        n_engaged   = sum(1 for a in agents if a.engagement == 2)
+        n_outreached = sum(1 for a in agents if a.outreach_this_week)
+
+        self.weekly_crisis.append(w_crisis)
+        self.weekly_missed.append(w_missed)
+        self.weekly_engaged.append(n_engaged / len(agents))
+        self.weekly_referrals.append(len(referrals))
+        self.weekly_outreached.append(n_outreached)
+
+        self._w_crisis  = w_crisis
+        self._w_missed  = w_missed
+        self._w_engaged = n_engaged / len(agents)
+        self.datacollector.collect(self)
+
+        # Snapshot for labeling next week
+        self._prev_snapshots = self._snapshot_features()
+
+        # Reset weekly flags
+        for a in agents: a.reset_weekly()
+
+        self.week += 1
+
+    def run(self):
+        self._prev_snapshots = self._snapshot_features()
+        for _ in range(self.params["weeks"]):
+            self.step()
+
+# ============================================================
+# 5. SIMULATION RUNNER
+# ============================================================
+def run_policy(policy, params=PARAMS, seed=SEED):
+    print(f"  Running policy: {policy} ...")
+    m = HybridMentalHealthModel(params, policy=policy, seed=seed)
+    m.run()
+    return m
+
+policies = ["none", "universal", "targeted", "tiered"]
+results  = {}
+for pol in policies:
+    results[pol] = run_policy(pol)
+
+# ============================================================
+# 6. SUMMARY TABLE
+# ============================================================
+rows = []
+for pol in policies:
+    m = results[pol]
+    rows.append({
+        "Policy"             : pol,
+        "Total Crises"       : sum(m.weekly_crisis),
+        "Total Missed Appts" : sum(m.weekly_missed),
+        "Final Engagement %"  : round(m.weekly_engaged[-1] * 100, 1),
+        "Total Referrals"    : sum(m.weekly_referrals),
+        "Total Outreach"     : sum(m.weekly_outreached),
+        "Avg Weekly Crisis"  : round(float(np.mean(m.weekly_crisis)), 2),
+    })
+
+summary_df = pd.DataFrame(rows).set_index("Policy")
+print("\n" + "=" * 60)
+print("POLICY COMPARISON SUMMARY")
+print("=" * 60)
+print(summary_df.to_string())
+
+# ============================================================
+# 7. FEATURE IMPORTANCE
+# ============================================================
+FEATURE_NAMES = [
+    "distress", "mean_distress_4w", "recent_missed", "engagement",
+    "trust", "support", "neighbor_distress", "frac_high_distress_nb",
+    "recent_outreach", "recent_disclosures", "weeks_since_attended",
+    "baseline_vuln", "barriers", "stigma"
+]
+
+tm = results["targeted"]
+if tm.ml_trained:
+    fi_df = pd.DataFrame({
+        "Feature"     : FEATURE_NAMES,
+        "No-Show Imp.": tm.clf_no_show.feature_importances_,
+        "Crisis Imp." : tm.clf_crisis.feature_importances_,
+    }).sort_values("No-Show Imp.", ascending=False).reset_index(drop=True)
+    print("\nML Feature Importances (targeted run):")
+    print(fi_df.to_string(index=False))
+
+# ============================================================
+# 8. PLOTS
+# ============================================================
+smooth   = lambda arr, w=4: pd.Series(arr).rolling(w, min_periods=1).mean().values
+weeks_ax = list(range(PARAMS["weeks"]))
+colors   = {"none": "#777777", "universal": "#006494",
+            "targeted": "#a12c7b", "tiered": "#437a22"}
+
+fig = plt.figure(figsize=(16, 14))
+fig.patch.set_facecolor("#f7f6f2")
+gs  = gridspec.GridSpec(3, 2, figure=fig, hspace=0.42, wspace=0.35)
+
+ax1 = fig.add_subplot(gs[0, 0])
+for pol in policies:
+    ax1.plot(weeks_ax, smooth(results[pol].weekly_crisis), label=pol,
+             color=colors[pol], lw=2)
+ax1.set_title("Weekly Crisis Events (4-week smooth)", fontsize=12)
+ax1.set_xlabel("Week"); ax1.set_ylabel("Count")
+ax1.legend(fontsize=9); ax1.set_facecolor("#f9f8f5")
+
+ax2 = fig.add_subplot(gs[0, 1])
+for pol in policies:
+    ax2.plot(weeks_ax, smooth(results[pol].weekly_missed), label=pol,
+             color=colors[pol], lw=2)
+ax2.set_title("Weekly Missed Appointments (4-week smooth)", fontsize=12)
+ax2.set_xlabel("Week"); ax2.set_ylabel("Count")
+ax2.legend(fontsize=9); ax2.set_facecolor("#f9f8f5")
+
+ax3 = fig.add_subplot(gs[1, 0])
+for pol in policies:
+    ax3.plot(weeks_ax, smooth(results[pol].weekly_engaged), label=pol,
+             color=colors[pol], lw=2)
+ax3.set_title("Engagement Rate Over Time", fontsize=12)
+ax3.set_xlabel("Week"); ax3.set_ylabel("Fraction actively engaged")
+ax3.legend(fontsize=9); ax3.set_facecolor("#f9f8f5")
+
+ax4 = fig.add_subplot(gs[1, 1])
+totals = [summary_df.loc[p, "Total Crises"] for p in policies]
+bars   = ax4.bar(policies, totals, color=[colors[p] for p in policies], edgecolor="white")
+ax4.set_title("Total Crisis Events by Policy", fontsize=12)
+ax4.set_ylabel("Count"); ax4.set_facecolor("#f9f8f5")
+for bar, val in zip(bars, totals):
+    ax4.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
+             str(val), ha="center", va="bottom", fontsize=10)
+
+ax5 = fig.add_subplot(gs[2, 0])
+if tm.ml_trained:
+    fi_s = fi_df.sort_values("No-Show Imp.", ascending=True)
+    ax5.barh(fi_s["Feature"], fi_s["No-Show Imp."], color="#006494")
+    ax5.set_title("Feature Importance: No-Show Prediction", fontsize=12)
+    ax5.set_facecolor("#f9f8f5")
+
+ax6 = fig.add_subplot(gs[2, 1])
+if tm.ml_trained:
+    fi_s2 = fi_df.sort_values("Crisis Imp.", ascending=True)
+    ax6.barh(fi_s2["Feature"], fi_s2["Crisis Imp."], color="#a12c7b")
+    ax6.set_title("Feature Importance: Crisis Prediction", fontsize=12)
+    ax6.set_facecolor("#f9f8f5")
+
+fig.suptitle(
+    "Hybrid ABM + ML Tutorial: Mental Health Crisis & Disengagement\n"
+    "Policy Comparison Under Constrained Outreach Capacity",
+    fontsize=14, fontweight="bold", y=1.01
+)
+plt.savefig("hybrid_abm_ml_results.png", dpi=150, bbox_inches="tight",
+            facecolor=fig.get_facecolor())
+plt.show()
+print("\nFigure saved.")
+
+# ============================================================
+# 9. INTERPRETATION
+# ============================================================
+best_crisis_pol = summary_df["Total Crises"].idxmin()
+best_missed_pol = summary_df["Total Missed Appts"].idxmin()
+none_c     = summary_df.loc["none",     "Total Crises"]
+targeted_c = summary_df.loc["targeted", "Total Crises"]
+tiered_c   = summary_df.loc["tiered",   "Total Crises"]
+red_t = round((none_c - targeted_c) / none_c * 100, 1)
+red_ti = round((none_c - tiered_c)  / none_c * 100, 1)
+
+print("\n" + "=" * 60)
+print("INTERPRETATION")
+print("=" * 60)
+print(f"Best policy (fewest crises)   : {best_crisis_pol}")
+print(f"Best policy (fewest missed)   : {best_missed_pol}")
+print(f"Crisis reduction targeted     : {red_t}%  vs no-outreach")
+print(f"Crisis reduction tiered       : {red_ti}% vs no-outreach")
+print("""
+Architecture note:
+  ABM role  — governs mechanism: social contagion, trust erosion,
+               disclosure, appointment dynamics, intervention response.
+  ML role   — governs prediction: near-term risk scores from recent
+               agent histories, without causal assumptions.
+
+The policy experiment shows where prediction adds value:
+when outreach capacity is constrained and agents are heterogeneous,
+ML-guided targeting concentrates limited resources on those most
+likely to disengage or escalate.
+
+IMPORTANT: This is a synthetic tutorial model. Parameters are chosen
+for pedagogical clarity, not clinical calibration. The ML model is
+trained entirely on simulation-generated data and must not be
+interpreted as a validated clinical predictor.
+""")
+```
