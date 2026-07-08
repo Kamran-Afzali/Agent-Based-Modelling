@@ -1,21 +1,17 @@
 
 # Beyond Random: When Agents Learn to Navigate Their World
 
-What if our wandering agents could learn from experience? What if, instead of moving purely at random, they could develop preferences, avoid dangers, and gradually become more efficient at finding resources? In our latest evolution of Mesa-based simulations, we transform simple random walkers into adaptive, learning agents that demonstrate one of the most fundamental aspects of intelligence: the ability to modify behavior based on experience.
+What if our wandering agents could learn from experience? What if, instead of moving purely at random, they could develop preferences, avoid dangers, and gradually become more efficient at finding resources? In our next of Mesa-based simulations, we transform simple random walkers into adaptive, learning agents that demonstrate one of the most fundamental aspects of intelligence: the ability to modify behavior based on experience.
 
-This third installment in our random walk series introduces [[Reinforcement Learning]]  concepts into agent-based modeling, creating agents that start naive but develop sophisticated navigation strategies through trial and error. Along the way, we'll explore how individual learning aggregates into collective intelligence and examine the delicate balance between exploration and exploitation that drives adaptive behavior.
+This third post in our random walk series introduces Reinforcement Learning concepts into agent-based modeling, creating agents that start naive but develop navigation strategies by trial and error. Along the way, we'll explore how individual learning aggregates into collective intelligence and examine the delicate balance between exploration and exploitation that drives adaptive behavior.
 
-## From Random to Rational: The Learning Paradigm
-
-The transition from random to learning behavior represents a profound shift in our modeling approach. While pure random walks provide valuable baselines for understanding stochastic processes, real-world entities—from foraging animals to search algorithms—rarely operate with complete randomness. Instead, they adapt their strategies based on accumulated experience, gradually becoming more effective at achieving their goals.
-
-Our learning walker agents embody this adaptive intelligence. They begin each simulation with minimal knowledge about their environment, making largely random moves while slowly building internal models of which locations yield rewards and which pose dangers. Over time, these initially naive agents develop preferences that guide their movements toward beneficial outcomes and away from harmful ones.
+Real-world entities from foraging animals to search algorithms, rarely operate with complete randomness. Instead, they adapt their strategies based on accumulated experience, gradually becoming more effective at achieving their goals. Our learning walker agents embody this adaptive intelligence. They begin each simulation with minimal knowledge about their environment, making largely random moves while slowly building internal models of which locations yield rewards and which pose dangers. Over time, these naive agents develop preferences that guide their movements toward beneficial outcomes and away from harmful ones.
 
 ## Environmental Complexity: Resources and Hazards
 
-To enable meaningful learning, we've enriched our simulation environment with heterogeneous cell types that provide different experiences:
+Our simulation environment now haas heterogeneous cell types that provide different experiences:
 
-**Resource Cells**: Scattered across the grid at low density (3% by default), these locations represent positive experiences—food sources, shelter, or other beneficial opportunities that agents should learn to seek out.
+**Resource Cells**: dispersed across the grid at low density (3% by default), these locations represent positive experiences—food sources, shelter, or other beneficial opportunities that agents should learn to seek out.
 
 **Toxic Cells**: Even more sparsely distributed (2% by default), these locations represent negative experiences—dangers, obstacles, or harmful conditions that wise agents learn to avoid.
 
