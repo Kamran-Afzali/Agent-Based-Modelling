@@ -14,7 +14,7 @@ where N_similar,i represents the number of neighbors sharing agent i's type, and
 
 The agent's decision-making process translates directly into code through the step method:
 
-```python
+``` python
 def step(self) -> None:
     # Get neighbors
     neighbors = self.model.grid.get_neighbors(
@@ -39,9 +39,9 @@ The neighborhood definition itself merits attention. Using Moore neighborhoods�
 
 ## Implementation Architecture and Design Decisions
 
-Our Mesa implementation builds upon the foundation established in the random walk tutorial while introducing several sophisticated enhancements. The `SchellingAgent` class now carries state—specifically, an agent type that determines group membership. This seemingly minor addition fundamentally alters the model's dynamics, transforming aimless wandering into purposeful relocation based on social preferences.
+Our Mesa implementation builds upon the foundation built in the random walk tutorial while introducing several sophisticated enhancements. The `SchellingAgent` class now carries state—specifically, an agent type that determines group membership. This seemingly minor addition fundamentally alters the model's dynamics, transforming aimless wandering into purposeful relocation based on social preferences.
 
-```python
+``` python
 class SchellingAgent(Agent):
     def __init__(self, unique_id: int, model: 'SchellingModel', agent_type: int):
         super().__init__(unique_id, model)
@@ -52,7 +52,7 @@ The agent's decision-making process encapsulates the core behavioral logic throu
 
 The `SchellingModel` class orchestrates the complex interplay between individual decisions and collective outcomes. The model initializes by randomly distributing agents across the grid according to specified density and minority proportion parameters:
 
-```python
+``` python
 def _place_agents(self) -> None:
     agent_id = 0
     num_agents = int(self.width * self.height * self.density)
@@ -76,7 +76,7 @@ This random initialization ensures that any subsequent segregation patterns resu
 
 Data collection mechanisms have evolved significantly from our simple random walk implementation. The model now tracks two key metrics: the overall segregation level and the total number of agent moves:
 
-```python
+``` python
 self.datacollector = DataCollector(
     model_reporters={
         "Segregation": self.calculate_segregation,
@@ -87,7 +87,7 @@ self.datacollector = DataCollector(
 
 The segregation measure aggregates individual similarity ratios across all agents, providing a system-level indicator of residential homogeneity:
 
-```python
+``` python
 def calculate_segregation(self) -> float:
     if not self.schedule.agents:
         return 0.0
@@ -138,7 +138,7 @@ The spatial structure of segregation also merits attention. Clustered segregatio
 
 ## Extensions and Variations
 
-The canonical Schelling model admits numerous extensions that illuminate different aspects of segregation dynamics. Multi-group extensions replace the binary agent classification with multiple types, examining how segregation patterns change when three, four, or more groups compete for residential space. These extensions reveal interesting dynamics: sometimes intermediate groups become "buffer zones" between more distinct populations, while in other configurations, minority groups form coalitions against dominant majorities.
+The Schelling model has numerous extensions that show different aspects of segregation dynamics. Multi-group extensions replace the binary agent classification with multiple types, examining how segregation patterns change when three, four, or more groups compete for residential space. These extensions reveal interesting dynamics: sometimes intermediate groups become "buffer zones" between more distinct populations, while in other configurations, minority groups form coalitions against dominant majorities.
 
 Economic constraints provide another avenue for model extension. Real housing markets involve financial considerations that can either amplify or mitigate segregation tendencies. Agents with limited economic resources face restricted housing choices, potentially forcing them to accept less preferred neighborhood compositions. Conversely, wealth disparities can enable some groups to monopolize desirable areas, creating segregation patterns that transcend mere social preferences.
 
@@ -156,13 +156,13 @@ Information and social contact provide alternative intervention strategies. If s
 
 The model also illuminates the challenge of unintended consequences in social policy. Well-intentioned interventions might sometimes backfire by creating new incentives for segregation or by concentrating problems in particular areas. Understanding the complex feedback loops inherent in social systems becomes crucial for designing effective policies.
 
-## Computational Considerations and Future Directions
+## Some Considerations and Future Directions
 
 From a computational perspective, the Schelling model demonstrates how object-oriented programming principles facilitate complex social simulations. The clear separation between agent behavior and model coordination makes the code both readable and extensible. The modular design allows researchers to easily modify individual components—changing decision rules, spatial structures, or measurement techniques—without restructuring the entire simulation.
 
 The visualization capabilities highlight another important aspect of agent-based modeling: the ability to directly observe emergent patterns as they unfold. The implementation includes sophisticated visualization tools that capture both spatial patterns and temporal dynamics:
 
-```python
+``` python
 @staticmethod
 def extract_grid(model: SchellingModel) -> np.ndarray:
     grid = np.zeros((model.width, model.height))
@@ -178,7 +178,7 @@ def extract_grid(model: SchellingModel) -> np.ndarray:
 
 The complete simulation workflow demonstrates how these components integrate:
 
-```python
+``` python
 def run_schelling_model(
     width: int = 20,
     height: int = 20,
@@ -234,8 +234,7 @@ Understanding these dynamics becomes particularly important in an era of increas
 
 The Schelling model thus serves as both a specific analysis of residential segregation and a general illustration of how social systems can generate unintended consequences from reasonable individual behaviors. It exemplifies the power of agent-based modeling to reveal counterintuitive dynamics and challenge conventional wisdom about social phenomena. As we continue exploring agent-based approaches to social problems, the Schelling model reminds us that understanding individual behavior represents only the first step—the real challenge lies in comprehending how those individual behaviors interact to produce the complex social world we observe around us.
 
-
-```python
+``` python
 """
 Schelling Segregation Model
 """
