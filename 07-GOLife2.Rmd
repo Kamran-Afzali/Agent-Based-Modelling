@@ -323,3 +323,444 @@ The progression from Conway's binary Game of Life through the Schelling segregat
 As we continue exploring agent-based modeling, the multi-state framework provides a versatile platform for investigating diverse phenomena. The same basic architecture that models predator-prey dynamics can represent competing technologies diffusing through markets, conflicting opinions spreading through social networks, or alternative land uses evolving across landscapes. The universality of cellular automata as computational systems ensures that this framework can accommodate virtually any process defined by local rules and discrete states.
 
 The journey from single random walkers to rich multi-state ecosystems demonstrates how agent-based modeling enables exploration of complex systems that resist traditional analytical approaches. By building incrementally from simple foundations, we develop both technical skills and conceptual understanding that transfer across domains. The spatial dynamics we've explored—neighborhood effects, boundary conditions, emergent patterns—recur throughout complex systems science, making these lessons broadly applicable to anyone seeking to understand how local interactions generate global behaviors.
+
+
+```python
+"""
+Three-state spatial ecosystem cellular automaton.
+
+States:
+    0 = empty
+    1 = prey
+    2 = predator
+
+Compatible with Mesa 3.x.
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+from mesa import Agent, Model
+from mesa.space import SingleGrid
+
+
+class EcosystemAgent(Agent):
+    """
+    One fixed grid cell.
+
+    The agent does not move. Instead, its ecological state changes:
+    EMPTY -> PREY
+    PREY -> EMPTY
+    PREDATOR -> EMPTY
+
+    A two-phase update is used:
+    - step(): calculate next_state from the old grid state
+    - advance(): commit next_state after all agents have calculated
+    """
+
+    EMPTY = 0
+    PREY = 1
+    PREDATOR = 2
+
+    def __init__(self, model, state=EMPTY):
+        super().__init__(model)
+        self.state = state
+        self.next_state = state
+
+    def step(self):
+        """
+        Calculate, but do not yet apply, the state for the next generation.
+        """
+        neighbors = self.model.grid.get_neighbors(
+            pos=self.pos,
+            moore=True,
+            include_center=False,
+        )
+
+        neighbor_states = [neighbor.state for neighbor in neighbors]
+
+        n_empty = neighbor_states.count(self.EMPTY)
+        n_prey = neighbor_states.count(self.PREY)
+        n_predator = neighbor_states.count(self.PREDATOR)
+        n_total = len(neighbors)
+
+        if n_total == 0:
+            self.next_state = self.state
+            return
+
+        # Rule 1: Empty space can be colonized by nearby prey.
+        if self.state == self.EMPTY:
+            reproduction_prob = (
+                self.model.prey_reproduction * (n_prey / n_total)
+            )
+            reproduction_prob = min(1.0, max(0.0, reproduction_prob))
+
+            if self.random.random() < reproduction_prob:
+                self.next_state = self.PREY
+            else:
+                self.next_state = self.EMPTY
+
+        # Rule 2: Prey can die naturally or due to nearby predators.
+        elif self.state == self.PREY:
+            predation_prob = (
+                self.model.predation_rate * (n_predator / n_total)
+            )
+
+            death_prob = self.model.prey_mortality + predation_prob
+            death_prob = min(1.0, max(0.0, death_prob))
+
+            if self.random.random() < death_prob:
+                self.next_state = self.EMPTY
+            else:
+                self.next_state = self.PREY
+
+        # Rule 3: Predators starve when prey are locally scarce.
+        elif self.state == self.PREDATOR:
+            prey_support = min(1.0, n_prey / self.model.prey_needed_for_survival)
+
+            starvation_prob = (
+                self.model.predator_mortality * (1.0 - prey_support)
+            )
+            starvation_prob = min(1.0, max(0.0, starvation_prob))
+
+            if self.random.random() < starvation_prob:
+                self.next_state = self.EMPTY
+            else:
+                self.next_state = self.PREDATOR
+
+    def advance(self):
+        """
+        Apply the state calculated in step().
+
+        All agents reach this method only after every agent has completed
+        step(), so no agent sees another agent's partially updated state.
+        """
+        self.state = self.next_state
+
+
+class EcosystemModel(Model):
+    """
+    A stochastic three-state predator-prey cellular automaton.
+
+    Parameters
+    ----------
+    width, height:
+        Grid dimensions.
+
+    prey_init:
+        Probability that a cell begins as prey.
+
+    predator_init:
+        Probability that a cell begins as predator.
+
+    prey_reproduction:
+        Maximum probability per generation that an empty cell becomes prey.
+
+    prey_mortality:
+        Baseline probability that a prey cell dies per generation.
+
+    predator_mortality:
+        Predator mortality probability when no prey are nearby.
+
+    predation_rate:
+        Maximum additional prey-death probability caused by predators.
+
+    prey_needed_for_survival:
+        Number of prey neighbours sufficient to reduce predator starvation
+        risk to zero.
+
+    seed:
+        Optional random seed. The same seed makes a run reproducible.
+    """
+
+    def __init__(
+        self,
+        width=50,
+        height=50,
+        prey_init=0.30,
+        predator_init=0.10,
+        prey_reproduction=0.40,
+        prey_mortality=0.05,
+        predator_mortality=0.30,
+        predation_rate=0.50,
+        prey_needed_for_survival=4,
+        seed=None,
+    ):
+        super().__init__(seed=seed)
+
+        if width <= 0 or height <= 0:
+            raise ValueError("width and height must both be positive.")
+
+        if prey_init < 0 or predator_init < 0:
+            raise ValueError("Initial proportions cannot be negative.")
+
+        if prey_init + predator_init > 1:
+            raise ValueError(
+                "prey_init + predator_init must be less than or equal to 1."
+            )
+
+        for name, value in {
+            "prey_reproduction": prey_reproduction,
+            "prey_mortality": prey_mortality,
+            "predator_mortality": predator_mortality,
+            "predation_rate": predation_rate,
+        }.items():
+            if not 0 <= value <= 1:
+                raise ValueError(f"{name} must lie between 0 and 1.")
+
+        if prey_needed_for_survival <= 0:
+            raise ValueError("prey_needed_for_survival must be positive.")
+
+        self.width = width
+        self.height = height
+
+        self.prey_reproduction = prey_reproduction
+        self.prey_mortality = prey_mortality
+        self.predator_mortality = predator_mortality
+        self.predation_rate = predation_rate
+        self.prey_needed_for_survival = prey_needed_for_survival
+
+        # torus=True joins opposite edges of the grid.
+        self.grid = SingleGrid(width, height, torus=True)
+
+        self.populations = {
+            "empty": [],
+            "prey": [],
+            "predator": [],
+        }
+
+        for x in range(width):
+            for y in range(height):
+                random_value = self.random.random()
+
+                if random_value < predator_init:
+                    state = EcosystemAgent.PREDATOR
+                elif random_value < predator_init + prey_init:
+                    state = EcosystemAgent.PREY
+                else:
+                    state = EcosystemAgent.EMPTY
+
+                agent = EcosystemAgent(self, state=state)
+                self.grid.place_agent(agent, (x, y))
+
+        self.record_populations()
+
+    def record_populations(self):
+        """
+        Count the fraction of cells in each state at the present generation.
+        """
+        counts = {
+            EcosystemAgent.EMPTY: 0,
+            EcosystemAgent.PREY: 0,
+            EcosystemAgent.PREDATOR: 0,
+        }
+
+        for agent in self.agents:
+            counts[agent.state] += 1
+
+        total_cells = self.width * self.height
+
+        self.populations["empty"].append(
+            counts[EcosystemAgent.EMPTY] / total_cells
+        )
+        self.populations["prey"].append(
+            counts[EcosystemAgent.PREY] / total_cells
+        )
+        self.populations["predator"].append(
+            counts[EcosystemAgent.PREDATOR] / total_cells
+        )
+
+    def step(self):
+        """
+        Run exactly one synchronous cellular-automaton generation.
+
+        All agents calculate next_state
+            ->
+        all agents commit next_state
+            ->
+        global populations are recorded.
+        """
+        self.agents.do("step")
+        self.agents.do("advance")
+        self.record_populations()
+
+
+class EcosystemVisualizer:
+    """Matplotlib utilities for inspecting model output."""
+
+    STATE_COLORS = ["white", "forestgreen", "crimson"]
+    STATE_NAMES = {
+        EcosystemAgent.EMPTY: "Empty",
+        EcosystemAgent.PREY: "Prey",
+        EcosystemAgent.PREDATOR: "Predator",
+    }
+
+    @staticmethod
+    def extract_grid_state(model):
+        """
+        Convert the model's agents to a 2D NumPy array of state integers.
+        """
+        grid_state = np.zeros((model.height, model.width), dtype=int)
+
+        for agent in model.agents:
+            x, y = agent.pos
+            grid_state[y, x] = agent.state
+
+        return grid_state
+
+    @staticmethod
+    def plot_spatial_evolution(states, times=(0, 50, 100, 200)):
+        """
+        Plot selected stored grid configurations side by side.
+        """
+        valid_times = [time for time in times if 0 <= time < len(states)]
+
+        if not valid_times:
+            raise ValueError("None of the requested times exists in states.")
+
+        fig, axes = plt.subplots(
+            nrows=1,
+            ncols=len(valid_times),
+            figsize=(5 * len(valid_times), 5),
+            squeeze=False,
+        )
+
+        cmap = ListedColormap(EcosystemVisualizer.STATE_COLORS)
+
+        for axis, time in zip(axes[0], valid_times):
+            axis.imshow(
+                states[time],
+                cmap=cmap,
+                vmin=EcosystemAgent.EMPTY,
+                vmax=EcosystemAgent.PREDATOR,
+                interpolation="nearest",
+                origin="lower",
+            )
+            axis.set_title(f"Generation {time}")
+            axis.set_xticks([])
+            axis.set_yticks([])
+
+        fig.suptitle("Spatial ecosystem evolution", fontsize=15)
+        plt.tight_layout()
+        plt.show()
+
+    @staticmethod
+    def plot_population_dynamics(populations):
+        """
+        Plot empty, prey, and predator proportions across generations.
+        """
+        generations = range(len(populations["empty"]))
+
+        fig, axis = plt.subplots(figsize=(12, 6))
+
+        axis.plot(
+            generations,
+            populations["empty"],
+            color="gray",
+            linewidth=2,
+            alpha=0.8,
+            label="Empty",
+        )
+        axis.plot(
+            generations,
+            populations["prey"],
+            color="forestgreen",
+            linewidth=2,
+            label="Prey",
+        )
+        axis.plot(
+            generations,
+            populations["predator"],
+            color="crimson",
+            linewidth=2,
+            label="Predator",
+        )
+
+        axis.set_xlabel("Generation")
+        axis.set_ylabel("Proportion of grid")
+        axis.set_title("Population dynamics")
+        axis.set_ylim(0, 1)
+        axis.grid(True, alpha=0.25)
+        axis.legend()
+
+        plt.tight_layout()
+        plt.show()
+
+
+def run_ecosystem_model(
+    width=60,
+    height=60,
+    steps=250,
+    prey_init=0.30,
+    predator_init=0.10,
+    prey_reproduction=0.45,
+    prey_mortality=0.05,
+    predator_mortality=0.30,
+    predation_rate=0.40,
+    prey_needed_for_survival=4,
+    seed=42,
+):
+    """
+    Construct, run, and return one simulation.
+
+    Returns
+    -------
+    model:
+        The completed EcosystemModel instance.
+
+    states:
+        List of NumPy arrays. states[t] is the grid after t completed steps.
+        There are steps + 1 saved states, including the initial grid.
+    """
+    model = EcosystemModel(
+        width=width,
+        height=height,
+        prey_init=prey_init,
+        predator_init=predator_init,
+        prey_reproduction=prey_reproduction,
+        prey_mortality=prey_mortality,
+        predator_mortality=predator_mortality,
+        predation_rate=predation_rate,
+        prey_needed_for_survival=prey_needed_for_survival,
+        seed=seed,
+    )
+
+    states = [EcosystemVisualizer.extract_grid_state(model)]
+
+    for _ in range(steps):
+        model.step()
+        states.append(EcosystemVisualizer.extract_grid_state(model))
+
+    return model, states
+
+
+if __name__ == "__main__":
+    model, evolution = run_ecosystem_model(
+        width=60,
+        height=60,
+        steps=250,
+        prey_init=0.30,
+        predator_init=0.10,
+        prey_reproduction=0.45,
+        prey_mortality=0.05,
+        predator_mortality=0.30,
+        predation_rate=0.40,
+        prey_needed_for_survival=4,
+        seed=42,
+    )
+
+    EcosystemVisualizer.plot_spatial_evolution(
+        evolution,
+        times=(0, 50, 100, 200, 250),
+    )
+
+    EcosystemVisualizer.plot_population_dynamics(model.populations)
+
+    final_empty = model.populations["empty"][-1]
+    final_prey = model.populations["prey"][-1]
+    final_predator = model.populations["predator"][-1]
+
+    print(f"Final empty proportion:    {final_empty:.3f}")
+    print(f"Final prey proportion:     {final_prey:.3f}")
+    print(f"Final predator proportion: {final_predator:.3f}")
+```
