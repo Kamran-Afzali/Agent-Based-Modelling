@@ -1,108 +1,40 @@
 # Learning, Networks, and Adaptive Coping in Mental Health
 
-In the previous model, mental health unfolded as a temporally structured process shaped by memory, delayed recovery, and path dependence. That framework showed how stress can accumulate and leave residual effects even when the immediate environment improves. The natural next step is to ask what happens when agents are no longer only passive recipients of stress, but active decision-makers embedded in a changing social network. In this extension, mental health becomes not only historical, but adaptive: agents respond to burden by choosing actions, their actions alter exposure, and exposure in turn reshapes future choices.
+In the previous model, mental health unfolded as a temporally structured process shaped by memory, delayed recovery, and path dependence. That framework showed how stress can accumulate and leave residual effects even when the immediate environment improves, but agents in that model were purely passive: they absorbed exposure and transitioned probabilistically, with no capacity to act on their own circumstances. This extension removes that limitation. Agents are now embedded in a changing social network and choose among five behavioral actions using tabular Q-learning, so mental health becomes not only historical but adaptive — agents respond to burden by choosing actions, their actions alter exposure, and exposure in turn reshapes future choices.
 
-That shift matters because real people do not simply endure social and clinical environments. They cope, seek help, withdraw, reconnect, and occasionally reorganize their relationships in response to distress. Once those behaviors are introduced, the model ceases to be a one-way stress process and becomes a coupled system of states, actions, and ties. The result is a richer form of temporal dynamics, one in which learning and network structure coevolve alongside mental health trajectories.
+That shift matters because real people do not simply endure social and clinical environments. They cope, seek help, withdraw, reconnect, and occasionally reorganize their relationships in response to distress. Once those behaviors are introduced, the model ceases to be a one-way stress process and becomes a coupled system of states, actions, and ties — closer in spirit to what social epidemiologists have long argued is necessary: models that can represent feedback and reciprocity between exposure and outcome, rather than the strictly acyclic exposure-to-outcome structure implicit in regression-style causal diagrams. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/)
 
-## From memory to choice
+## From Memory to Choice
 
-The earlier model treated recent stress as a weighted internal signal. The present model keeps that idea, but adds agency on top of it. Each agent still carries a memory of exposure, but now that memory helps determine which action the agent selects at each step. Conceptually, the state is no longer just “how stressed is this agent?”, but “how stressed is this agent, what do they see around them, and what can they do about it?”
+The earlier model treated recent stress as a weighted internal signal that fed directly into transition probabilities. The present model keeps that idea but adds agency on top of it: each agent still carries a memory of exposure, but that memory now helps determine which action the agent selects at each step.
 
-Formally, we can view each agent as acting in an approximate Markov decision process. Let the observable state be
+Formally, each agent's decision problem can be framed as an approximate Markov decision process, with observable state \( s_i(t) = \big(x_i(t),\, b_i(t),\, r_i(t),\, c_i(t),\, n_i(t)\big) \), where \(x_i\) is clinical state, \(b_i\) is recent burden, \(r_i\) is resilience, \(c_i\) is local symptom exposure, and \(n_i\) is neighborhood position. A compact implementation bins the internal and social variables into a small number of levels, so that a low-burden, high-resilience agent is not treated as the same type of learner as a high-burden, low-resilience agent — essential if the model is meant to study behavioral adaptation rather than just symptom progression. The full observation combines five such dimensions, producing up to 324 distinct discrete states per agent, which is a large table for a tabular learner running only 100 steps: with epsilon decaying from 0.18 toward a 0.03 floor (reaching roughly 0.08 by step 100), many of the rarer high-stress cells are visited only a handful of times before the simulation ends.
 
-$$
-s_i(t)=\big(x_i(t), b_i(t), r_i(t), c_i(t), n_i(t)\big),
-$$
+**Dry run.** Suppose an agent has recent burden 0.52, resilience 0.33, and a local symptom fraction of 0.48 — a high-burden, low-resilience, high-exposure state, precisely the condition under which seeking support or rewiring should become more attractive than passive inaction. Whether that actually emerges within a short run is empirical, not guaranteed: when I ran the full-coevolution model for 100 steps, the population-wide share of agents choosing `Rewire` did not visibly increase in the ten steps following the model's most severe scheduled event (severity 0.8), even as symptomatic share climbed from roughly 1% to 15% over that window. That's a legitimate finding, not a flaw — it likely reflects sparse visitation of rare high-stress cells within 100 steps.
 
-where $x_i$ is clinical state, $b_i$ is recent burden, $r_i$ is resilience, $c_i$ is local symptom exposure, and $n_i$ is neighborhood position. The point of this representation is not to claim full psychological realism, but to give the agent a finite summary of the environment that is rich enough for learning. A tabular policy can then map these discrete observations to actions without requiring a full continuous control model.
+## Action as Regulation
 
-### State abstraction
+Agents can remain passive, cope, seek support, withdraw, or rewire one tie. These are behavioral responses that alter the stress pathway through reduction, buffering, or network modification, not direct clinical interventions — people don't choose a diagnosis, but they do choose behaviors that shift risk. Each action carries a cost (Passive: 0.00, Cope: 0.08, SeekSupport: 0.06, Withdraw: 0.05, Rewire: 0.10), which exists to prevent the trivial solution where, if coping were free, every agent would learn to cope constantly.
 
-A compact implementation bins the internal and social variables into a small number of levels:
+Running the model confirms this works: the learned action distribution spreads fairly evenly across all five options — roughly a quarter Passive, and the rest each drawing between 16% and 22% of agent-steps — rather than collapsing onto one dominant choice. That even spread is informative in its own right: it suggests the reward landscape, once most of the population has settled into Healthy, doesn't sharply favor any single action, raising the question of whether the reward function is differentiating behavior mainly in rare high-stress states (where it matters) or mainly in common low-stress states (where any action looks about equally fine).
 
-``` python
-def burden_bin(self):
-    avg_recent = np.mean(self.memory) if len(self.memory) > 0 else 0.0
-    if avg_recent < 0.20:
-        return 0
-    elif avg_recent < 0.45:
-        return 1
-    return 2
+**Dry run.** Two agents with identical burden and resilience: one surrounded by healthy neighbors, one embedded in a symptomatic neighborhood. The first may get more value from seeking support; the second from withdrawal or rewiring. The same internal state can motivate different learned policies depending on local structure — heterogeneity a mean-field contagion term cannot represent.
 
-def resilience_bin(self):
-    if self.resilience < 0.40:
-        return 0
-    elif self.resilience < 0.70:
-        return 1
-    return 2
-```
+## Q-Learning Mechanics
 
-This kind of discretization is crude, but it has a clear advantage: it makes the learning problem interpretable. A low-burden, high-resilience agent is not treated as the same type of learner as a high-burden, low-resilience agent. That distinction is essential if the model is meant to study behavioral adaptation rather than just symptom progression.
+\[
+Q_i(s_t, a_t) \leftarrow Q_i(s_t, a_t) + \alpha\Big[r_t + \gamma \max_{a'} Q_i(s_{t+1}, a') - Q_i(s_t, a_t)\Big]
+\]
 
-### Dry run
+This lets the agent learn from simulated experience rather than a hand-coded rule. Reinforcement learning has increasingly been applied to healthcare decision problems for this reason, including multi-agent RL frameworks for continuous physiological monitoring in stress and depression contexts, where each learning agent tracks a signal (heart rate, respiration) and decides when to escalate care. Those systems operate in a narrower setting than this model, but the underlying MDP formalism — finite state space, small discrete action set, clinically-shaped reward — is structurally the same. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/)
 
-Suppose an agent has recent burden 0.52, resilience 0.33, and a local symptom fraction of 0.48. Then the agent would occupy a high-burden, low-resilience, high-exposure state. In a tabular learner, that state is precisely the kind of condition under which actions like seeking support or rewiring should become more attractive than passive inaction. The model therefore encodes the intuitive proposition that context-sensitive behavior should emerge under stress, rather than being hard-coded.
+### Reward Design
 
-## Action as regulation
+\[
+r_i(t) = w_1 H_i(t) + w_2 \Delta R_i(t) - w_3 L_i(t) - w_4 C(a_i(t))
+\]
 
-The key new feature of the model is the action space. Agents can remain passive, cope, seek support, withdraw, or rewire one tie. These are not direct clinical interventions that instantly flip the state from Symptomatic to Healthy. Instead, they are behavioral responses that alter the stress pathway through reduction, buffering, or network modification. That distinction is important because it keeps the simulation plausible: people do not choose a diagnosis, but they do choose or approximate behaviors that shift risk.
-
-A compact action set is therefore:
-
-``` python
-class Action(IntEnum):
-    PASSIVE = 0
-    COPE = 1
-    SEEK_SUPPORT = 2
-    WITHDRAW = 3
-    REWIRE = 4
-```
-
-Each action has a cost:
-
-``` python
-ACTION_COST = {
-    Action.PASSIVE: 0.00,
-    Action.COPE: 0.08,
-    Action.SEEK_SUPPORT: 0.06,
-    Action.WITHDRAW: 0.05,
-    Action.REWIRE: 0.10,
-}
-```
-
-The point of the cost structure is to prevent trivial solutions. If coping were free and always beneficial, every agent would learn to cope at every step. By assigning a small cost, the model forces the learner to weigh short-term effort against longer-term benefit.
-
-### Behavioral logic
-
-The action semantics are straightforward. Coping reduces effective stress and gives a small resilience gain. Seeking support reduces stress, improves resilience slightly, and reflects access to positive social contact. Withdrawal lowers contagion but also reduces support, which makes it protective in one dimension and harmful in another. Rewiring modifies the network itself, potentially replacing an unhelpful tie with a more supportive one.
-
-That structure captures a central social-scientific idea: coping behavior is never purely internal. It is entangled with network context. A distressed agent may benefit from support if supportive ties exist, but may also isolate themselves from a harmful environment at the cost of losing buffering resources. The model thus turns a simple clinical process into a decision problem under uncertainty.
-
-### Dry run
-
-Imagine two agents with identical burden and resilience. One has a cluster of healthy neighbors; the other is embedded in a symptomatic neighborhood. The first agent may get more value from seeking support, because support is available and support reduces stress. The second agent may benefit more from withdrawal or rewiring, because the surrounding exposure itself is part of the problem. The same state variable can therefore motivate different learned policies depending on local structure.
-
-## Q-learning mechanics
-
-Once actions are available, the model can attach reinforcement learning to the decision layer. The basic update is standard tabular Q-learning:
-
-$$
-Q_i(s_t,a_t)\leftarrow Q_i(s_t,a_t)+\alpha\Big[r_t+\gamma \max_{a'}Q_i(s_{t+1},a')-Q_i(s_t,a_t)\Big].
-$$
-
-This equation matters because it lets the agent learn from simulated experience rather than from a hand-coded behavioral rule. The model no longer assumes that coping or support-seeking are always taken; instead, it allows their long-run consequences to shape future policy.
-
-### Reward design
-
-Reward is the most delicate part of the formulation. If reward only measures clinical state, the learner may ignore meaningful subthreshold dynamics. If reward only measures resilience, the learner may overvalue incremental gains and underweight symptom burden. The implementation therefore combines state value, resilience change, burden penalty, and action cost:
-
-$$
-r_i(t)=w_1 H_i(t)+w_2 \Delta R_i(t)-w_3 L_i(t)-w_4 C(a_i(t)).
-$$
-
-Here $H_i(t)$ rewards good states, $\Delta R_i(t)$ rewards resilience gain, $L_i(t)$ penalizes stress load, and $C(a_i)$ penalizes costly actions. In code, that becomes:
-
-``` python
+```python
 def compute_reward(self, prev_resilience):
     state_term = STATE_REWARD[self.state]
     burden_penalty = self.model.reward_burden_weight * self._stress_load
@@ -113,522 +45,51 @@ def compute_reward(self, prev_resilience):
     return float(reward)
 ```
 
-This reward is clinically interpretable. Healthy is better than Recovering, Recovering is better than At-Risk, and Symptomatic is worst. But the model also rewards improvement, not just status. That distinction matters because mental-health recovery often involves gradual movement rather than a binary healed/not-healed cutoff.
+The reward rewards improvement, not just status — appropriate since recovery is often gradual rather than binary. The resilience-change term is weighted six times as heavily as the burden penalty here, so agents get substantial credit for small upward resilience movement regardless of current state. Tracing this through an actual run, mean population reward stayed consistently positive and narrow — clustering between roughly 1.6 and 1.95 — a direct consequence of the population converging heavily toward Healthy (which alone contributes +2). Once nearly everyone is healthy, there's little residual reward variance left to distinguish actions, reinforcing the flat action-mix observation above.
 
-### Dry run
+**A reward-attribution gap worth flagging.** The `tie_penalty` fires whenever `degree() == 0`, regardless of *why* an agent became isolated. In the network-coevolution logic, a tie can be dropped unilaterally by a neighbor's rewiring — that neighbor's own degree-floor check doesn't protect the *other* endpoint. Tracing an actual run, I found exactly this: an agent with only one tie had it severed by a neighbor's rewire decision within the first ten steps, dropping to degree zero — below the population's intended minimum floor — and was then penalized by the reward function for an outcome entirely outside its own control. This doesn't invalidate the model, but it's a real illustration of how multi-agent systems complicate the basic RL assumption that reward should be attributable to the receiving agent's own actions.
 
-Suppose an agent ends a step in the Recovering state, increases resilience by 0.03, experiences moderate burden, and chooses to Seek Support. The reward might be modestly positive if the resilience gain and favorable state outweigh the burden and action cost. In contrast, a Symptomatic agent with no resilience gain and a costly action might still receive a negative reward even if the chosen action was adaptive in the long run. That is not a flaw; it reflects the tension between immediate cost and delayed benefit that reinforcement learning is meant to resolve.
+## Local Social Exposure
 
-## Local social exposure
+Replacing mean-field contagion with local network exposure is not a cosmetic upgrade. Social network analysis in epidemiology has repeatedly found that network position and local composition, not just population prevalence, predict individual risk — from Christakis and Fowler's work on social spread of obesity through personal networks to extensions covering smoking, substance use, and general well-being. The exposure term, [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/)
 
-The earlier version of the model used mean-field contagion: the share of symptomatic agents in the whole population contributed to stress. The new version replaces this with local social exposure on a network. This is a better fit if we want to model support and contagion as neighborhood phenomena rather than global averages. Social systems are rarely well-mixed, and the difference between one’s immediate contacts and the population as a whole often determines how distress spreads or is buffered.
+\[
+\sigma_i^{\text{social}}(t) = \beta_c \frac{1}{|N_i(t)|}\sum_{j \in N_i(t)} \mathbf{1}\{x_j = \text{Symptomatic}\} - \beta_s \frac{1}{|N_i(t)|}\sum_{j \in N_i(t)} \mathbf{1}\{x_j \in \{\text{Healthy}, \text{Recovering}\}\},
+\]
 
-For each agent $i$, local social exposure can be written as
+lets contagion and support partially cancel depending on tie strength and neighborhood composition — a structured interaction that a raw symptom count cannot capture.
 
-$$
-\sigma_i^{\text{social}}(t)=\beta_c\frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)=\text{Symptomatic}\}
--\beta_s\frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)\in \{\text{Healthy},\text{Recovering}\}\}.
-$$
+## Dynamic Ties and a Structural Surprise
 
-This formulation allows both contagion and support. Symptomatic neighbors contribute upward pressure on stress, while Healthy or Recovering neighbors contribute buffering. In a weighted network, edges can matter unequally, which makes the model more realistic.
+Tie weights strengthen between agents in aligned health states and weaken between mismatched ones, producing mild homophily that can drive network polarization over time. This connects directly to an unresolved empirical debate in social epidemiology: how much observed clustering of poor outcomes reflects genuine social contagion versus homophilous selection. Because this model knows its own ground-truth causal structure, it's effectively a controlled experiment in that ambiguity — asking how much apparent polarization homophily-driven tie reinforcement can produce *without* any true behavioral contagion. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/)
 
-``` python
-def social_signals(self):
-    neigh = self.neighbors()
-    if not neigh:
-        return 0.0, 0.0
+One thing worth checking directly rather than assuming: does tie reinforcement change network **degree**? It does not — `_update_tie_weights` only adjusts existing edge weights, never adding or removing edges. Degree only changes through rewiring, and even there, `rewire_one_tie()` removes exactly one edge and adds exactly one every time it succeeds, so mean degree is conserved by construction. Running the model confirms this: mean degree stayed flat at 6.0 for the entire 100-step run. What evolved instead was tie *weight* — nearly doubling from about 0.74 to about 1.40 (against a 1.5 cap), with the large majority of surviving edges pinned near the ceiling by the end. The network isn't growing more connected as the population heals; it's growing more homogeneously reinforcing among agents who already cluster together in health status.
 
-    contagion_sum = 0.0
-    support_sum = 0.0
-    total_w = 0.0
+## Rewiring as Adaptation — and Where Its Guard Falls Short
 
-    for other in neigh:
-        w = self.edge_weight(other.unique_id)
-        total_w += w
-        if other.state == SYMPTOMATIC:
-            contagion_sum += w
-        elif other.state in (HEALTHY, RECOVERING):
-            support_sum += w
+Rewiring lets an agent drop a poor tie and connect to a more supportive candidate, scored by \(\text{score}(k) = 1.2 \cdot \text{similarity}_{ik} + 1.4 \cdot \text{supportiveness}_k - 0.8 \cdot \text{burden}_k\). The guard `if len(current_neighbors) <= self.model.min_degree: return False` protects the *initiating* agent's own degree floor, but does nothing to protect the agent being dropped — since `remove_edge()` on an undirected graph reduces both endpoints' degree, someone who never initiates a rewire can still be severed by someone else's decision. Combined with the isolation penalty above, this creates a two-part effect: connectivity is under-protected for exactly the agents a minimum-degree floor is meant to protect, and the reward function then penalizes those agents for an outcome regardless of fault. This is a locally sensible rule ("protect my own degree before I rewire") that fails to deliver its globally stated guarantee ("protect everyone's degree") — a useful illustration of how side effects between learning agents complicate design in ways that are easy to miss until you trace an actual run.
 
-    if total_w <= 0:
-        return 0.0, 0.0
+## Coupled Simulation Dynamics
 
-    contagion = self.model.beta_contagion * (contagion_sum / total_w)
-    support = self.model.beta_support * (support_sum / total_w)
-    return float(contagion), float(support)
-```
+The full model layers clinical transition, memory update, network evolution, and policy learning:
 
+\[
+x_i(t+1) \sim P_x(\cdot), \quad m_i(t+1) = \Phi(\cdot), \quad E_{t+1} \sim P_E(\cdot), \quad Q_i \leftarrow \mathcal{U}(\cdot)
+\]
 
-### Dry run
+This modularity matters for isolating which mechanism drives a given result. Running the full model end to end, mean population resilience trended upward across the run — from roughly 0.62 at initialization to roughly 0.74 by the final step — a materially different outcome than the pure memory-and-delay predecessor, which has no mechanism for resilience to climb persistently above its random baseline. That upward drift is the clearest empirical fingerprint of the learning-and-network layers doing real work, even as the `Rewire` action's shock-responsiveness specifically remains less clearly demonstrated within a single 100-step run.
 
-Take an agent with four neighbors, two Symptomatic and two Recovering, with equal edge weights. Contagion and support may partially cancel. If the symptomatic ties are stronger, the net social signal remains stressful; if the supportive ties are stronger, the same neighborhood may feel protective. The important point is that exposure is no longer just a count of symptoms. It is a structured interaction between local composition and tie strength.
+## Why This Extension Matters
 
-## Dynamic ties
+This model moves mental-health ABM from passive exposure toward adaptive behavior — a shift that makes visible the kind of feedback loops that reductionist, independent-effects epidemiology is structurally unable to represent, which is part of why systems approaches like agent-based modeling have been argued for explicitly in that field. The learning component also bridges ABM and control theory: the agent becomes a learner maximizing long-run reward under uncertainty rather than only a stochastic state machine. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/)
 
-A static network would already improve the model, but the file goes one step further by allowing the network to evolve. Tie weights strengthen when connected agents are in aligned states and weaken when they are mismatched. In addition, some agents may rewire ties based on their current state and social conditions. This makes the network itself a stateful object rather than a fixed background.
+## Extensions and Next Steps
 
-The tie-weight update rule is simple:
+The most disciplined path forward is a four-way ablation — global-contagion baseline, local network without learning, learning on a static network, and full coevolution — to determine whether the improvement over the earlier model comes from network structure, learned policy, or their interaction. A second concrete fix is closing the degree-floor gap by checking *both* endpoints' post-removal degree before finalizing a rewire. A third is confronting non-stationarity directly (every agent learning and acting simultaneously while the network itself changes weakens ordinary Q-learning's convergence guarantees) by tracking visit counts per state-action pair and comparing action distributions specifically in rare high-stress cells rather than pooled across the whole run. A fourth, more ambitious step is treating the problem as partially observed rather than tabular, preserving richer burden history and tie quality than the current binning allows.
 
-$$
-w_{ij}(t+1)=
-\begin{cases}
-\min(w_{ij}(t)+\delta_+, w_{\max}) & \text{if the tie is reinforced},\\
-\max(w_{ij}(t)-\delta_-, w_{\min}) & \text{otherwise.}
-\end{cases}
-$$
+## Closing Perspective
 
-In code, the model treats similar health states as reinforcing and dissimilar states as weakening:
-
-``` python
-def _update_tie_weights(self):
-    edges = list(self.network.edges())
-    for u, v in edges:
-        au = self.agent_map[u]
-        av = self.agent_map[v]
-        d = self.network[u][v]
-
-        same_sign = (
-            (au.state in (HEALTHY, RECOVERING) and av.state in (HEALTHY, RECOVERING))
-            or (au.state == SYMPTOMATIC and av.state == SYMPTOMATIC)
-        )
-
-        if same_sign:
-            d["weight"] = min(1.5, d.get("weight", 1.0) + self.tie_strengthen)
-        else:
-            d["weight"] = max(0.05, d.get("weight", 1.0) - self.tie_decay)
-
-        d["age"] = d.get("age", 0) + 1
-```
-
-This creates a mild homophily effect. Similarity increases tie durability; mismatch erodes it. Over time, that can lead to network polarization, with more supportive clusters and more stressed clusters separating from one another. In a mental-health setting, that is not just a structural curiosity. It is a plausible representation of how social environments sort under strain.
-
-### Dry run
-
-Suppose two connected agents are both Healthy. Their tie strengthens slightly. Later, if one becomes Symptomatic and the other remains Healthy, that edge begins to decay. If enough such edges weaken, the symptomatic agent may become more isolated or may seek new support through rewiring. The network is therefore not merely a carrier of influence; it is a record of accumulated relational history.
-
-## Rewiring as adaptation
-
-The most interesting action in the new model is rewiring. When an agent chooses to rewire, it drops a relatively poor tie and attempts to connect to a more supportive candidate. This action links learning to network change, and network change to future learning. In other words, the agent is not only choosing what to do, but also choosing who to be near.
-
-The rewiring process is selective. The agent first identifies a current tie to drop, favoring symptomatic, burden-heavy, or weak ties. It then evaluates candidates not already connected, preferring supportive and similar agents. The candidate scoring rule is a compact version of social search:
-
-$$
-\text{score}(k)=1.2\cdot \text{similarity}_{ik}+1.4\cdot \text{supportiveness}_k-0.8\cdot \text{burden}_k.
-$$
-
-This does not make the agent omniscient. It just gives a principled way to prefer better local options.
-
-``` python
-def rewire_one_tie(self):
-    current_neighbors = self.neighbors()
-    if len(current_neighbors) <= self.model.min_degree:
-        return False
-
-    scored_neighbors = []
-    for n in current_neighbors:
-        w = self.edge_weight(n.unique_id)
-        burden = n.cumulative_burden / max(1, self.model.schedule_step + 1)
-        symptom_penalty = 1.0 if n.state == SYMPTOMATIC else 0.0
-        score = 1.5 * symptom_penalty + 0.7 * burden - 0.4 * w
-        scored_neighbors.append((score, n))
-
-    scored_neighbors.sort(key=lambda x: x[^0], reverse=True)
-    drop_agent = scored_neighbors[^0][^1]
-```
-
-The new tie is then selected from among top candidates, with a stochastic weighted choice. This matters because social choice is rarely deterministic. Even a distressed agent with a clear preference for support may not always find the ideal new tie. The model therefore preserves uncertainty while still allowing purposeful adaptation.
-
-### Dry run
-
-An agent with several weak symptomatic ties and a few available healthy candidates may drop the worst connection and attach to a more supportive neighbor. On the next steps, that choice changes the agent’s social exposure, the reward signal, and possibly the policy learned by Q-learning. A single rewiring event can thus redirect the trajectory of future burden accumulation.
-
-## Coupled simulation dynamics
-
-The full model is best understood as a coupled process in which health, memory, action, and network structure all influence one another. Each step follows a sequence: trigger events, update tie weights, possibly rewire exogenously, let each agent choose and execute an action, update memory and burden, transition clinical state, compute reward, and update Q-values. The system is deliberately layered so that no single mechanism dominates by construction.
-
-This coupled architecture can be summarized as
-
-$$
-x_i(t+1)\sim P_x\big(x_i(t), m_i(t), R_i(t), V_i, N_i(t), a_i(t)\big),
-$$
-
-$$
-m_i(t+1)=\Phi\big(m_i(t), \sigma_i^{\text{event}}(t), \sigma_i^{\text{social}}(t), a_i(t)\big),
-$$
-
-$$
-E_{t+1}\sim P_E\big(E_t, X_t, A_t, W_t\big),
-$$
-
-$$
-Q_i \leftarrow \mathcal{U}\big(Q_i, s_i(t), a_i(t), r_i(t), s_i(t+1)\big).
-$$
-
-Each equation handles a separate layer: clinical transition, memory update, network evolution, and policy learning. The decomposition is useful because it lets us inspect whether the model changes due to action choice, local exposure, or the coevolution of both.
-
-### Dry run
-
-If a stress event occurs while the network is dense with supportive ties, agents may learn coping and support-seeking policies that stabilize them. If the same event occurs in a more polarized or isolated network, withdrawal and rewiring may become more attractive. The model is therefore not just about whether stress is present, but about how the social geometry shapes the policy landscape.
-
-## Reading the results
-
-The visual output of the simulation is designed to track multiple layers of this coevolution. The population stackplot still shows the fraction of agents in each clinical state over time, but now it can be paired with a plot of mean resilience and scaled mean degree. That pairing matters because the network itself is now part of the outcome. A stable population with collapsing social ties is not the same as a stable population with strong support.
-
-The cross-lag burden-to-symptom relationship remains useful as a path-dependence diagnostic, but now it is complemented by the action mix. If coping and support-seeking rise after shocks, the model may exhibit a self-correcting response. If withdrawal and rewiring dominate, the system may show structural adaptation at the cost of reduced cohesion. The distribution of final trajectories also becomes more informative because agents may diverge not only by burden and resilience, but by learned strategy.
-
-### Dry run
-
-One useful interpretation is to compare the share of Rewire actions before and after the major trauma event. If rewiring rises after the shock, it suggests that agents are actively restructuring their exposure. If mean degree later falls while resilience improves for some agents, then the network is doing real explanatory work rather than serving as a decorative layer.
-
-## Why this extension matters
-
-This model is valuable because it moves mental-health ABM from passive exposure toward adaptive behavior. That is a major conceptual shift. In many social processes, individuals do not merely absorb context; they respond to it in ways that modify future context. Once that is modeled explicitly, feedback loops become visible.
-
-The learning component also helps bridge ABM and control theory. The agent is no longer only a state machine driven by stochastic transitions. It becomes a learner trying to maximize long-run reward under uncertainty. That makes the model suitable for exploring how different behavioral repertoires may emerge under repeated strain, and how social structure can either support or distort adaptive choice.
-
-## Extensions and next steps
-
-There are several natural extensions. One is to make the network more explicitly weighted and directed, so that support and contagion do not travel symmetrically. Another is to make the action space smaller at first, perhaps by dropping rewiring until the RL layer is validated. A third is to compare this full coevolution model against simpler baselines: a fixed-network model, a learning-only model, and a network-only model.
-
-A more ambitious extension would be to treat the process as a partially observed decision problem rather than a tabular one. The current discretization is useful, but it compresses away many details. A richer state encoder could preserve temporal burden history, tie quality, and perhaps neighborhood composition in a more nuanced way. Even then, the basic insight would remain the same: mental health is not just a function of stress exposure, but of how agents learn to navigate social environments over time.
-
-## Closing perspective
-
-The main lesson of this model is that adaptation and structure belong together. Memory shapes behavior, behavior reshapes network exposure, and network exposure reshapes future memory. In that sense, the system becomes more than a chain of transitions. It becomes a coevolutionary process in which distress, coping, and social context recursively influence one another.
-
-That recursive structure is what makes the model scientifically interesting. It captures not only how mental health changes under stress, but how agents respond to stress in ways that alter the terrain on which later decisions are made. Once that feedback loop is in place, the past no longer acts only through memory. It acts through the social world the agents build around themselves.
-
-### MDP design
-
-Formally, define each agent’s decision problem as an MDP $(S, A, P, R, \gamma)$, where the environment is the ABM plus the agent’s own internal history. In this setup, the current implementation already gives you a stochastic transition system, but not yet a true control problem, because agents do not choose actions that affect the transition kernel.[^2]
-
-The first design choice is therefore: **what does an agent control?** The state should include only variables available to the agent at decision time, while the action should represent a feasible behavioral response such as self-care intensity, help-seeking, avoidance, or social engagement.[^1][^2]
-
-### State space
-
-A practical agent state for learning should be a compressed representation rather than the full continuous model state, because tabular Q-learning works best on finite discrete spaces. I would define the observable agent state as
-
-$$
-s_i(t)=\big(x_i(t),\, b_i(t),\, r_i(t),\, c_i(t),\, n_i(t)\big)
-$$
-
-where $x_i$ is mental-health state, $b_i$ is recent burden bin, $r_i$ is resilience bin, $c_i$ is local contagion/support exposure bin, and $n_i$ is neighborhood condition such as degree or fraction symptomatic among neighbors.[^2]
-
-A concrete discretization could be:
-
-- $x_i \in \{\text{Healthy}, \text{AtRisk}, \text{Symptomatic}, \text{Recovering}\}$
-- $b_i \in \{\text{low}, \text{medium}, \text{high}\}$
-- $r_i \in \{\text{low}, \text{medium}, \text{high}\}$
-- $c_i \in \{\text{low}, \text{high}\}$
-- $n_i \in \{\text{isolated}, \text{connected}\}$ or local symptomatic fraction bins.[^2]
-
-This gives a manageable finite state space for tabular Q-learning and preserves the model’s substantive story: current clinical state, accumulated burden, resilience, and local social environment jointly shape behavior.[^2]
-
-### Action space
-
-For your model, the most defensible action space is **behavioral regulation**, not direct “move to Healthy” state transitions. In other words, actions should modify stress processing, resilience, or network interaction probabilities rather than directly set the health state.[^1][^2]
-
-I recommend one of these three action-space designs:
-
-
-| Design | Actions | Best use |
-| :-- | :-- | :-- |
-| Coping only | Do nothing, self-regulate, seek help, withdraw | Simplest first version |
-| Social only | Maintain ties, seek supportive contact, avoid symptomatic contacts, form new ties | Best if network dynamics are central |
-| Hybrid | Self-regulate, seek help, socialize, withdraw, rewire ties | Most realistic but more complex |
-
-A good first implementation is the **hybrid but small** action set:
-
-- $a_0$: passive / no action
-- $a_1$: coping effort, lowers effective stress load but has a cost
-- $a_2$: seek support, increases chance of contact with healthy/recovering neighbors and may boost resilience
-- $a_3$: withdraw, reduces contagion exposure but also reduces support
-- $a_4$: rewire social tie, replace one neighbor based on a rule.[^3][^2]
-
-That gives real agency without making the model clinically implausible. The action is not “become healthy”; the action is “do something that changes the odds of future trajectories.”[^2]
-
-## Q-learning integration
-
-Once actions exist, the per-agent learner can use Q-learning with the usual update
-
-$$
-Q_i(s_t,a_t)\leftarrow Q_i(s_t,a_t)+\alpha\Big[r_t+\gamma \max_{a'}Q_i(s_{t+1},a')-Q_i(s_t,a_t)\Big].
-$$
-
-This is appropriate when the transition law is unknown and the agent learns from simulated experience rather than from an explicit model.[^2]
-
-### Reward design
-
-The reward is the hardest and most important modeling choice. If reward is badly chosen, the agents will learn odd but mathematically correct behavior.[^2]
-
-Use a reward with four components:
-
-$$
-r_i(t)=w_1\,H_i(t)+w_2\,\Delta R_i(t)-w_3\,L_i(t)-w_4\,C(a_i(t)),
-$$
-
-where:
-
-- $H_i(t)$ rewards good mental-health states,
-- $\Delta R_i(t)$ rewards resilience gain,
-- $L_i(t)$ penalizes stress burden or symptom severity,
-- $C(a_i)$ penalizes costly actions such as intense coping or rewiring.[^2]
-
-A concrete mapping:
-
-- Healthy: $+2$
-- Recovering: $+1$
-- At-Risk: $-1$
-- Symptomatic: $-3$
-- Additional penalty: $-\lambda \times \text{stress\_load}$
-- Action cost: small negative for coping, help-seeking, and rewiring.[^2]
-
-This prevents degenerate policies like constant rewiring or constant withdrawal. It also reflects that maintaining health matters, but all protective actions are not free.[^2]
-
-### Where the action enters
-
-The current model computes stress, stores memory, and then transitions probabilistically. To add learning, insert action choice before transition and let the action alter the transition inputs:
-
-$$
-\tilde{\sigma}_i(t)=f\big(\sigma_i^{\text{event}}(t),\,\sigma_i^{\text{social}}(t),\,a_i(t)\big),
-$$
-
-$$
-P\big(x_i(t+1)\mid x_i(t),\tilde{\sigma}_i(t),R_i(t),V_i,N_i(t)\big).
-$$
-
-Here $a_i(t)$ changes effective stress, resilience drift, or neighborhood exposure, but the clinical state transition remains stochastic.[^2]
-
-For example:
-
-- coping reduces effective stress by factor $(1-\eta_c)$,
-- seek support increases resilience by $+\delta_s$ if supportive contacts are available,
-- withdrawal reduces contagion term but also reduces support term,
-- rewiring changes future neighbors and therefore future social exposure.[^3][^2]
-
-
-### Pseudocode
-
-```text
-For each step t:
-    trigger global stress events
-    update network if exogenous rewiring occurs
-
-    shuffle agents
-    For each agent i:
-        observe local state s_i(t)
-        choose action a_i(t) using epsilon-greedy policy from Q_i
-        apply action effect to:
-            effective stress
-            resilience drift
-            support access
-            rewiring probabilities
-
-    For each agent i:
-        compute event stress
-        compute neighbor contagion/support stress
-        update memory buffer
-        compute stress_load from memory
-        sample next mental-health state x_i(t+1)
-        compute reward r_i(t)
-        observe next state s_i(t+1)
-        update Q_i(s_i(t), a_i(t))
-```
-
-This two-phase update is better than immediate sequential updating because it reduces order effects between action choice and network consequences.[^1][^2]
-
-## Neighbor interaction
-
-Your current “social contagion” is a mean-field term based on the fraction symptomatic in the whole population. To add neighbors, replace that with a local exposure process on a graph $G_t=(V,E_t)$, where the edge set may change over time. Dynamic social networks are a natural way to model changing contacts, clustering, and exposure heterogeneity.[^3][^2]
-
-### Network formalism
-
-Let $N_i(t)$ be the current neighbor set of agent $i$. Then define social exposure as
-
-$$
-\sigma_i^{\text{social}}(t)=
-\beta_c \cdot \frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)=\text{Symptomatic}\}
-\;-\;
-\beta_s \cdot \frac{1}{|N_i(t)|}\sum_{j\in N_i(t)}\mathbf{1}\{x_j(t)\in\{\text{Healthy},\text{Recovering}\},
-$$
-
-possibly with weighted edges $w_{ij}(t)$. This allows both negative contagion and positive support instead of only harmful exposure.[^3][^2]
-
-A weighted version is even better:
-
-$$
-\sigma_i^{\text{social}}(t)=
-\sum_{j\in N_i(t)} w_{ij}(t)\,g(x_j(t)),
-$$
-
-where $g(\text{Healthy})<0$, $g(\text{Recovering})<0$, $g(\text{AtRisk})\approx 0$, and $g(\text{Symptomatic})>0$.[^2]
-
-### What “interaction” should mean
-
-Do not limit interaction to passive contagion. Let an interaction event have one of several consequences:
-
-- stress contagion,
-- supportive buffering,
-- tie strengthening,
-- tie weakening,
-- information transfer affecting action choice.[^3][^2]
-
-A simple interaction kernel is:
-
-$$
-I_{ij}(t) \sim \text{Bernoulli}(p_{ij}(t)),
-$$
-
-where $p_{ij}(t)$ depends on edge weight, homophily, prior interaction, and possibly actions such as “seek support.” If interaction occurs, update stress/support and optionally update edge weight:
-
-$$
-w_{ij}(t+1)=w_{ij}(t)+\rho \cdot h(x_i(t),x_j(t),a_i(t),a_j(t)).
-$$
-
-This lets relationships strengthen or decay endogenously.[^3]
-
-## Dynamic neighbors
-
-The neighbors may change through a rewiring rule. This should be explicit and separate from contagion.[^4][^3]
-
-### Rewiring mechanisms
-
-Use one or more of these:
-
-- **Random turnover**: with probability $p_{\text{rewire}}$, drop one edge and form another uniformly at random.
-- **Homophily**: agents prefer ties to similar resilience/state/action profiles.
-- **Avoidance**: healthy or coping agents may sever ties to highly symptomatic neighbors.
-- **Support seeking**: distressed agents may seek ties to healthy/recovering neighbors.
-- **Reciprocity / inertia**: strong ties are hard to break.[^3][^2]
-
-A clean formal rule:
-
-$$
-\Pr\big((i,j)\in E_{t+1}\big)\propto
-\exp\Big(
-\theta_1 \cdot \text{similarity}_{ij}
-+\theta_2 \cdot \text{supportiveness}_j
--\theta_3 \cdot \text{burden}_j
-+\theta_4 \cdot \text{prior tie}_{ij}
-\Big).
-$$
-
-This turns neighbor change into an adaptive network process rather than an arbitrary graph shuffle.[^3]
-
-### Minimal pseudocode for rewiring
-
-```text
-For each agent i:
-    With probability p_drop(i,t):
-        choose current neighbor j to drop
-            probability increases if tie weak or contagion high
-    With probability p_add(i,t):
-        choose candidate k not currently connected
-            probability increases with similarity, supportiveness, proximity, prior contact
-    add edge (i,k) if degree constraints allow
-```
-
-Degree constraints matter. Without them, the graph can densify unrealistically or collapse into isolates.[^2]
-
-## Recommended implementation order
-
-You should not add everything at once. Add structure in four stages so you can identify what changes the model behavior.[^1][^2]
-
-### Stage 1: Local network without learning
-
-Replace population-wide contagion with neighbor-based contagion on a fixed graph. Keep the current transition equations unchanged except for replacing global symptomatic fraction with local weighted neighbor exposure.[^1][^2]
-
-### Stage 2: Dynamic network
-
-Add rewiring rules, still without Q-learning. This isolates the effect of adaptive neighborhood structure on trajectories and path dependence.[^3]
-
-### Stage 3: Q-learning with non-network actions
-
-Add a small action space such as passive, cope, seek support, withdraw. Let actions affect stress load and resilience, but not yet rewiring. This isolates whether learning stabilizes agents even in a static or exogenously changing network.[^1][^2]
-
-### Stage 4: Full coevolution
-
-Let one action affect tie formation or severing, and let network experience affect the learned policy. At this stage you have a coevolving system: health affects ties, ties affect exposure, exposure affects reward, reward updates policy.[^3][^2]
-
-## Design cautions
-
-The biggest conceptual issue is that the environment is **non-stationary** because all agents learn simultaneously and the network changes too. Standard tabular Q-learning assumes a stationary environment, so convergence guarantees weaken in this setting. In practice, it can still be useful, but interpret it as adaptive behavior rather than guaranteed optimal control.[^1][^2]
-
-A second issue is observability. If agents do not observe the full local network or true resilience of neighbors, the problem is closer to a partially observed decision process. You can still use Q-learning with binned observations, but conceptually you are approximating a POMDP with an observed-state surrogate.[^2]
-
-A third issue is calibration. Once actions and network rewiring are added, many parameter combinations can produce similar aggregate curves. Plan from the beginning to run sensitivity analyses over $\alpha, \gamma, \epsilon$, rewiring probabilities, contagion strength, support strength, and reward weights.[^2]
-
-## Suggested formal specification
-
-I would write the upgraded model as a coupled process:
-
-$$
-x_i(t+1)\sim P_x\big(x_i(t), m_i(t), R_i(t), V_i, N_i(t), a_i(t)\big)
-$$
-
-$$
-m_i(t+1)=\Phi\big(m_i(t), \sigma_i^{\text{event}}(t), \sigma_i^{\text{social}}(t), a_i(t)\big)
-$$
-
-$$
-E_{t+1}\sim P_E\big(E_t, X_t, A_t, W_t\big)
-$$
-
-$$
-Q_i \leftarrow \mathcal{U}\big(Q_i, s_i(t), a_i(t), r_i(t), s_i(t+1)\big)
-$$
-
-where:
-
-- $x_i$ is mental-health state,
-- $m_i$ is memory/burden state,
-- $E_t$ is the dynamic network,
-- $A_t$ is the action profile,
-- $Q_i$ is agent $i$’s action-value table.[^3][^2]
-
-That decomposition will help you keep the implementation modular:
-
-1. internal stress-memory module,
-2. network interaction module,
-3. clinical transition module,
-4. RL policy module.[^1][^2]
-
-## Concrete recommendation
-
-For a first serious version, I would use:
-
-- fixed small discrete state abstraction,
-- 4 actions: passive, cope, seek support, withdraw,
-- weighted local contagion/support on a fixed-degree network,
-- rewiring as an exogenous process first, then as a learned action later.[^3][^2]
-
-That gets you most of the scientific value without immediately creating an unstable multi-agent RL system. After that, you can compare four models: baseline, network-only, RL-only, and full coevolution. Those comparisons will tell you whether learning changes resilience trajectories, whether adaptive neighborhoods amplify inequality, and whether path dependence becomes stronger or weaker.[^2]
-
-Would you like me to turn this into a **model specification document** with notation, update equations, and a step-by-step implementation checklist?
-<span style="display:none">[^10][^5][^6][^7][^8][^9]</span>
-
-<div align="center">⁂</div>
-
-[^1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC12149378/
-
-[^2]: https://pmc.ncbi.nlm.nih.gov/articles/PMC3395878/
-
-[^3]: https://www.sciencedirect.com/science/article/pii/S0167278925000090
-
-[^4]: https://www.mimuw.edu.pl/~noble/courses/QPEDataScience/Resources/DynamicSocialNetworksAgentBased.pdf
-
-[^5]: https://www.reddit.com/r/Python/comments/1r5lkyh/mesa_350_agentbased_modeling_now_with/
-
-[^6]: https://en.wikipedia.org/wiki/Markov_decision_process
-
-[^7]: https://mesa.readthedocs.io
-
-[^8]: https://ceur-ws.org/Vol-627/mass_10.pdf
-
-[^9]: https://www.youtube.com/watch?v=u-XeFNeImyk
-
-[^10]: https://people.stfx.ca/jdelamer/courses/csci-531/lectures/mdp/markov-decison-process/markov_decision_process.html
-
+Memory shapes behavior, behavior reshapes network exposure, and network exposure reshapes future memory — a coevolutionary process rather than a simple chain of transitions. Running the model end to end shows a population that heals more thoroughly and grows more resilient than its passive predecessor, but the path there runs through mechanisms — tie-weight consolidation rather than degree growth, uncertain shock-responsiveness in the learned policy, and a reward-attribution gap in how isolation is penalized — that only become visible once the simulation is actually executed and interrogated rather than read off the mechanism list.
 
 
 ```
