@@ -248,16 +248,12 @@ import matplotlib.gridspec as gridspec
 from collections import deque
 import random
 
-# ── Cell 3: Constants & State Definitions ────────────────────────────
-
 HEALTHY     = "Healthy"
 AT_RISK     = "At-Risk"
 SYMPTOMATIC = "Symptomatic"
 RECOVERING  = "Recovering"
 
 STATE_VALUE = {HEALTHY: 0, AT_RISK: 1, RECOVERING: 1.5, SYMPTOMATIC: 2}
-
-# ── Cell 4: Stress Event ─────────────────────────────────────────────
 
 class StressEvent:
     def __init__(self, severity: float, duration: int, label: str = ""):
@@ -282,8 +278,6 @@ STRESS_SCHEDULE = [
 
 EVENT_STEPS  = [s for s, _ in STRESS_SCHEDULE]
 EVENT_LABELS = [e.label for _, e in STRESS_SCHEDULE]
-
-# ── Cell 5: Memory Agent ─────────────────────────────────────────────
 
 class MemoryAgent(mesa.Agent):
     def __init__(self, model, memory_length: int = 10):
@@ -380,8 +374,6 @@ class MemoryAgent(mesa.Agent):
             (self.model.schedule_step, self.state, stress_load, self.resilience)
         )
 
-# ── Cell 6: Model ────────────────────────────────────────────────────
-
 class MentalHealthModel(mesa.Model):
     def __init__(self, n_agents: int = 100, memory_length: int = 10, seed: int = 42):
         super().__init__(seed=seed)
@@ -446,8 +438,6 @@ class MentalHealthModel(mesa.Model):
         self.schedule_step += 1
         self.datacollector.collect(self)
 
-# ── Cell 7: Run Simulation ───────────────────────────────────────────
-
 N_AGENTS = 100
 N_STEPS = 80
 
@@ -468,8 +458,6 @@ df_agents = model.datacollector.get_agent_vars_dataframe()
 print("\nFinal population distribution:")
 print(df_model[["Pct_Healthy", "Pct_AtRisk", "Pct_Symptomatic", "Pct_Recovering"]].iloc[-1].round(3))
 
-# ── Cell 8: Temporal / Path-Dependence Analysis ──────────────────────
-
 LAG = 5
 burden_lagged = df_model["Mean_Burden"].iloc[:-LAG].values
 symp_future = df_model["Pct_Symptomatic"].iloc[LAG:].values
@@ -480,8 +468,6 @@ final_agents = df_agents.xs(N_STEPS, level="Step")
 final_numeric = final_agents["State"].map(STATE_VALUE)
 cv = final_numeric.std() / (final_numeric.mean() + 1e-9)
 print(f"Path-dependence CV: {cv:.3f}")
-
-# ── Cell 9: Visualization ────────────────────────────────────────────
 
 COLORS = {
     HEALTHY: "#2ecc71",
